@@ -1,15 +1,20 @@
-// Step 1: read a Claude.ai data export and write a normalized conversation list
-// to data/conversations.json. Plays the role of scrapeConversation() in the extension.
+// Step 1: read a Claude.ai data export (plus, optionally, Claude Design chats and local
+// Claude Code sessions) and write one normalized conversation list to data/conversations.json.
+// Plays the role of scrapeConversation() in the extension.
 //
-//   node pipeline/parse-export.mjs <path to conversations.json or the unzipped export folder>
+//   node pipeline/parse-export.mjs <conversations.json | unzipped export folder>
+//        [--design <design_chats folder>]   default: a design_chats/ folder next to the export
+//        [--claude-code] [--claude-code-dir <dir>]   default dir: ~/.claude/projects
 
 import { existsSync, statSync } from 'node:fs';
 import path from 'node:path';
 import { PATHS, cleanText, parseArgs, readJson, writeJson } from './lib/common.mjs';
+import { DEFAULT_CLAUDE_CODE_DIR, parseClaudeCodeSessions } from './lib/parse-claude-code.mjs';
+import { parseDesignChats } from './lib/parse-design-chats.mjs';
 
 const ATTACHMENT_SNIPPET_CHARS = 400;
 
-const args = parseArgs(process.argv.slice(2));
+const args = parseArgs(process.argv.slice(2), ['claude-code']);
 const input = args._[0];
 
 if (!input) {
@@ -29,20 +34,36 @@ if (!Array.isArray(raw)) {
   process.exit(1);
 }
 
-const conversations = raw
+const chats = raw
   .map(normalizeConversation)
-  .filter((conversation) => conversation.messages.length > 0)
+  .filter((conversation) => conversation.messages.length > 0);
+report('claude.ai chats', chats, raw.length - chats.length);
+
+// Design chats sit in their own folder of the export (design_chats-000.zip, unzipped).
+const designDir = args.design || [path.join(path.dirname(file), 'design_chats'), path.join(path.dirname(file), '..', 'design_chats')].find((dir) => existsSync(dir));
+const designChats = parseDesignChats(designDir);
+if (designDir) report('Claude Design chats', designChats);
+
+const claudeCodeDir = args['claude-code-dir'] || (args['claude-code'] ? DEFAULT_CLAUDE_CODE_DIR : null);
+const claudeCodeSessions = claudeCodeDir ? parseClaudeCodeSessions(claudeCodeDir) : [];
+if (claudeCodeDir) report('Claude Code sessions', claudeCodeSessions);
+
+const conversations = [...chats, ...designChats, ...claudeCodeSessions]
   .sort((a, b) => String(a.created_at).localeCompare(String(b.created_at)));
 
 await writeJson(PATHS.conversations, {
   source: path.resolve(file),
+  design_source: designDir ? path.resolve(designDir) : null,
+  claude_code_source: claudeCodeDir ? path.resolve(claudeCodeDir) : null,
   parsed_at: new Date().toISOString(),
   conversations
 });
+console.log(`Wrote ${conversations.length} conversations to ${PATHS.conversations}`);
 
-const messageTotal = conversations.reduce((sum, conversation) => sum + conversation.message_count, 0);
-console.log(`Parsed ${conversations.length} conversations (${messageTotal} messages, ${raw.length - conversations.length} empty skipped).`);
-console.log(`Wrote ${PATHS.conversations}`);
+function report(label, list, skipped = 0) {
+  const messages = list.reduce((sum, conversation) => sum + conversation.message_count, 0);
+  console.log(`Parsed ${list.length} ${label} (${messages} messages${skipped ? `, ${skipped} empty skipped` : ''}).`);
+}
 
 function normalizeConversation(conversation) {
   const messages = (conversation?.chat_messages || [])
@@ -51,6 +72,7 @@ function normalizeConversation(conversation) {
 
   return {
     id: cleanText(conversation?.uuid, `conv_${Math.random().toString(36).slice(2)}`),
+    source: 'claude_ai',
     title: cleanText(conversation?.name, 'Untitled chat'),
     created_at: conversation?.created_at || messages[0]?.created_at || null,
     updated_at: conversation?.updated_at || conversation?.created_at || null,

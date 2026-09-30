@@ -17,6 +17,11 @@ import { describeError, structuredJson } from './lib/claude.mjs';
 const HEAD_MESSAGES = 6;
 const MAX_PROMPT_MESSAGES = 30;
 const MAX_MESSAGE_CHARS = 1500;
+// Extra context in the per-chat message (not the shared system prompt, so claude.ai results stay cached).
+const SOURCE_CONTEXT = {
+  claude_code: 'Source: Claude Code, a coding agent working directly in the user\'s files and terminal. [used tools: ...] lists the tools Claude ran in that turn; [ran /command] is a command the user ran; [user interrupted AI] means the user stopped Claude mid-turn.',
+  claude_design: 'Source: Claude Design, a visual design tool where Claude builds designs. [user edited the design directly] means the user changed the design themselves; [asked the user questions: ...] means Claude asked before building.'
+};
 
 // Anthropic structured outputs: no array length limits, so counts are enforced in normalizeReflection().
 const reflectionSchema = {
@@ -206,6 +211,7 @@ function systemPrompt() {
 function buildPrompt(conversation) {
   const lines = [
     `Conversation title: ${conversation.title}`,
+    ...(SOURCE_CONTEXT[conversation.source] ? [SOURCE_CONTEXT[conversation.source]] : []),
     `Started: ${String(conversation.created_at || 'unknown').slice(0, 10)}. Total messages: ${conversation.message_count}.`,
     'Transcript:'
   ];
@@ -293,7 +299,7 @@ function buildSessionRecord(conversation, reflection, { model, sourceHash }) {
   return {
     session_id: `session_${conversation.id}`,
     chat_key: conversation.id,
-    source: 'claude-export',
+    source: conversation.source || 'claude_ai',
     title: conversation.title,
     created_at: conversation.created_at,
     analyzed_at: new Date().toISOString(),

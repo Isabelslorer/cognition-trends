@@ -54,6 +54,11 @@
   let rendered = false;
 
   window.addEventListener('hashchange', applyRoute);
+  window.addEventListener('miro:source', () => {
+    if (!rendered) return;
+    updateCounts();
+    if (!view.hidden) render();
+  });
   window.addEventListener('resize', debounce(() => { if (!view.hidden) renderChart(); }, 120));
   applyRoute();
 
@@ -67,6 +72,7 @@
     if (showTrends) {
       if (!rendered) {
         renderFilters();
+        updateCounts();
         renderLegend();
         bindTableToggle();
         rendered = true;
@@ -188,8 +194,32 @@
 
   // --- data ----------------------------------------------------------------
 
+  // Rows from the source chosen in the switch at the top (sources.js).
+  function sourceRows() {
+    const source = window.MIRO_SOURCE || 'all';
+    return source === 'all' ? D.timeline : D.timeline.filter((row) => (row.source || 'claude_ai') === source);
+  }
+
+  // Filter counts follow the chosen source so they always match what the chart can show.
+  function updateCounts() {
+    const rows = sourceRows();
+    const topicCounts = countBy(rows.flatMap((row) => row.areas));
+    const openingCounts = countBy(rows.map((row) => row.opening));
+    const arcCounts = countBy(rows.map((row) => row.arc));
+    document.querySelectorAll('#trTopics .tr-chip[data-topic]').forEach((chip) => {
+      const count = chip.querySelector('.tr-count');
+      if (count) count.textContent = topicCounts[chip.dataset.topic] || 0;
+    });
+    document.querySelectorAll('#trOpening option[value]:not([value="all"])').forEach((option) => {
+      option.textContent = `${OPENING_LABELS[option.value]} (${openingCounts[option.value] || 0})`;
+    });
+    document.querySelectorAll('#trArc option[value]:not([value="all"])').forEach((option) => {
+      option.textContent = `${ARC_LABELS[option.value]} (${arcCounts[option.value] || 0})`;
+    });
+  }
+
   function filteredRows() {
-    return D.timeline.filter((row) => {
+    return sourceRows().filter((row) => {
       if (state.topics.size) {
         const candidates = state.topicMatch === 'main' ? row.areas.slice(0, 1) : row.areas;
         if (!candidates.some((area) => state.topics.has(area))) return false;
@@ -243,9 +273,11 @@
 
   function render() {
     const rows = filteredRows();
-    document.getElementById('trSummary').textContent = rows.length === D.timeline.length
-      ? `Showing all ${rows.length} chats.`
-      : `Showing ${rows.length} of ${D.timeline.length} chats.`;
+    const total = sourceRows().length;
+    const source = window.MIRO_SOURCE && window.MIRO_SOURCE !== 'all' ? ` ${D.variants?.[window.MIRO_SOURCE]?.label || ''}` : '';
+    document.getElementById('trSummary').textContent = rows.length === total
+      ? `Showing all ${total}${source} chats.`
+      : `Showing ${rows.length} of ${total}${source} chats.`;
     document.getElementById('trFootnote').textContent =
       `Each point is the average for that ${state.grain} across chats where that kind of work happened (0 = AI carried it all, 100 = you did). ` +
       `Points need at least ${MIN_CHATS} such chats; thinner ${state.grain}s are left as gaps${state.grain === 'month' ? ', and grouping by quarter fills many of them' : ''}. ` +
@@ -264,6 +296,10 @@
     }
     const buckets = buildBuckets(rows);
     const visible = SERIES.filter((series) => !state.hidden.has(series.key));
+    if (!buckets.some((bucket) => visible.some((series) => bucket.points[series.key].ok))) {
+      chartEl.innerHTML = `<div class="tr-empty">${rows.length} chat${rows.length === 1 ? '' : 's'} match, but no ${state.grain} has ${MIN_CHATS} or more to plot a point.${state.grain === 'month' ? ' Try grouping by quarter, or' : ' Try'} widening the filters, or use the table view.</div>`;
+      return;
+    }
 
     const width = Math.max(320, chartEl.clientWidth);
     const compact = width < 560;

@@ -11,6 +11,11 @@
   --tr-series-4:#eda100;--tr-series-5:#e87ba4;--tr-series-6:#008300;
 }
 
+/* Source switch above both views (see sources.js). */
+.source-switch{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin-bottom:16px}
+.source-switch-label{font-size:10px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:var(--ink-3)}
+.source-switch .tr-seg{flex-wrap:wrap}
+
 .tr-filters{display:flex;flex-wrap:wrap;align-items:flex-end;gap:14px 20px;margin-bottom:14px}
 .tr-field{display:flex;flex-direction:column;gap:6px;min-width:0}
 .tr-field-label{font-size:10px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:var(--ink-3)}
@@ -22,7 +27,7 @@
 }
 .tr-chip:hover,.tr-seg button:hover,.tr-toggle:hover{border-color:rgba(52,44,37,0.22);color:var(--ink)}
 .tr-chip[aria-pressed="true"],.tr-seg button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fffaf0}
-.tr-chip .tr-count{font-weight:500;opacity:0.65;margin-left:4px}
+.tr-chip .tr-count,.tr-seg .tr-count{font-weight:500;opacity:0.65;margin-left:5px}
 .tr-seg{display:inline-flex;gap:4px}
 .tr-select{
   font:inherit;font-size:12px;font-weight:600;color:var(--ink);padding:6px 28px 6px 11px;border-radius:999px;
