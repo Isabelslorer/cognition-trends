@@ -1,5 +1,6 @@
 # Personal conversation data and derived analysis: never commit.
 data/
+export/
 site/data.js
 .env
 
