@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Claude Looking Back</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="dashboard.css"/>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="tb-brand">
+    <div class="tb-avatar"><img src="sprites/cute.png" alt="Miro"/></div>
+    <div>
+      <div class="tb-name">Looking back</div>
+      <div class="tb-meta" id="tbMeta"></div>
+    </div>
+  </div>
+  <nav class="tb-nav" id="topNav">
+    <a href="#areas" class="active">Where AI shows up</a>
+    <a href="#splits">How the work splits</a>
+    <a href="#profile">Your profile</a>
+  </nav>
+</header>
+
+<div class="main">
+
+  <div class="dashboard-note" id="dashboardNote" role="status" aria-live="polite">
+    <div class="dashboard-note-copy" id="dashboardNoteCopy">Built from your exported Claude conversations. This page and its data file stay on your computer.</div>
+    <button class="dashboard-note-button" id="dashboardNoteDismiss" type="button">Got it</button>
+  </div>
+
+  <div class="section" id="areas">
+    <div class="sec-head">
+      <div class="kicker">Where AI shows up in your work</div>
+      <div class="sec-title">The areas you bring AI into</div>
+      <div class="sec-sub">Each bubble is a part of your work where AI tends to appear. Bigger means more activity. Click any bubble to see what's happening there.</div>
+    </div>
+    <div class="bubbles-layout" id="bubblesLayout">
+      <div class="card bubble-stage bubble-stage-cardless" id="bubbleStage"></div>
+      <div class="bubble-panel" id="bubblePanel">
+        <div class="bp-placeholder" id="bpPlaceholder">
+          <div class="bp-placeholder-icon">←</div>
+          <div class="bp-placeholder-text">Click a bubble to see what's going on in that area</div>
+        </div>
+        <div class="bp-content" id="bpContent"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section" id="splits">
+    <div class="sec-head">
+      <div class="kicker">How the work splits</div>
+      <div class="sec-title">Who tends to carry what</div>
+      <div class="sec-sub"><span id="splitsCount"></span> The band shows how much it varied. Click any row to see more.</div>
+    </div>
+    <div class="card sliders-card" id="slidersCard"></div>
+  </div>
+
+  <div class="section" id="profile">
+    <div class="sec-head">
+      <div class="kicker">Your profile</div>
+      <div class="sec-title">The collaborator you're becoming</div>
+      <div class="sec-sub">How you tend to show up, how AI tends to show up for you, and what that creates together.</div>
+    </div>
+    <div class="profile-grid" id="profileGrid"></div>
+  </div>
+
+</div>
+
+<script src="data.js"></script>
+<script src="dashboard.js"></script>
+</body>
+</html>

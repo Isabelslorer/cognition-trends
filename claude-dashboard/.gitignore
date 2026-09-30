@@ -1,0 +1,7 @@
+# Personal conversation data and derived analysis: never commit.
+data/
+site/data.js
+.env
+
+# Claude export manifests contain single-use download links to your account data.
+sample/manifest-*.json

@@ -1,0 +1,915 @@
+[
+  {
+    "uuid": "sample-1",
+    "name": "Lit review on sleep and memory",
+    "created_at": "2026-01-14T15:00:00.000Z",
+    "updated_at": "2026-01-14T16:00:00.000Z",
+    "account": {
+      "uuid": "sample-account"
+    },
+    "chat_messages": [
+      {
+        "uuid": "sample-1-1",
+        "text": "I need to write a lit review on sleep and memory consolidation for my cognitive psych class. Can you find me the key papers?",
+        "content": [
+          {
+            "type": "text",
+            "text": "I need to write a lit review on sleep and memory consolidation for my cognitive psych class. Can you find me the key papers?"
+          }
+        ],
+        "sender": "human",
+        "created_at": "2026-01-14T15:00:00.000Z",
+        "attachments": [],
+        "files": []
+      },
+      {
+        "uuid": "sample-1-2",
+        "text": "Here are foundational and recent papers: Stickgold (2005) on sleep-dependent memory consolidation, Walker & Stickgold (2006), Diekelmann & Born (2010) on the memory function of sleep, and Rasch & Born (2013). Grouped by theme: slow-wave sleep and declarative memory, REM and procedural memory, and targeted memory reactivation.",
+        "content": [
+          {
+            "type": "text",
+            "text": "Here are foundational and recent papers: Stickgold (2005) on sleep-dependent memory consolidation, Walker & Stickgold (2006), Diekelmann & Born (2010) on the memory function of sleep, and Rasch & Born (2013). Grouped by theme: slow-wave sleep and declarative memory, REM and procedural memory, and targeted memory reactivation."
+          }
+        ],
+        "sender": "assistant",
+        "created_at": "2026-01-14T15:03:00.000Z",
+        "attachments": [],
+        "files": []
+      },
+      {
+        "uuid": "sample-1-3",
+        "text": "Summarize Diekelmann & Born for me, focusing on the active systems consolidation hypothesis.",
+        "content": [
+          {
+            "type": "text",
+            "text": "Summarize Diekelmann & Born for me, focusing on the active systems consolidation hypothesis."
+          }
+        ],
+        "sender": "human",
+        "created_at": "2026-01-14T15:06:00.000Z",
+        "attachments": [],
+        "files": []
+      },
+      {
+        "uuid": "sample-1-4",
+        "text": "Diekelmann & Born argue that during slow-wave sleep, newly encoded memories are repeatedly reactivated in the hippocampus, which drives their redistribution to neocortical long-term stores.",
+        "content": [
+          {
+            "type": "text",
+            "text": "Diekelmann & Born argue that during slow-wave sleep, newly encoded memories are repeatedly reactivated in the hippocampus, which drives their redistribution to neocortical long-term stores."
+          }
+        ],
+        "sender": "assistant",
+        "created_at": "2026-01-14T15:09:00.000Z",
+        "attachments": [],
+        "files": []
+      },
+      {
+        "uuid": "sample-1-5",
+        "text": "ok, that framing of active vs passive consolidation is what I want to organize the review around. I think the passive view is undersold though. Give me the strongest arguments for it.",
+        "content": [
+          {
+            "type": "text",
+            "text": "ok, that framing of active vs passive consolidation is what I want to organize the review around. I think the passive view is undersold though. Give me the strongest arguments for it."
+          }
+        ],
+        "sender": "human",
+        "created_at": "2026-01-14T15:12:00.000Z",
+        "attachments": [],
+        "files": []
+      },
+      {
+        "uuid": "sample-1-6",
+        "text": "The strongest case for passive (interference-reduction) accounts: Ellenbogen et al. showed protection from interference; wake-rest studies show similar benefits in some paradigms.",
+        "content": [
+          {
+            "type": "text",
+            "text": "The strongest case for passive (interference-reduction) accounts: Ellenbogen et al. showed protection from interference; wake-rest studies show similar benefits in some paradigms."
+          }
+        ],
+        "sender": "assistant",
+        "created_at": "2026-01-14T15:15:00.000Z",
+        "attachments": [],
+        "files": []
+      },
+      {
+        "uuid": "sample-1-7",
+        "text": "good. I will write the intro myself. Just check whether my thesis sentence is defensible: sleep protects memory more than it transforms it.",
+        "content": [
+          {
+            "type": "text",
+            "text": "good. I will write the intro myself. Just check whether my thesis sentence is defensible: sleep protects memory more than it transforms it."
+          }
+        ],
+        "sender": "human",
+        "created_at": "2026-01-14T15:18:00.000Z",
+        "attachments": [],
+        "files": []
+      },
+      {
+        "uuid": "sample-1-8",
+        "text": "Defensible as a provocative thesis, but you will need to address TMR studies that show selective strengthening. Consider narrowing to declarative memory in young adults.",
+        "content": [
+          {
+            "type": "text",
+            "text": "Defensible as a provocative thesis, but you will need to address TMR studies that show selective strengthening. Consider narrowing to declarative memory in young adults."
+          }
+        ],
+        "sender": "assistant",
+        "created_at": "2026-01-14T15:21:00.000Z",
+        "attachments": [],
+        "files": []
+      }
+    ]
+  },
+  {
+    "uuid": "sample-2",
+    "name": "Fix React state bug",
+    "created_at": "2026-02-03T15:00:00.000Z",
+    "updated_at": "2026-02-03T16:00:00.000Z",
+    "account": {
+      "uuid": "sample-account"
+    },
+    "chat_messages": [
+      {
+        "uuid": "sample-2-1",
+        "text": "my todo list component doesn't rerender when I add items. here is the code",
+        "content": [
+          {
+            "type": "text",
+            "text": "my todo list component doesn't rerender when I add items. here is the code"
+          }
+        ],
+        "sender": "human",
+        "created_at": "2026-02-03T15:00:00.000Z",
+        "attachments": [
+          {
+            "file_name": "TodoList.jsx",
+            "file_type": "text/plain",
+            "file_size": 87,
+            "extracted_content": "const [items,setItems]=useState([]); function add(t){ items.push(t); setItems(items); }"
+          }
+        ],
+        "files": []
+      },
+      {
+        "uuid": "sample-2-2",
+        "text": "The bug is mutation: items.push mutates the existing array, so setItems receives the same reference and React bails out. Use setItems(prev => [...prev, t]).",
+        "content": [
+          {
+            "type": "text",
+            "text": "The bug is mutation: items.push mutates the existing array, so setItems receives the same reference and React bails out. Use setItems(prev => [...prev, t])."
+          }
+        ],
+        "sender": "assistant",
+        "created_at": "2026-02-03T15:03:00.000Z",
+        "attachments": [],
+        "files": []
+      },
+      {
+        "uuid": "sample-2-3",
+        "text": "that worked. now the delete button removes the wrong item",
+        "content": [
+          {
+            "type": "text",
+            "text": "that worked. now the delete button removes the wrong item"
+          }
+        ],
+        "sender": "human",
+        "created_at": "2026-02-03T15:06:00.000Z",
+        "attachments": [],
+        "files": []
+      },
+      {
+        "uuid": "sample-2-4",
+        "text": "You are probably using the index as key and deleting by index after filtering. Use a stable id: give each item {id: crypto.randomUUID(), text} and filter by id.",
+        "content": [
+          {
+            "type": "text",
+            "text": "You are probably using the index as key and deleting by index after filtering. Use a stable id: give each item {id: crypto.randomUUID(), text} and filter by id."
+          },
+          {
+            "type": "tool_use",
+            "name": "artifacts",
+            "input": {
+              "title": "Fixed TodoList component",
+              "content": "..."
+            }
+          }
+        ],
+        "sender": "assistant",
+        "created_at": "2026-02-03T15:09:00.000Z",
+        "attachments": [],
+        "files": []
+      },
+      {
+        "uuid": "sample-2-5",
+        "text": "works now, thanks. why does the index-as-key thing break though?",
+        "content": [
+          {
+            "type": "text",
+            "text": "works now, thanks. why does the index-as-key thing break though?"
+          }
+        ],
+        "sender": "human",
+        "created_at": "2026-02-03T15:12:00.000Z",
+        "attachments": [],
+        "files": []
+      },
+      {
+        "uuid": "sample-2-6",
+        "text": "Keys tell React which element is which between renders. With index keys, removing item 2 shifts every later item down one index, so React reuses the wrong DOM and state.",
+        "content": [
+          {
+            "type": "text",
+            "text": "Keys tell React which element is which between renders. With index keys, removing item 2 shifts every later item down one index, so React reuses the wrong DOM and state."
+          }
+        ],
+        "sender": "assistant",
+        "created_at": "2026-02-03T15:15:00.000Z",
+        "attachments": [],
+        "files": []
+      }
+    ]
+  },
+  {
+    "uuid": "sample-3",
+    "name": "Cover letter for UX internship",
+    "created_at": "2026-03-10T15:00:00.000Z",
+    "updated_at": "2026-03-10T16:00:00.000Z",
+    "account": {
+      "uuid": "sample-account"
+    },
+    "chat_messages": [
+      {
+        "uuid": "sample-3-1",
+        "text": "write me a cover letter for a UX research internship at Spotify",
+        "content": [
+          {
+            "type": "text",
+            "text": "write me a cover letter for a UX research internship at Spotify"
+          }
+        ],
+        "sender": "human",
+        "created_at": "2026-03-10T15:00:00.000Z",
+        "attachments": [
+          {
+            "file_name": "resume.pdf",
+            "file_type": "text/plain",
+            "file_size": 56,
+            "extracted_content": "Psychology BA, 2 usability studies, Figma, survey design"
+          }
+        ],
+        "files": []
+      },
+      {
+        "uuid": "sample-3-2",
+        "text": "Dear Hiring Team, I am excited to apply for the UX Research Internship at Spotify...",
+        "content": [
+          {
+            "type": "text",
+            "text": "Dear Hiring Team, I am excited to apply for the UX Research Internship at Spotify..."
+          },
+          {
+            "type": "tool_use",
+            "name": "artifacts",
+            "input": {
+              "title": "Cover letter draft",
+              "content": "..."
+            }
+          }
+        ],
+        "sender": "assistant",
+        "created_at": "2026-03-10T15:03:00.000Z",
+        "attachments": [],
+        "files": []
+      },
+      {
+        "uuid": "sample-3-3",
+        "text": "too generic. it sounds like everyone. I want to lead with the usability study I ran on the campus library app",
+        "content": [
+          {
+            "type": "text",
+            "text": "too generic. it sounds like everyone. I want to lead with the usability study I ran on the campus library app"
+          }
+        ],
+        "sender": "human",
+        "created_at": "2026-03-10T15:06:00.000Z",
+        "attachments": [],
+        "files": []
+      },
+      {
+        "uuid": "sample-3-4",
+        "text": "Revised opening: When I watched eleven students fail to renew a book in the campus library app, I realized...",
+        "content": [
+          {
+            "type": "text",
+            "text": "Revised opening: When I watched eleven students fail to renew a book in the campus library app, I realized..."
+          },
+          {
+            "type": "tool_use",
+            "name": "artifacts",
+            "input": {
+              "title": "Cover letter v2",
+              "content": "..."
+            }
+          }
+        ],
+        "sender": "assistant",
+        "created_at": "2026-03-10T15:09:00.000Z",
+        "attachments": [],
+        "files": []
+      },
+      {
+        "uuid": "sample-3-5",
+        "text": "better. cut the last paragraph, it's groveling. and I'll pick between your two closing lines: the second one",
+        "content": [
+          {
+            "type": "text",
+            "text": "better. cut the last paragraph, it's groveling. and I'll pick between your two closing lines: the second one"
+          }
+        ],
+        "sender": "human",
+        "created_at": "2026-03-10T15:12:00.000Z",
+        "attachments": [],
+        "files": []
+      },
+      {
+        "uuid": "sample-3-6",
+        "text": "Done. Final version uses your chosen closing line and drops the last paragraph.",
+        "content": [
+          {
+            "type": "text",
+            "text": "Done. Final version uses your chosen closing line and drops the last paragraph."
+          }
+        ],
+        "sender": "assistant",
+        "created_at": "2026-03-10T15:15:00.000Z",
+        "attachments": [],
+        "files": []
+      }
+    ]
+  },
+  {
+    "uuid": "sample-4",
+    "name": "Study plan for stats midterm",
+    "created_at": "2026-04-02T15:00:00.000Z",
+    "updated_at": "2026-04-02T16:00:00.000Z",
+    "account": {
+      "uuid": "sample-account"
+    },
+    "chat_messages": [
+      {
+        "uuid": "sample-4-1",
+        "text": "I have a stats midterm in 5 days on hypothesis testing and regression. make me a study plan",
+        "content": [
+          {
+            "type": "text",
+            "text": "I have a stats midterm in 5 days on hypothesis testing and regression. make me a study plan"
+          }
+        ],
+        "sender": "human",
+        "created_at": "2026-04-02T15:00:00.000Z",
+        "attachments": [],
+        "files": []
+      },
+      {
+        "uuid": "sample-4-2",
+        "text": "Day 1: sampling distributions and standard error. Day 2: t-tests...",
+        "content": [
+          {
+            "type": "text",
+            "text": "Day 1: sampling distributions and standard error. Day 2: t-tests..."
+          },
+          {
+            "type": "tool_use",
+            "name": "artifacts",
+            "input": {
+              "title": "5-day study plan",
+              "content": "..."
+            }
+          }
+        ],
+        "sender": "assistant",
+        "created_at": "2026-04-02T15:03:00.000Z",
+        "attachments": [],
+        "files": []
+      },
+      {
+        "uuid": "sample-4-3",
+        "text": "quiz me on t-tests",
+        "content": [
+          {
+            "type": "text",
+            "text": "quiz me on t-tests"
+          }
+        ],
+        "sender": "human",
+        "created_at": "2026-04-02T15:06:00.000Z",
+        "attachments": [],
+        "files": []
+      },
+      {
+        "uuid": "sample-4-4",
+        "text": "Q1: A sample of 25 has mean 52, sd 10. Test H0: mu = 50 at alpha .05. What is t?",
+        "content": [
+          {
+            "type": "text",
+            "text": "Q1: A sample of 25 has mean 52, sd 10. Test H0: mu = 50 at alpha .05. What is t?"
+          }
+        ],
+        "sender": "assistant",
+        "created_at": "2026-04-02T15:09:00.000Z",
+        "attachments": [],
+        "files": []
+      },
+      {
+        "uuid": "sample-4-5",
+        "text": "t = 1?",
+        "content": [
+          {
+            "type": "text",
+            "text": "t = 1?"
+          }
+        ],
+        "sender": "human",
+        "created_at": "2026-04-02T15:12:00.000Z",
+        "attachments": [],
+        "files": []
+      },
+      {
+        "uuid": "sample-4-6",
+        "text": "Correct: t = (52-50)/(10/5) = 1. Not significant. Q2: When would you use a paired t-test instead?",
+        "content": [
+          {
+            "type": "text",
+            "text": "Correct: t = (52-50)/(10/5) = 1. Not significant. Q2: When would you use a paired t-test instead?"
+          }
+        ],
+        "sender": "assistant",
+        "created_at": "2026-04-02T15:15:00.000Z",
+        "attachments": [],
+        "files": []
+      },
+      {
+        "uuid": "sample-4-7",
+        "text": "when the same people are measured twice",
+        "content": [
+          {
+            "type": "text",
+            "text": "when the same people are measured twice"
+          }
+        ],
+        "sender": "human",
+        "created_at": "2026-04-02T15:18:00.000Z",
+        "attachments": [],
+        "files": []
+      },
+      {
+        "uuid": "sample-4-8",
+        "text": "Exactly. Q3: Interpret a regression slope of 2.3 for hours studied predicting exam score.",
+        "content": [
+          {
+            "type": "text",
+            "text": "Exactly. Q3: Interpret a regression slope of 2.3 for hours studied predicting exam score."
+          }
+        ],
+        "sender": "assistant",
+        "created_at": "2026-04-02T15:21:00.000Z",
+        "attachments": [],
+        "files": []
+      }
+    ]
+  },
+  {
+    "uuid": "sample-5",
+    "name": "Slide deck for capstone pitch",
+    "created_at": "2026-05-19T15:00:00.000Z",
+    "updated_at": "2026-05-19T16:00:00.000Z",
+    "account": {
+      "uuid": "sample-account"
+    },
+    "chat_messages": [
+      {
+        "uuid": "sample-5-1",
+        "text": "I need to turn my capstone findings into a 10 slide pitch. The main point: students overtrust AI first drafts. Here are my notes",
+        "content": [
+          {
+            "type": "text",
+            "text": "I need to turn my capstone findings into a 10 slide pitch. The main point: students overtrust AI first drafts. Here are my notes"
+          }
+        ],
+        "sender": "human",
+        "created_at": "2026-05-19T15:00:00.000Z",
+        "attachments": [
+          {
+            "file_name": "findings.md",
+            "file_type": "text/plain",
+            "file_size": 86,
+            "extracted_content": "12 interviews; 9 accepted first AI draft structure; reflection prompts increased edits"
+          }
+        ],
+        "files": []
+      },
+      {
+        "uuid": "sample-5-2",
+        "text": "Proposed flow: 1 hook, 2 problem, 3 method, 4-6 findings, 7 insight, 8 design response, 9 impact, 10 ask.",
+        "content": [
+          {
+            "type": "text",
+            "text": "Proposed flow: 1 hook, 2 problem, 3 method, 4-6 findings, 7 insight, 8 design response, 9 impact, 10 ask."
+          }
+        ],
+        "sender": "assistant",
+        "created_at": "2026-05-19T15:03:00.000Z",
+        "attachments": [],
+        "files": []
+      },
+      {
+        "uuid": "sample-5-3",
+        "text": "no, I want to open with a live demo not a hook slide. restructure around the demo",
+        "content": [
+          {
+            "type": "text",
+            "text": "no, I want to open with a live demo not a hook slide. restructure around the demo"
+          }
+        ],
+        "sender": "human",
+        "created_at": "2026-05-19T15:06:00.000Z",
+        "attachments": [],
+        "files": []
+      },
+      {
+        "uuid": "sample-5-4",
+        "text": "Demo-first flow: 1 live demo of Miro, 2 what you just saw, 3 why it matters...",
+        "content": [
+          {
+            "type": "text",
+            "text": "Demo-first flow: 1 live demo of Miro, 2 what you just saw, 3 why it matters..."
+          }
+        ],
+        "sender": "assistant",
+        "created_at": "2026-05-19T15:09:00.000Z",
+        "attachments": [],
+        "files": []
+      },
+      {
+        "uuid": "sample-5-5",
+        "text": "ok. I'll write the speaker notes. just tell me which slide is weakest",
+        "content": [
+          {
+            "type": "text",
+            "text": "ok. I'll write the speaker notes. just tell me which slide is weakest"
+          }
+        ],
+        "sender": "human",
+        "created_at": "2026-05-19T15:12:00.000Z",
+        "attachments": [],
+        "files": []
+      },
+      {
+        "uuid": "sample-5-6",
+        "text": "Slide 7 (insight) repeats slide 5. Merge them or sharpen 7 into the design principle.",
+        "content": [
+          {
+            "type": "text",
+            "text": "Slide 7 (insight) repeats slide 5. Merge them or sharpen 7 into the design principle."
+          }
+        ],
+        "sender": "assistant",
+        "created_at": "2026-05-19T15:15:00.000Z",
+        "attachments": [],
+        "files": []
+      }
+    ]
+  },
+  {
+    "uuid": "sample-6",
+    "name": "Dashboard layout ideas",
+    "created_at": "2026-07-08T15:00:00.000Z",
+    "updated_at": "2026-07-08T16:00:00.000Z",
+    "account": {
+      "uuid": "sample-account"
+    },
+    "chat_messages": [
+      {
+        "uuid": "sample-6-1",
+        "text": "brainstorm layouts for a dashboard showing how people split work with AI",
+        "content": [
+          {
+            "type": "text",
+            "text": "brainstorm layouts for a dashboard showing how people split work with AI"
+          }
+        ],
+        "sender": "human",
+        "created_at": "2026-07-08T15:00:00.000Z",
+        "attachments": [],
+        "files": []
+      },
+      {
+        "uuid": "sample-6-2",
+        "text": "Five directions: 1 bubble map of areas, 2 spectrum sliders per task type, 3 timeline river, 4 profile cards, 5 before/after chat comparisons.",
+        "content": [
+          {
+            "type": "text",
+            "text": "Five directions: 1 bubble map of areas, 2 spectrum sliders per task type, 3 timeline river, 4 profile cards, 5 before/after chat comparisons."
+          }
+        ],
+        "sender": "assistant",
+        "created_at": "2026-07-08T15:03:00.000Z",
+        "attachments": [],
+        "files": []
+      },
+      {
+        "uuid": "sample-6-3",
+        "text": "I like 1 and 2 together. sliders feel clearer than pie charts because the question is who, not how much",
+        "content": [
+          {
+            "type": "text",
+            "text": "I like 1 and 2 together. sliders feel clearer than pie charts because the question is who, not how much"
+          }
+        ],
+        "sender": "human",
+        "created_at": "2026-07-08T15:06:00.000Z",
+        "attachments": [],
+        "files": []
+      },
+      {
+        "uuid": "sample-6-4",
+        "text": "Agreed on the logic. A combined layout: bubbles on top to answer where, sliders below to answer who.",
+        "content": [
+          {
+            "type": "text",
+            "text": "Agreed on the logic. A combined layout: bubbles on top to answer where, sliders below to answer who."
+          }
+        ],
+        "sender": "assistant",
+        "created_at": "2026-07-08T15:09:00.000Z",
+        "attachments": [],
+        "files": []
+      },
+      {
+        "uuid": "sample-6-5",
+        "text": "what's wrong with the sliders though, something feels off",
+        "content": [
+          {
+            "type": "text",
+            "text": "what's wrong with the sliders though, something feels off"
+          }
+        ],
+        "sender": "human",
+        "created_at": "2026-07-08T15:12:00.000Z",
+        "attachments": [],
+        "files": []
+      },
+      {
+        "uuid": "sample-6-6",
+        "text": "Possible issues: the endpoints are unlabeled so direction is ambiguous; the range band competes with the dot; verdict text duplicates position.",
+        "content": [
+          {
+            "type": "text",
+            "text": "Possible issues: the endpoints are unlabeled so direction is ambiguous; the range band competes with the dot; verdict text duplicates position."
+          }
+        ],
+        "sender": "assistant",
+        "created_at": "2026-07-08T15:15:00.000Z",
+        "attachments": [],
+        "files": []
+      },
+      {
+        "uuid": "sample-6-7",
+        "text": "yes the endpoints. I'll label them AI and You and drop the numeric scale entirely",
+        "content": [
+          {
+            "type": "text",
+            "text": "yes the endpoints. I'll label them AI and You and drop the numeric scale entirely"
+          }
+        ],
+        "sender": "human",
+        "created_at": "2026-07-08T15:18:00.000Z",
+        "attachments": [],
+        "files": []
+      }
+    ]
+  },
+  {
+    "uuid": "sample-7",
+    "name": "Python scraper for course site",
+    "created_at": "2026-08-21T15:00:00.000Z",
+    "updated_at": "2026-08-21T16:00:00.000Z",
+    "account": {
+      "uuid": "sample-account"
+    },
+    "chat_messages": [
+      {
+        "uuid": "sample-7-1",
+        "text": "write a python script that downloads all pdfs from my course website",
+        "content": [
+          {
+            "type": "text",
+            "text": "write a python script that downloads all pdfs from my course website"
+          }
+        ],
+        "sender": "human",
+        "created_at": "2026-08-21T15:00:00.000Z",
+        "attachments": [],
+        "files": []
+      },
+      {
+        "uuid": "sample-7-2",
+        "text": "Here is a script using requests and BeautifulSoup...",
+        "content": [
+          {
+            "type": "text",
+            "text": "Here is a script using requests and BeautifulSoup..."
+          },
+          {
+            "type": "tool_use",
+            "name": "artifacts",
+            "input": {
+              "title": "pdf_downloader.py",
+              "content": "..."
+            }
+          }
+        ],
+        "sender": "assistant",
+        "created_at": "2026-08-21T15:03:00.000Z",
+        "attachments": [],
+        "files": []
+      },
+      {
+        "uuid": "sample-7-3",
+        "text": "it fails with 403",
+        "content": [
+          {
+            "type": "text",
+            "text": "it fails with 403"
+          }
+        ],
+        "sender": "human",
+        "created_at": "2026-08-21T15:06:00.000Z",
+        "attachments": [],
+        "files": []
+      },
+      {
+        "uuid": "sample-7-4",
+        "text": "The site likely checks the User-Agent. Add a User-Agent header and reuse a Session. If it needs login, export cookies from your browser.",
+        "content": [
+          {
+            "type": "text",
+            "text": "The site likely checks the User-Agent. Add a User-Agent header and reuse a Session. If it needs login, export cookies from your browser."
+          }
+        ],
+        "sender": "assistant",
+        "created_at": "2026-08-21T15:09:00.000Z",
+        "attachments": [],
+        "files": []
+      },
+      {
+        "uuid": "sample-7-5",
+        "text": "ok that worked. make it skip files already downloaded",
+        "content": [
+          {
+            "type": "text",
+            "text": "ok that worked. make it skip files already downloaded"
+          }
+        ],
+        "sender": "human",
+        "created_at": "2026-08-21T15:12:00.000Z",
+        "attachments": [],
+        "files": []
+      },
+      {
+        "uuid": "sample-7-6",
+        "text": "Added a check: if the target path exists and has nonzero size, skip it.",
+        "content": [
+          {
+            "type": "text",
+            "text": "Added a check: if the target path exists and has nonzero size, skip it."
+          },
+          {
+            "type": "tool_use",
+            "name": "artifacts",
+            "input": {
+              "title": "pdf_downloader.py v2",
+              "content": "..."
+            }
+          }
+        ],
+        "sender": "assistant",
+        "created_at": "2026-08-21T15:15:00.000Z",
+        "attachments": [],
+        "files": []
+      }
+    ]
+  },
+  {
+    "uuid": "sample-8",
+    "name": "Deciding on grad school",
+    "created_at": "2026-09-12T15:00:00.000Z",
+    "updated_at": "2026-09-12T16:00:00.000Z",
+    "account": {
+      "uuid": "sample-account"
+    },
+    "chat_messages": [
+      {
+        "uuid": "sample-8-1",
+        "text": "I'm trying to decide between a HCI masters and working for two years first. just want to think out loud",
+        "content": [
+          {
+            "type": "text",
+            "text": "I'm trying to decide between a HCI masters and working for two years first. just want to think out loud"
+          }
+        ],
+        "sender": "human",
+        "created_at": "2026-09-12T15:00:00.000Z",
+        "attachments": [],
+        "files": []
+      },
+      {
+        "uuid": "sample-8-2",
+        "text": "Happy to. What is pulling you toward each option right now?",
+        "content": [
+          {
+            "type": "text",
+            "text": "Happy to. What is pulling you toward each option right now?"
+          }
+        ],
+        "sender": "assistant",
+        "created_at": "2026-09-12T15:03:00.000Z",
+        "attachments": [],
+        "files": []
+      },
+      {
+        "uuid": "sample-8-3",
+        "text": "masters feels like momentum. working feels like I'd actually know what to study",
+        "content": [
+          {
+            "type": "text",
+            "text": "masters feels like momentum. working feels like I'd actually know what to study"
+          }
+        ],
+        "sender": "human",
+        "created_at": "2026-09-12T15:06:00.000Z",
+        "attachments": [],
+        "files": []
+      },
+      {
+        "uuid": "sample-8-4",
+        "text": "Those are different kinds of value: momentum versus clarity. Which would you regret more losing?",
+        "content": [
+          {
+            "type": "text",
+            "text": "Those are different kinds of value: momentum versus clarity. Which would you regret more losing?"
+          }
+        ],
+        "sender": "assistant",
+        "created_at": "2026-09-12T15:09:00.000Z",
+        "attachments": [],
+        "files": []
+      },
+      {
+        "uuid": "sample-8-5",
+        "text": "clarity probably. but the funding for the masters is only this year",
+        "content": [
+          {
+            "type": "text",
+            "text": "clarity probably. but the funding for the masters is only this year"
+          }
+        ],
+        "sender": "human",
+        "created_at": "2026-09-12T15:12:00.000Z",
+        "attachments": [],
+        "files": []
+      },
+      {
+        "uuid": "sample-8-6",
+        "text": "That is a real constraint. Could you ask whether the offer can be deferred? Some programs allow one year.",
+        "content": [
+          {
+            "type": "text",
+            "text": "That is a real constraint. Could you ask whether the offer can be deferred? Some programs allow one year."
+          }
+        ],
+        "sender": "assistant",
+        "created_at": "2026-09-12T15:15:00.000Z",
+        "attachments": [],
+        "files": []
+      },
+      {
+        "uuid": "sample-8-7",
+        "text": "good idea, I'll email them. I think I'm leaning toward working first",
+        "content": [
+          {
+            "type": "text",
+            "text": "good idea, I'll email them. I think I'm leaning toward working first"
+          }
+        ],
+        "sender": "human",
+        "created_at": "2026-09-12T15:18:00.000Z",
+        "attachments": [],
+        "files": []
+      }
+    ]
+  }
+]
