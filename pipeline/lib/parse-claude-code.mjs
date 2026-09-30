@@ -128,7 +128,7 @@ function firstLine(text) {
   return cleanText(String(text || '').split('\n')[0]).slice(0, 60);
 }
 
-// "C--Users-laksi-Desktop-SOFTWARE-lito" -> "lito"
+// "C--Users-alex-Projects-my-app" -> "app" (the last dash-separated part of the folder name)
 function projectName(folder) {
   const parts = folder.split('-').filter(Boolean);
   return parts[parts.length - 1] || folder;

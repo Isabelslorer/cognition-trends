@@ -1,5 +1,5 @@
 // Step 3: aggregate the cached session records into the dashboard's data object
-// (the same shape as the hard-coded `D` in the extension's dashboard.js) and write
+// (the same shape as the hard-coded `D` in the original extension's dashboard.js) and write
 // site/data.js. One synthesis call writes the profile and per-area copy.
 //
 //   node pipeline/build-dashboard.mjs [--synth-model claude-sonnet-5-5] [--no-synthesis] [--force]

@@ -38,7 +38,7 @@ export const MARKER_KEYS = [
 export const OPENING_MODES = ['delegation', 'contextualized', 'critique', 'pastein', 'exploration'];
 export const ARCS = ['draft_redirect_rebuild', 'ask_synthesize_decide', 'debug_test_fix', 'brainstorm_refine', 'explain_practice_check'];
 
-// Reads KEY=VALUE lines from claude-dashboard/.env without overriding real env vars.
+// Reads KEY=VALUE lines from .env at the repo root without overriding real env vars.
 export function loadEnv() {
   if (!existsSync(PATHS.env)) return;
   for (const line of readFileSync(PATHS.env, 'utf8').split(/\r?\n/)) {
@@ -98,7 +98,7 @@ export function simpleHash(value) {
 export function requireApiKey() {
   const key = cleanText(process.env.ANTHROPIC_API_KEY);
   if (!key) {
-    console.error('Missing ANTHROPIC_API_KEY. Put it in claude-dashboard/.env (see .env.example) or export it in your shell.');
+    console.error('Missing ANTHROPIC_API_KEY. Put it in .env at the repo root (see .env.example) or export it in your shell.');
     process.exit(1);
   }
   return key;

@@ -1,6 +1,6 @@
 // Step 2: analyze each conversation with Claude Haiku 4.5 and cache one
 // session record per conversation in data/sessions/<id>.json.
-// Adapted from the extension's background.js (prompt + schema) and content.js
+// Adapted from the original Miro extension's background.js (prompt + schema) and content.js
 // (normalizeAnalysis + buildDashboardSessionRecord).
 //
 //   node pipeline/analyze.mjs [--model claude-haiku-4-5] [--limit 20] [--since 2026-01-01]
