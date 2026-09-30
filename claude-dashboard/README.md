@@ -11,7 +11,7 @@ Claude export (conversations.json)
   │  npm run parse -- <file>      pipeline/parse-export.mjs
   ▼
 data/conversations.json            normalized: role + text per message, attachments and tool use inlined
-  │  npm run analyze              pipeline/analyze.mjs   (1 OpenRouter call per chat, cached)
+  │  npm run analyze              pipeline/analyze.mjs   (1 Claude Haiku 4.5 call per chat, cached)
   ▼
 data/sessions/<id>.json            one record per chat: areas, work_split, markers, pattern, summaries
   │  npm run build                pipeline/build-dashboard.mjs  (aggregates + 1 synthesis call)
@@ -31,10 +31,10 @@ site/index.html                    the extension's dashboard UI, rendering that 
 
 ## Run it
 
-Requires Node 18+. No npm install needed.
+Requires Node 18+ and an Anthropic API key. Run `npm install` once for the Anthropic SDK.
 
 1. Export your data: claude.ai → Settings → Privacy → Export data. Unzip the file you receive by email.
-2. `cp .env.example .env` and add your OpenRouter key.
+2. `cp .env.example .env` and add your `ANTHROPIC_API_KEY`.
 3. From this folder:
 
 ```bash
@@ -51,13 +51,13 @@ To try it without an export, run `npm run sample`, which parses `sample/conversa
 
 ### Options
 
-- `analyze`: `--model <openrouter id>` (default `anthropic/claude-haiku-4.5`), `--limit N` (newest first), `--since 2026-01-01`, `--min-messages 4`, `--concurrency 4`, `--force` (re-analyze cached chats).
-- `build`: `--synth-model <id>` (default `anthropic/claude-sonnet-5.5`), `--no-synthesis` (stats-only copy, no API call), `--force` (rewrite the cached synthesis).
+- `analyze`: `--model <claude model id>` (default `claude-haiku-4-5`), `--limit N` (newest first), `--since 2026-01-01`, `--min-messages 4`, `--concurrency 4`, `--force` (re-analyze cached chats).
+- `build`: `--synth-model <id>` (default `claude-sonnet-5-5`), `--no-synthesis` (stats-only copy, no API call), `--force` (rewrite the cached synthesis).
 
 ### Cost
 
-Haiku 4.5 is roughly $0.01 per chat (long chats are trimmed to their first 6 and last 24 messages, 1,500 characters each). The synthesis call is a few cents. `analyze` prints the actual OpenRouter cost when it finishes. Results are cached in `data/`, so re-running only pays for new or changed chats.
+Haiku 4.5 is roughly $0.01 per chat (long chats are trimmed to their first 6 and last 24 messages, 1,500 characters each). The synthesis call is a few cents. `analyze` prints an estimated cost (from token usage and list prices) when it finishes. Results are cached in `data/`, so re-running only pays for new or changed chats.
 
 ## Privacy
 
-Conversation text is sent to OpenRouter (and on to the model provider) during `analyze`. Everything else stays local. `data/`, `site/data.js` and `.env` are gitignored; do not commit them.
+Conversation text is sent to the Anthropic API during `analyze`, and short per-chat summaries during `build`. Everything else stays local. `data/`, `export/`, `site/data.js`, `.env` and export manifests are gitignored; do not commit them.

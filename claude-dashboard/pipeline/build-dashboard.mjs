@@ -2,7 +2,7 @@
 // (the same shape as the hard-coded `D` in the extension's dashboard.js) and write
 // site/data.js. One synthesis call writes the profile and per-area copy.
 //
-//   node pipeline/build-dashboard.mjs [--synth-model anthropic/claude-sonnet-5.5] [--no-synthesis] [--force]
+//   node pipeline/build-dashboard.mjs [--synth-model claude-sonnet-5-5] [--no-synthesis] [--force]
 
 import path from 'node:path';
 import { existsSync } from 'node:fs';
@@ -11,7 +11,7 @@ import {
   AREA_KEYS, ARCS, DIMENSIONS, MARKER_KEYS, OPENING_MODES, PATHS,
   cleanText, loadEnv, parseArgs, readJson, simpleHash, writeJson
 } from './lib/common.mjs';
-import { chatJson } from './lib/openrouter.mjs';
+import { describeError, structuredJson } from './lib/claude.mjs';
 
 // Visual layout and static copy per area, kept from the extension's mock dashboard.
 const AREA_STYLE = {
@@ -31,11 +31,12 @@ const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', '
 const MONTHS_LONG = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 const TREND_MIN_SESSIONS = 6;
 const TREND_MIN_DELTA = 6;
+const TREND_MIN_SPAN_DAYS = 60;
 const SYNTH_SESSION_SAMPLE = 60;
 
 loadEnv();
 const args = parseArgs(process.argv.slice(2), ['no-synthesis', 'force']);
-const synthModel = args['synth-model'] || process.env.OPENROUTER_SYNTH_MODEL || 'anthropic/claude-sonnet-5.5';
+const synthModel = args['synth-model'] || process.env.CLAUDE_SYNTH_MODEL || 'claude-sonnet-5-5';
 
 const sessions = await loadSessions();
 if (sessions.length === 0) {
@@ -89,10 +90,11 @@ function computeStats(list) {
     .sort((a, b) => b.share - a.share);
 
   const dimensions = DIMENSIONS.map(({ key, label }) => {
-    const values = list.map((session) => Number(session.work_split?.[key])).filter(Number.isFinite);
+    const values = list.map((session) => dimensionValue(session, key)).filter(Number.isFinite);
     return {
       key,
       label,
+      chats: values.length,
       mean: mean(values),
       p25: percentile(values, 0.25),
       p75: percentile(values, 0.75),
@@ -122,9 +124,10 @@ function computeStats(list) {
 // Compares the older half of chats with the newer half for one dimension.
 function computeTrend(list, key) {
   const values = list
-    .map((session) => ({ date: session.created_at, value: Number(session.work_split?.[key]) }))
+    .map((session) => ({ date: session.created_at, value: dimensionValue(session, key) }))
     .filter((item) => Number.isFinite(item.value));
-  if (values.length < TREND_MIN_SESSIONS) return { direction: 'unknown', delta: 0, since: null };
+  const spanDays = values.length ? (new Date(values[values.length - 1].date) - new Date(values[0].date)) / 86400000 : 0;
+  if (values.length < TREND_MIN_SESSIONS || !(spanDays >= TREND_MIN_SPAN_DAYS)) return { direction: 'unknown', delta: 0, since: null };
   const middle = Math.floor(values.length / 2);
   const delta = mean(values.slice(middle).map((item) => item.value)) - mean(values.slice(0, middle).map((item) => item.value));
   if (Math.abs(delta) < TREND_MIN_DELTA) return { direction: 'steady', delta, since: null };
@@ -132,9 +135,8 @@ function computeTrend(list, key) {
 }
 
 async function getSynthesis(stats, list) {
-  const apiKey = cleanText(process.env.OPENROUTER_API_KEY);
-  if (!apiKey) {
-    console.warn('No OPENROUTER_API_KEY; building with stats-only copy. Add a key to get the written profile.');
+  if (!cleanText(process.env.ANTHROPIC_API_KEY)) {
+    console.warn('No ANTHROPIC_API_KEY; building with stats-only copy. Add a key to get the written profile.');
     return null;
   }
 
@@ -156,7 +158,7 @@ async function getSynthesis(stats, list) {
     user_did: session.user_role_summary,
     ai_did: session.ai_role_summary,
     evidence: session.evidence_note,
-    work_split: session.work_split,
+    work_split: Object.fromEntries(DIMENSIONS.map(({ key }) => [key, dimensionValue(session, key)]).filter(([, value]) => value !== null)),
     opening: session.interaction_pattern?.opening_mode,
     arc: session.interaction_pattern?.arc
   }));
@@ -199,6 +201,7 @@ async function getSynthesis(stats, list) {
       label: dimension.label,
       mean_position: Math.round(dimension.mean),
       middle_half: [Math.round(dimension.p25), Math.round(dimension.p75)],
+      chats_where_this_work_happened: dimension.chats,
       chats_you_led: dimension.you_led,
       chats_ai_led: dimension.ai_led,
       trend: dimension.trend.direction
@@ -209,14 +212,14 @@ async function getSynthesis(stats, list) {
     recent_conversations: digests
   });
 
-  const { json } = await chatJson({
-    apiKey,
-    model: synthModel,
-    messages: [{ role: 'system', content: system }, { role: 'user', content: user }],
-    schema: synthesisSchema(stats.areas.map((area) => area.key)),
-    maxTokens: 4000,
-    temperature: 0.4
-  });
+  let json;
+  try {
+    // Sonnet 5.5 thinks by default; the budget leaves room for that plus the JSON.
+    ({ json } = await structuredJson({ model: synthModel, system, user, schema: synthesisSchema(stats.areas.map((area) => area.key)), maxTokens: 16000 }));
+  } catch (error) {
+    console.warn(`Synthesis failed (${describeError(error)}); building with stats-only copy.`);
+    return null;
+  }
   await writeJson(PATHS.synthesis, { input_hash: inputHash, model: synthModel, created_at: new Date().toISOString(), result: json });
   return json;
 }
@@ -261,7 +264,7 @@ function assembleDashboard(stats, synthesis) {
       verdict,
       tone,
       trendLine: trendLine(dimension.trend),
-      detail: cleanText(dimensionCopy[dimension.key], `You carried more of this in ${dimension.you_led} of ${stats.count} chats; AI carried more in ${dimension.ai_led}.`)
+      detail: cleanText(dimensionCopy[dimension.key], `This came up in ${dimension.chats} of ${stats.count} chats. You carried more of it in ${dimension.you_led}; AI carried more in ${dimension.ai_led}.`)
     };
   });
 
@@ -330,7 +333,7 @@ function fallbackProfile(stats) {
       tags: [`${stats.count} chats`, rangeLabel(stats.first, stats.last), 'Claude export']
     },
     helps: `You redirected AI after its output in ${Math.round(rate('user_redirected_after_output') * 100)}% of chats.`,
-    risk: 'Run the build with an OPENROUTER_API_KEY to get written, personalized guidance here.',
+    risk: 'Run the build with an ANTHROPIC_API_KEY to get written, personalized guidance here.',
     next: `AI carried the most of "${ais.label.toLowerCase()}". Worth noticing whether that is a choice.`
   };
 }
@@ -351,9 +354,10 @@ function verdictFor(position) {
 }
 
 function trendLine(trend) {
-  if (trend.direction === 'unknown') return 'Not enough chats yet to see a trend.';
+  if (trend.direction === 'unknown') return 'Not enough history yet to see a trend.';
   if (trend.direction === 'steady') return 'Consistent over time.';
-  const month = MONTHS_LONG[new Date(trend.since).getUTCMonth()];
+  const since = new Date(trend.since);
+  const month = `${MONTHS_LONG[since.getUTCMonth()]} ${since.getUTCFullYear()}`;
   return `Trending toward ${trend.direction === 'you' ? 'you' : 'AI'} since ${month}.`;
 }
 
@@ -381,10 +385,18 @@ function roundToHundred(values) {
   return floors;
 }
 
+// A dimension's position in one chat, or null when that kind of work did not happen there.
+function dimensionValue(session, key) {
+  const row = (session.weight_rows || []).find((candidate) => candidate.key === key);
+  if (row?.involved === false) return null;
+  const value = Number(row ? row.position : session.work_split?.[key]);
+  return Number.isFinite(value) ? value : null;
+}
+
 function meanSplit(list) {
   return Object.fromEntries(DIMENSIONS.map(({ key }) => [
     key,
-    Math.round(mean(list.map((session) => Number(session.work_split?.[key])).filter(Number.isFinite)))
+    Math.round(mean(list.map((session) => dimensionValue(session, key)).filter(Number.isFinite)))
   ]));
 }
 
@@ -428,55 +440,52 @@ function synthesisSchema(areaKeys) {
     properties: {
       title: { type: 'string' },
       body: { type: 'string' },
-      tags: { type: 'array', minItems: 3, maxItems: 3, items: { type: 'string' } }
+      tags: { type: 'array', items: { type: 'string' } }
     },
     required: ['title', 'body', 'tags']
   };
+  // Tag counts are enforced in profileFromSynthesis(); structured outputs have no array length limits.
   return {
-    name: 'dashboard_synthesis',
-    strict: true,
-    schema: {
-      type: 'object',
-      additionalProperties: false,
-      properties: {
-        hero_title: { type: 'string' },
-        summary: { type: 'string' },
-        dynamic_pill: { type: 'string' },
-        you: card,
-        ai: card,
-        together: card,
-        whats_working: { type: 'string' },
-        prompt_better: { type: 'string' },
-        watch_for: { type: 'string' },
-        areas: {
-          type: 'array',
-          items: {
-            type: 'object',
-            additionalProperties: false,
-            properties: {
-              key: { type: 'string', enum: areaKeys },
-              patterns: { type: 'string' },
-              helps: { type: 'string' },
-              risk: { type: 'string' },
-              try: { type: 'string' }
-            },
-            required: ['key', 'patterns', 'helps', 'risk', 'try']
-          }
-        },
-        dimensions: {
-          type: 'array',
-          items: {
-            type: 'object',
-            additionalProperties: false,
-            properties: {
-              key: { type: 'string', enum: DIMENSIONS.map((dimension) => dimension.key) },
-              detail: { type: 'string' }
-            },
-            required: ['key', 'detail']
-          }
+    type: 'object',
+    additionalProperties: false,
+    properties: {
+      hero_title: { type: 'string' },
+      summary: { type: 'string' },
+      dynamic_pill: { type: 'string' },
+      you: card,
+      ai: card,
+      together: card,
+      whats_working: { type: 'string' },
+      prompt_better: { type: 'string' },
+      watch_for: { type: 'string' },
+      areas: {
+        type: 'array',
+        items: {
+          type: 'object',
+          additionalProperties: false,
+          properties: {
+            key: { type: 'string', enum: areaKeys },
+            patterns: { type: 'string' },
+            helps: { type: 'string' },
+            risk: { type: 'string' },
+            try: { type: 'string' }
+          },
+          required: ['key', 'patterns', 'helps', 'risk', 'try']
         }
       },
-      required: ['hero_title', 'summary', 'dynamic_pill', 'you', 'ai', 'together', 'whats_working', 'prompt_better', 'watch_for', 'areas', 'dimensions']
-    }
+      dimensions: {
+        type: 'array',
+        items: {
+          type: 'object',
+          additionalProperties: false,
+          properties: {
+            key: { type: 'string', enum: DIMENSIONS.map((dimension) => dimension.key) },
+            detail: { type: 'string' }
+          },
+          required: ['key', 'detail']
+        }
+      }
+    },
+    required: ['hero_title', 'summary', 'dynamic_pill', 'you', 'ai', 'together', 'whats_working', 'prompt_better', 'watch_for', 'areas', 'dimensions']
   };
 }

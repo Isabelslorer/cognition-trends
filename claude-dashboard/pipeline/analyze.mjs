@@ -1,9 +1,9 @@
-// Step 2: analyze each conversation with a cheap model via OpenRouter and cache one
+// Step 2: analyze each conversation with Claude Haiku 4.5 and cache one
 // session record per conversation in data/sessions/<id>.json.
 // Adapted from the extension's background.js (prompt + schema) and content.js
 // (normalizeAnalysis + buildDashboardSessionRecord).
 //
-//   node pipeline/analyze.mjs [--model anthropic/claude-haiku-4.5] [--limit 20] [--since 2026-01-01]
+//   node pipeline/analyze.mjs [--model claude-haiku-4-5] [--limit 20] [--since 2026-01-01]
 //                             [--concurrency 4] [--min-messages 4] [--force] [--dry-run]
 
 import path from 'node:path';
@@ -12,15 +12,14 @@ import {
   ARCS, AREA_KEYS, DIMENSIONS, MARKER_KEYS, OPENING_MODES, PATHS,
   clamp, cleanText, loadEnv, parseArgs, readJson, requireApiKey, simpleHash, writeJson
 } from './lib/common.mjs';
-import { chatJson } from './lib/openrouter.mjs';
+import { describeError, structuredJson } from './lib/claude.mjs';
 
 const HEAD_MESSAGES = 6;
 const MAX_PROMPT_MESSAGES = 30;
 const MAX_MESSAGE_CHARS = 1500;
 
+// Anthropic structured outputs: no array length limits, so counts are enforced in normalizeReflection().
 const reflectionSchema = {
-  name: 'claude_session_reflection',
-  strict: true,
   schema: {
     type: 'object',
     additionalProperties: false,
@@ -31,34 +30,32 @@ const reflectionSchema = {
       ai_role_summary: { type: 'string' },
       areas: {
         type: 'array',
-        minItems: 1,
-        maxItems: 2,
         items: {
           type: 'object',
           additionalProperties: false,
           properties: {
             key: { type: 'string', enum: AREA_KEYS },
             salience: { type: 'string', enum: ['primary', 'secondary'] },
-            weight: { type: ['number', 'null'] }
+            weight: { anyOf: [{ type: 'number' }, { type: 'null' }] }
           },
           required: ['key', 'salience', 'weight']
         }
       },
       weight_rows: {
         type: 'array',
-        minItems: 6,
-        maxItems: 6,
         items: {
           type: 'object',
           additionalProperties: false,
+          // Property order matters: the model writes involved and reason before committing to a number.
           properties: {
             key: { type: 'string', enum: DIMENSIONS.map((dimension) => dimension.key) },
+            involved: { type: 'boolean' },
+            reason: { type: 'string' },
             position: { type: 'number' },
             range_start: { type: 'number' },
-            range_end: { type: 'number' },
-            reason: { type: 'string' }
+            range_end: { type: 'number' }
           },
-          required: ['key', 'position', 'range_start', 'range_end', 'reason']
+          required: ['key', 'involved', 'reason', 'position', 'range_start', 'range_end']
         }
       },
       collaboration_markers: {
@@ -84,8 +81,8 @@ const reflectionSchema = {
             type: 'object',
             additionalProperties: false,
             properties: {
-              first_key_turn: { type: ['integer', 'null'] },
-              key_turn_indices: { type: 'array', maxItems: 4, items: { type: 'integer' } }
+              first_key_turn: { anyOf: [{ type: 'integer' }, { type: 'null' }] },
+              key_turn_indices: { type: 'array', items: { type: 'integer' } }
             },
             required: ['first_key_turn', 'key_turn_indices']
           },
@@ -102,7 +99,7 @@ const reflectionSchema = {
 
 loadEnv();
 const args = parseArgs(process.argv.slice(2), ['force', 'dry-run']);
-const model = args.model || process.env.OPENROUTER_MODEL || 'anthropic/claude-haiku-4.5';
+const model = args.model || process.env.CLAUDE_MODEL || 'claude-haiku-4-5';
 const concurrency = clamp(args.concurrency, 1, 16, 4);
 const minMessages = clamp(args['min-messages'], 1, 1000, 4);
 const limit = clamp(args.limit, 1, 100000, Infinity);
@@ -133,42 +130,37 @@ for (const conversation of eligible) {
 console.log(`${conversations.length} conversations, ${eligible.length} eligible (>= ${minMessages} messages), ${todo.length} need analysis with ${model}.`);
 
 if (args['dry-run']) {
-  const promptChars = todo.reduce((sum, item) => sum + JSON.stringify(buildMessages(item.conversation)).length, 0);
+  const promptChars = todo.reduce((sum, item) => sum + JSON.stringify(buildPrompt(item.conversation)).length, 0);
   console.log(`Estimated input: ~${Math.round(promptChars / 4).toLocaleString()} tokens across ${todo.length} requests.`);
   if (todo[0]) {
     console.log('\n--- First request (user message) ---\n');
-    console.log(buildMessages(todo[0].conversation)[1].content);
+    console.log(buildPrompt(todo[0].conversation).user);
   }
   process.exit(0);
 }
 
 if (todo.length === 0) process.exit(0);
 
-const apiKey = requireApiKey();
+requireApiKey();
 let done = 0;
 let totalCost = 0;
 const failures = [];
 
 await runPool(todo, concurrency, async ({ conversation, sourceHash, cachePath }) => {
   try {
-    const { json, usage } = await chatJson({
-      apiKey,
-      model,
-      messages: buildMessages(conversation),
-      schema: reflectionSchema,
-      maxTokens: 2000
-    });
-    totalCost += Number(usage?.cost) || 0;
+    const { system, user } = buildPrompt(conversation);
+    const { json, cost } = await structuredJson({ model, system, user, schema: reflectionSchema.schema, maxTokens: 4000, temperature: 0.25 });
+    totalCost += cost;
     await writeJson(cachePath, buildSessionRecord(conversation, normalizeReflection(json), { model, sourceHash }));
     done += 1;
     console.log(`[${done}/${todo.length}] ${conversation.title}`);
   } catch (error) {
-    failures.push({ id: conversation.id, title: conversation.title, error: error.message });
-    console.warn(`  failed: ${conversation.title} - ${error.message}`);
+    failures.push({ id: conversation.id, title: conversation.title, error: describeError(error) });
+    console.warn(`  failed: ${conversation.title} - ${describeError(error)}`);
   }
 });
 
-console.log(`\nAnalyzed ${done} conversations${totalCost ? `, OpenRouter cost ~$${totalCost.toFixed(4)}` : ''}.`);
+console.log(`\nAnalyzed ${done} conversations${totalCost ? `, estimated cost ~$${totalCost.toFixed(4)}` : ''}.`);
 if (failures.length) {
   console.log(`${failures.length} failed; re-run the same command to retry just those.`);
   process.exitCode = 1;
@@ -176,7 +168,7 @@ if (failures.length) {
 
 // ---------------------------------------------------------------------------
 
-function buildMessages(conversation) {
+function buildPrompt(conversation) {
   const system = [
     'You read one past conversation between a user and Claude (an AI assistant) and describe how the collaboration split.',
     'Return only valid JSON that matches the schema.',
@@ -194,10 +186,11 @@ function buildMessages(conversation) {
     '- areas describe where AI showed up in this conversation. weight is 0 to 1 for how much of the conversation the area covers, or null.',
     '- weight_rows must be exactly these six work dimensions, in this order:',
     ...DIMENSIONS.map((dimension, index) => `  ${index + 1}. ${dimension.key} / ${dimension.label}`),
+    '- For each row, first decide involved: false when that kind of work did not really happen in this conversation (for example nothing was built, no research was done, no final decision was reached). For rows that are not involved, set position 50 with range 50 to 50 and say briefly why in the reason.',
+    '- Then write reason: one short sentence naming what the user carried and what AI carried. Then choose a position consistent with that reason.',
     '- position is 0 to 100: 0 means AI carried nearly all of that work, 100 means the user carried nearly all of it, 50 means evenly shared.',
-    '- If a kind of work barely happened in this conversation, use a position near 50 with a narrow range and say so in the reason.',
+    '- Anchors: AI wrote the code or draft and the user only reviewed it -> building 15 to 25. The user chose between options AI offered -> final_call 80 to 90. AI decided what to do next and the user went along -> direction 20 to 30. The user named the problem and AI fixed it -> problems 55 to 70.',
     '- range_start and range_end show the rough band that work moved across during the conversation, with range_start <= position <= range_end.',
-    '- reason is one short sentence naming what the user carried and what AI carried.',
     '- collaboration_markers are true only when clearly shown in the conversation.',
     '- interaction_pattern.opening_mode: delegation (handed the task over with little context), contextualized (gave goals, constraints, or background up front), critique (asked AI to react to their own work), pastein (pasted material and asked AI to process it), exploration (open-ended questions or thinking out loud).',
     '- interaction_pattern.arc: draft_redirect_rebuild, ask_synthesize_decide, debug_test_fix, brainstorm_refine, explain_practice_check. Pick the closest.',
@@ -217,10 +210,7 @@ function buildMessages(conversation) {
       : `${item.index}. ${item.role === 'assistant' ? 'AI' : 'USER'}: ${truncate(item.content)}`);
   }
 
-  return [
-    { role: 'system', content: system },
-    { role: 'user', content: lines.join('\n') }
-  ];
+  return { system, user: lines.join('\n') };
 }
 
 // Keeps the opening of the conversation (how the user framed the task) and the
@@ -246,6 +236,7 @@ function normalizeReflection(data) {
     const end = clamp(row.range_end, 0, 100, position + 12);
     return {
       key,
+      involved: row.involved !== false,
       position,
       range_start: Math.round(Math.max(0, Math.min(start, end, position))),
       range_end: Math.round(Math.min(100, Math.max(start, end, position))),

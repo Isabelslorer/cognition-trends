@@ -11,5 +11,8 @@
     "analyze": "node pipeline/analyze.mjs",
     "build": "node pipeline/build-dashboard.mjs",
     "sample": "node pipeline/parse-export.mjs sample/conversations.json"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.129.0"
   }
 }

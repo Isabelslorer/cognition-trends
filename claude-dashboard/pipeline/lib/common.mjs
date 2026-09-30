@@ -96,9 +96,9 @@ export function simpleHash(value) {
 }
 
 export function requireApiKey() {
-  const key = cleanText(process.env.OPENROUTER_API_KEY);
+  const key = cleanText(process.env.ANTHROPIC_API_KEY);
   if (!key) {
-    console.error('Missing OPENROUTER_API_KEY. Put it in claude-dashboard/.env (see .env.example) or export it in your shell.');
+    console.error('Missing ANTHROPIC_API_KEY. Put it in claude-dashboard/.env (see .env.example) or export it in your shell.');
     process.exit(1);
   }
   return key;
