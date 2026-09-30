@@ -103,6 +103,7 @@ const model = args.model || process.env.CLAUDE_MODEL || 'claude-haiku-4-5';
 const concurrency = clamp(args.concurrency, 1, 16, 4);
 const minMessages = clamp(args['min-messages'], 1, 1000, 4);
 const limit = clamp(args.limit, 1, 100000, Infinity);
+const promptVersion = simpleHash(systemPrompt() + JSON.stringify(reflectionSchema));
 
 if (!existsSync(PATHS.conversations)) {
   console.error('No parsed conversations yet. Run: npm run parse -- <path to conversations.json>');
@@ -118,7 +119,9 @@ const eligible = conversations
 
 const todo = [];
 for (const conversation of eligible) {
-  const sourceHash = simpleHash(`${conversation.updated_at}|${conversation.message_count}`);
+  // Re-analyze only when the chat's content, the model or the prompt/schema changed.
+  const content = conversation.messages.map((message) => `${message.role}:${message.content}`).join('\n');
+  const sourceHash = simpleHash(`${model}|${promptVersion}|${content}`);
   const cachePath = path.join(PATHS.sessionsDir, `${conversation.id}.json`);
   if (!args.force && existsSync(cachePath)) {
     const cached = await readJson(cachePath).catch(() => null);
@@ -168,8 +171,8 @@ if (failures.length) {
 
 // ---------------------------------------------------------------------------
 
-function buildPrompt(conversation) {
-  const system = [
+function systemPrompt() {
+  return [
     'You read one past conversation between a user and Claude (an AI assistant) and describe how the collaboration split.',
     'Return only valid JSON that matches the schema.',
     '',
@@ -198,7 +201,9 @@ function buildPrompt(conversation) {
     '- trace may list the first key turn and up to four key turn numbers from the transcript, or be null.',
     '- Avoid scoring language or overclaiming certainty.'
   ].join('\n');
+}
 
+function buildPrompt(conversation) {
   const lines = [
     `Conversation title: ${conversation.title}`,
     `Started: ${String(conversation.created_at || 'unknown').slice(0, 10)}. Total messages: ${conversation.message_count}.`,
@@ -210,7 +215,7 @@ function buildPrompt(conversation) {
       : `${item.index}. ${item.role === 'assistant' ? 'AI' : 'USER'}: ${truncate(item.content)}`);
   }
 
-  return { system, user: lines.join('\n') };
+  return { system: systemPrompt(), user: lines.join('\n') };
 }
 
 // Keeps the opening of the conversation (how the user framed the task) and the

@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="dashboard.css"/>
+<link rel="stylesheet" href="trends.css"/>
 </head>
 <body>
 
@@ -23,6 +24,7 @@
     <a href="#areas" class="active">Where AI shows up</a>
     <a href="#splits">How the work splits</a>
     <a href="#profile">Your profile</a>
+    <a href="#trends" id="trendsNavLink">Over time</a>
   </nav>
 </header>
 
@@ -32,6 +34,8 @@
     <div class="dashboard-note-copy" id="dashboardNoteCopy">Built from your exported Claude conversations. This page and its data file stay on your computer.</div>
     <button class="dashboard-note-button" id="dashboardNoteDismiss" type="button">Got it</button>
   </div>
+
+  <div id="viewOverview">
 
   <div class="section" id="areas">
     <div class="sec-head">
@@ -69,9 +73,32 @@
     <div class="profile-grid" id="profileGrid"></div>
   </div>
 
+  </div>
+
+  <div id="viewTrends" class="tr-root" hidden>
+    <div class="section" id="trends">
+      <div class="sec-head">
+        <div class="kicker">How it's changing</div>
+        <div class="sec-title">Who carries what, over time</div>
+        <div class="sec-sub">Each line is one kind of work. Higher means you carried more of it, lower means AI did. Filter to compare topics or ways of working.</div>
+      </div>
+      <div class="tr-filters" id="trFilters"></div>
+      <div class="card tr-card">
+        <div class="tr-card-top">
+          <div class="tr-legend" id="trLegend" role="group" aria-label="Show or hide lines"></div>
+          <button class="tr-toggle" id="trTableToggle" type="button" aria-pressed="false">Show as table</button>
+        </div>
+        <div class="tr-chart" id="trChart"></div>
+        <div class="tr-table-wrap" id="trTable" hidden></div>
+        <div class="tr-footnote" id="trFootnote"></div>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <script src="data.js"></script>
 <script src="dashboard.js"></script>
+<script src="trends.js"></script>
 </body>
 </html>

@@ -67,11 +67,13 @@ function normalizeMessage(message) {
     for (const block of message.content) {
       if (block?.type === 'text' && block.text) {
         parts.push(block.text);
+      } else if (block?.type === 'voice_note' && block.text) {
+        parts.push(`[voice note] ${block.text}`);
       } else if (block?.type === 'tool_use') {
         const title = cleanText(block.input?.title);
         parts.push(`[used tool: ${cleanText(block.name, 'tool')}${title ? ` - ${title}` : ''}]`);
       }
-      // thinking and tool_result blocks are skipped: they are not part of the visible exchange.
+      // thinking, tool_result and injected_prompt_block are skipped: they are not part of the visible exchange.
     }
   } else if (message?.text) {
     parts.push(message.text);
