@@ -1,0 +1,28 @@
+{
+  "id": "02-own-draft-critique",
+  "title": "Own essay, asks for critique",
+  "source": "claude_ai",
+  "spec": "User pastes their own essay draft and asks what is weak. AI points out weaknesses. User rewrites the intro themselves, and later keeps their own conclusion against AI's suggestion.",
+  "messages": [
+    { "role": "user", "content": "Here's my draft for the philosophy assignment. What's weak about it? Be honest.\n\nDraft: Many people believe that free will is an illusion because our choices are caused by prior events. In this essay I argue that this conclusion does not follow. Even if every choice has a cause, what matters for responsibility is whether the cause runs through our own reasons. A person who donates because they reflected on suffering acts freely, even though their reflection had causes. The determinist worry confuses being caused with being compelled. In conclusion, free will is compatible with determinism, and we should stop worrying about it." },
+    { "role": "assistant", "content": "This is a solid start with a clear thesis. Three weaknesses stand out:\n\n1. The introduction states the opposing view in one sentence and moves on. A reader who finds determinism convincing will not feel taken seriously. Give the strongest version of the argument first.\n2. The donation example carries the whole argument, but you never address the obvious reply: what if the reflection itself was manipulated (for example by a neuroscientist)? That is the standard objection to this kind of compatibilism.\n3. The conclusion ('we should stop worrying about it') overclaims. You've argued that one worry is confused, not that all of them are.\n\nI'd suggest ending with a more modest claim, for example that the burden of proof shifts to the incompatibilist." },
+    { "role": "user", "content": "Good points on 1 and 2. I rewrote the intro myself:\n\nThe case against free will is powerful. If every event is fixed by earlier events and the laws of nature, then my choice this morning was settled before I was born, and it seems I could not have done otherwise. Many philosophers conclude that responsibility is therefore an illusion. I will argue that this conclusion rests on a confusion between being caused and being compelled.\n\nDoes this take the opposing view seriously enough?" },
+    { "role": "assistant", "content": "Yes, this is much stronger. You now state the consequence argument in plain terms and make the stakes vivid with 'before I was born'. One small thing: 'it seems I could not have done otherwise' is doing important work, so you might flag that your reply will target exactly that step. For the conclusion, would you like me to suggest a reworded version that makes the more modest claim?" },
+    { "role": "user", "content": "No, I'll keep my original conclusion. My teacher wants a strong position, so the overclaim is on purpose. I'll handle the manipulation objection in a new paragraph myself." },
+    { "role": "assistant", "content": "That makes sense given what your teacher is looking for. Good luck with the manipulation paragraph." }
+  ],
+  "expected": {
+    "building": [70, 100],
+    "problems": [0, 45],
+    "final_call": [70, 100],
+    "checking": [60, 100],
+    "understanding": [60, 100]
+  },
+  "key_moments": [
+    { "turn": 1, "dimension": "building", "actor": "user" },
+    { "turn": 2, "dimension": "problems", "actor": "ai" },
+    { "turn": 3, "dimension": "building", "actor": "user" },
+    { "turn": 5, "dimension": "final_call", "actor": "user" },
+    { "turn": 1, "request": "critique_mine" }
+  ]
+}

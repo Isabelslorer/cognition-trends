@@ -1,0 +1,29 @@
+{
+  "id": "07-explain-learning",
+  "title": "Backprop, learning by asking why",
+  "source": "claude_ai",
+  "spec": "A student asks to understand, asks why, tries their own explanation, and asks to be quizzed. Nothing is built and no decision is made.",
+  "messages": [
+    { "role": "user", "content": "Can you explain how backpropagation works? I keep getting confused about where the chain rule comes in." },
+    { "role": "assistant", "content": "Think of a network as a chain of functions: input goes through layer 1, then layer 2, then the loss. Backpropagation asks how much the loss changes when you nudge one weight. Because the weight affects the loss only through the layers after it, you multiply the local derivatives along that path. That multiplication is the chain rule: dL/dw1 = dL/da2 * da2/da1 * da1/dw1. The algorithm computes these products from the output backwards, reusing each partial result, which is why it is efficient." },
+    { "role": "user", "content": "Why do we multiply the derivatives along the path instead of adding them?" },
+    { "role": "assistant", "content": "Because each step scales the effect of the one before. If nudging a1 by 1 changes a2 by 3, and nudging a2 by 1 changes the loss by 2, then nudging a1 by 1 changes the loss by 3 x 2 = 6. Effects compound through a chain, so they multiply. You do add, though, when a weight influences the loss through several separate paths: then you sum the products of each path." },
+    { "role": "user", "content": "Let me try: with 3 layers, the gradient for the first weight is the product of three local derivatives, and if a neuron feeds two neurons in the next layer, I'd add the two path products. Is that right?" },
+    { "role": "assistant", "content": "Exactly right on both counts. One nuance: it's the product of every local derivative along the path, which for 3 layers plus the loss is usually four factors, not three. But your structure is correct." },
+    { "role": "user", "content": "Can you quiz me with 3 questions to check I really get it?" },
+    { "role": "assistant", "content": "Sure:\n1. Why does backprop start at the output instead of the input?\n2. What happens to gradients in a deep network if every local derivative is 0.5?\n3. A weight feeds into two paths with products 0.2 and -0.2. What is its gradient?" },
+    { "role": "user", "content": "1. Because you reuse the downstream products so it's cheaper. 2. They shrink exponentially, vanishing gradients. 3. Zero." },
+    { "role": "assistant", "content": "All three correct. You've got it." }
+  ],
+  "expected": {
+    "understanding": [80, 100],
+    "checking": [50, 100],
+    "building": false,
+    "final_call": false
+  },
+  "key_moments": [
+    { "turn": 3, "request": "explain" },
+    { "turn": 5, "request": "critique_mine" },
+    { "turn": 7, "request": "explain" }
+  ]
+}

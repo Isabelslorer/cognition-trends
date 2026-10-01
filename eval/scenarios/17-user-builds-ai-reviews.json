@@ -1,0 +1,23 @@
+{
+  "id": "17-user-builds-ai-reviews",
+  "title": "User writes code, AI reviews",
+  "source": "claude_ai",
+  "spec": "The user writes all the code themselves and asks only for review. AI points out one issue. The user fixes it in their own code.",
+  "messages": [
+    { "role": "user", "content": "I wrote this to dedupe a list while keeping order. Does it look right?\n\n```python\ndef dedupe(items):\n    seen = []\n    out = []\n    for x in items:\n        if x not in seen:\n            seen.append(x)\n            out.append(x)\n    return out\n```" },
+    { "role": "assistant", "content": "It's correct and keeps the order. One issue: `x not in seen` on a list is O(n), so the whole function is O(n²). For long lists, use a set for `seen`, which makes the lookup O(1). That only works if the items are hashable." },
+    { "role": "user", "content": "Fixed it myself:\n\n```python\ndef dedupe(items):\n    seen = set()\n    out = []\n    for x in items:\n        if x not in seen:\n            seen.add(x)\n            out.append(x)\n    return out\n```\n\nIs this right now?" },
+    { "role": "assistant", "content": "Yes, that's right. It's O(n) now and still keeps the order." }
+  ],
+  "expected": {
+    "building": [80, 100],
+    "understanding": [70, 100],
+    "problems": [0, 40]
+  },
+  "key_moments": [
+    { "turn": 1, "dimension": "building", "actor": "user" },
+    { "turn": 2, "dimension": "problems", "actor": "ai" },
+    { "turn": 3, "dimension": "building", "actor": "user" },
+    { "turn": 1, "request": "critique_mine" }
+  ]
+}

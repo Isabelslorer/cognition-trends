@@ -1,0 +1,26 @@
+{
+  "id": "h3-code-refactor-choice",
+  "title": "Refactor, user picks approach",
+  "source": "claude_code",
+  "spec": "Claude Code. AI proposes two approaches; the user picks one with their own reasoning. AI implements, finds a failing test itself and fixes it. User approves.",
+  "messages": [
+    { "role": "user", "content": "the PaymentService class is 900 lines, help me split it up" },
+    { "role": "assistant", "content": "I read through it. [used tools: Read ×4, Grep ×2] Two reasonable ways to split it:\n\nA) By provider: StripeGateway, VippsGateway, InvoiceGateway behind a common interface. Good if you add providers often.\nB) By responsibility: PaymentValidator, PaymentExecutor, RefundService, ReceiptMailer. Good if the logic per step is what keeps growing.\n\nWhich fits better?" },
+    { "role": "user", "content": "B. we're not adding providers but refunds keep getting more complicated, so they need their own place." },
+    { "role": "assistant", "content": "Going with B. I extracted RefundService, PaymentValidator, PaymentExecutor and ReceiptMailer, and PaymentService now only coordinates them. [used tools: Edit ×9, Write ×4, Bash] While running the tests I found that test_partial_refund failed: the old code rounded refunds after converting currency, and my extraction rounded before. I restored the original order and all 142 tests pass. [used tools: Edit, Bash ×2]" },
+    { "role": "user", "content": "nice, looks good, ship it" },
+    { "role": "assistant", "content": "Committed as 'Split PaymentService by responsibility'. [used tools: Bash ×2]" }
+  ],
+  "expected": {
+    "final_call": [55, 100],
+    "problems": [0, 30],
+    "building": [0, 20],
+    "understanding": [0, 30]
+  },
+  "key_moments": [
+    { "turn": 3, "dimension": "final_call", "actor": "user" },
+    { "turn": 2, "dimension": "ideas", "actor": "ai" },
+    { "turn": 4, "dimension": "problems", "actor": "ai" },
+    { "turn": 4, "dimension": "building", "actor": "ai" }
+  ]
+}

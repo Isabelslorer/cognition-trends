@@ -1,0 +1,21 @@
+{
+  "id": "h6-design-exact-spec",
+  "title": "Poster from exact spec",
+  "source": "claude_design",
+  "spec": "Claude Design. The user specifies the layout, colours and copy exactly. AI builds it to spec, and the user approves it unchanged.",
+  "messages": [
+    { "role": "user", "content": "Make an A3 poster for our choir concert. Layout: big title 'Vinterlys' at the top in white serif, a dark navy background, a single illustration of a candle in the middle, and at the bottom: 'Domkirken, 14. desember kl. 19. Fri entré.' Nothing else, no logos." },
+    { "role": "assistant", "content": "Done: A3 poster with 'Vinterlys' in a large white serif at the top, a navy background, a simple line illustration of a candle centred, and the date and venue line at the bottom in a smaller white sans-serif. [used tool: create_design - Vinterlys poster]" },
+    { "role": "user", "content": "perfect, exactly what I wanted" }
+  ],
+  "expected": {
+    "ideas": [60, 100],
+    "direction": [60, 100],
+    "building": [0, 35],
+    "checking": [0, 30]
+  },
+  "key_moments": [
+    { "turn": 1, "dimension": "ideas", "actor": "user" },
+    { "turn": 2, "dimension": "building", "actor": "ai" }
+  ]
+}

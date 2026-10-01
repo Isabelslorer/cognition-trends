@@ -1,0 +1,27 @@
+{
+  "id": "22-quiz-me-notes",
+  "title": "Exam prep from own notes",
+  "source": "claude_ai",
+  "spec": "User pastes their own lecture notes and asks to be quizzed. AI quizzes and corrects one wrong answer. User asks why. Nothing is built.",
+  "messages": [
+    { "role": "user", "content": "Here are my lecture notes on cell biology. Quiz me on them, one question at a time.\n\nNotes: Mitochondria produce ATP via oxidative phosphorylation. Ribosomes translate mRNA into proteins; free ribosomes make cytosolic proteins, ribosomes on the rough ER make secreted and membrane proteins. The Golgi modifies and packages proteins. Lysosomes contain hydrolytic enzymes at pH ~4.8. The smooth ER makes lipids and detoxifies." },
+    { "role": "assistant", "content": "Question 1: Where are proteins destined for secretion made?" },
+    { "role": "user", "content": "On free ribosomes in the cytosol" },
+    { "role": "assistant", "content": "Not quite. According to your notes, secreted proteins are made by ribosomes on the rough ER. Free ribosomes make proteins that stay in the cytosol." },
+    { "role": "user", "content": "Why does it matter where the ribosome is? Isn't a ribosome a ribosome?" },
+    { "role": "assistant", "content": "The ribosomes themselves are identical. What differs is the protein: secreted proteins start with a signal sequence. As soon as it emerges, a signal recognition particle docks the ribosome onto the ER, and the protein is threaded into the ER as it's made. Without that signal, translation finishes in the cytosol. So the protein decides where the ribosome goes." },
+    { "role": "user", "content": "Ah so the signal sequence is the key. Next question." },
+    { "role": "assistant", "content": "Question 2: Why do lysosomal enzymes work at pH 4.8 rather than the cytosol's pH of 7.2?" }
+  ],
+  "expected": {
+    "understanding": [75, 100],
+    "research": [40, 100],
+    "building": false,
+    "problems": [0, 40]
+  },
+  "key_moments": [
+    { "turn": 1, "dimension": "research", "actor": "user" },
+    { "turn": 4, "dimension": "problems", "actor": "ai" },
+    { "turn": 5, "request": "explain" }
+  ]
+}

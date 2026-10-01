@@ -1,0 +1,26 @@
+{
+  "id": "13-norwegian-email",
+  "title": "Norsk e-post til utleier",
+  "source": "claude_ai",
+  "spec": "Norwegian-language chat. User pastes their own email draft. AI rewrites it. User says it is too formal, corrects it and keeps their own first paragraph. User makes the final call.",
+  "messages": [
+    { "role": "user", "content": "Kan du forbedre denne e-posten til utleieren min?\n\nHei Kari,\nJeg skriver fordi vaskemaskinen i kjelleren har vært ødelagt i to uker nå, og det er vanskelig for oss i 2. etasje. Kan du få noen til å se på den?\n\nVi har prøvd å ringe deg tre ganger. Hvis det ikke blir fikset snart, må vi kanskje bruke vaskeri og trekke det fra husleien.\n\nHilsen Ola" },
+    { "role": "assistant", "content": "Her er en mer strukturert versjon:\n\nEmne: Defekt vaskemaskin i kjelleren – ber om utbedring\n\nHei Kari,\n\nJeg viser til vaskemaskinen i kjelleren, som har vært ute av drift i to uker. Ifølge husleieloven § 5-3 har utleier ansvar for å utbedre mangler innen rimelig tid.\n\nVi har forsøkt å kontakte deg per telefon ved tre anledninger uten å lykkes. Dersom forholdet ikke utbedres innen 14 dager, vil vi benytte vaskeri og kreve utgiftene dekket gjennom avslag i husleien.\n\nMed vennlig hilsen\nOla Nordmann" },
+    { "role": "user", "content": "Dette er alt for formelt, Kari er en hyggelig dame og jeg vil ikke true med loven. Behold mitt første avsnitt akkurat som det er, og gjør resten vennligere. Ikke nevn husleiefradrag." },
+    { "role": "assistant", "content": "Forstått. Her er en vennligere versjon med ditt første avsnitt uendret:\n\nHei Kari,\nJeg skriver fordi vaskemaskinen i kjelleren har vært ødelagt i to uker nå, og det er vanskelig for oss i 2. etasje. Kan du få noen til å se på den?\n\nVi har prøvd å nå deg på telefon, men det passer kanskje dårlig for tiden. Si gjerne fra når det kan passe at noen kommer, så sørger vi for å være hjemme.\n\nTusen takk!\nHilsen Ola" },
+    { "role": "user", "content": "Perfekt, den sender jeg." },
+    { "role": "assistant", "content": "Så bra! Håper det blir fikset raskt." }
+  ],
+  "expected": {
+    "building": [25, 80],
+    "final_call": [60, 100],
+    "checking": [50, 100],
+    "understanding": [0, 25]
+  },
+  "key_moments": [
+    { "turn": 1, "dimension": "building", "actor": "user" },
+    { "turn": 2, "dimension": "building", "actor": "ai" },
+    { "turn": 3, "dimension": "problems", "actor": "user" },
+    { "turn": 3, "reaction": "correct" }
+  ]
+}

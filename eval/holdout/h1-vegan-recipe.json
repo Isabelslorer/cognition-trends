@@ -1,0 +1,26 @@
+{
+  "id": "h1-vegan-recipe",
+  "title": "Own recipe made vegan",
+  "source": "claude_ai",
+  "spec": "User pastes their grandmother's recipe and asks for a vegan version. AI substitutes. User rejects one substitution from experience, then reports cooking it.",
+  "messages": [
+    { "role": "user", "content": "this is my grandmas waffle recipe, can u make it vegan?\n\n4 eggs, 100g sugar, 500ml milk, 300g flour, 100g melted butter, 1 tsp cardamom" },
+    { "role": "assistant", "content": "Here's a vegan version that keeps the texture close to the original:\n\n- 4 eggs -> 4 flax eggs (4 tbsp ground flaxseed + 12 tbsp water, rest 10 min)\n- 500ml milk -> 500ml oat milk\n- 100g butter -> 100g melted vegan butter or 80ml neutral oil\n- Keep sugar, flour and cardamom as they are\n\nAdd 1 tsp baking powder, since without eggs the batter needs a bit more lift." },
+    { "role": "user", "content": "i tried flax eggs in waffles before and they came out gummy. use aquafaba instead" },
+    { "role": "assistant", "content": "Good call, aquafaba gives a lighter result in waffles. Replace the flax eggs with 180ml aquafaba (the liquid from a can of chickpeas), whipped to soft peaks and folded in at the end. Keep the baking powder." },
+    { "role": "user", "content": "made them this morning, came out great, kids didnt notice" },
+    { "role": "assistant", "content": "That's the best review a vegan recipe can get! Enjoy." }
+  ],
+  "expected": {
+    "building": [25, 80],
+    "problems": [60, 100],
+    "checking": [70, 100],
+    "understanding": [0, 25]
+  },
+  "key_moments": [
+    { "turn": 1, "dimension": "building", "actor": "user" },
+    { "turn": 3, "dimension": "problems", "actor": "user" },
+    { "turn": 3, "reaction": "correct" },
+    { "turn": 5, "reaction": "test" }
+  ]
+}

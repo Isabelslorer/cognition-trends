@@ -1,0 +1,24 @@
+{
+  "id": "06-ai-catches-bug",
+  "title": "Feature request, AI finds bugs",
+  "source": "claude_ai",
+  "spec": "User pastes their own working code and asks for a feature. AI adds it and spots two existing problems the user had not noticed. User accepts everything without checking.",
+  "messages": [
+    { "role": "user", "content": "Here's my Flask endpoint. Add pagination with ?page= and ?per_page= params.\n\n```python\n@app.route('/posts')\ndef posts():\n    q = request.args.get('q', '')\n    rows = db.execute(f\"SELECT * FROM posts WHERE title LIKE '%{q}%'\").fetchall()\n    return jsonify([dict(r) for r in rows[1:]])\n```" },
+    { "role": "assistant", "content": "Here's the endpoint with pagination. While adding it I noticed two existing problems:\n\n1. **SQL injection**: the f-string puts `q` straight into the query. Anyone can send `q=' OR 1=1 --`. I switched to a parameterised query.\n2. **Off-by-one**: `rows[1:]` drops the first result every time.\n\n```python\n@app.route('/posts')\ndef posts():\n    q = request.args.get('q', '')\n    page = max(int(request.args.get('page', 1)), 1)\n    per_page = min(int(request.args.get('per_page', 20)), 100)\n    rows = db.execute(\n        \"SELECT * FROM posts WHERE title LIKE ? LIMIT ? OFFSET ?\",\n        (f'%{q}%', per_page, (page - 1) * per_page)\n    ).fetchall()\n    return jsonify([dict(r) for r in rows])\n```" },
+    { "role": "user", "content": "oh wow good catch on both. thanks, I'll use this" },
+    { "role": "assistant", "content": "You're welcome! Consider adding a total count header later so clients know how many pages there are." }
+  ],
+  "expected": {
+    "problems": [0, 20],
+    "building": [20, 80],
+    "checking": [0, 25],
+    "understanding": [0, 20]
+  },
+  "key_moments": [
+    { "turn": 2, "dimension": "problems", "actor": "ai" },
+    { "turn": 1, "dimension": "building", "actor": "user" },
+    { "turn": 2, "dimension": "building", "actor": "ai" },
+    { "turn": 3, "reaction": "accept" }
+  ]
+}

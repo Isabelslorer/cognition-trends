@@ -1,0 +1,27 @@
+{
+  "id": "04-user-overrides-ai",
+  "title": "Database choice, user overrides",
+  "source": "claude_ai",
+  "spec": "AI recommends PostgreSQL. User rejects it with their own reasoning and chooses SQLite. User's idea and decision win; AI then implements.",
+  "messages": [
+    { "role": "user", "content": "I'm building a small habit-tracker desktop app in Python. How should I store the data?" },
+    { "role": "assistant", "content": "I'd recommend PostgreSQL. It's robust, handles concurrent access well, supports JSON columns for flexible habit metadata, and will scale if you later add a web version or sync between devices. You can run it locally with Docker and connect using SQLAlchemy. Want me to write the Docker setup and the initial schema?" },
+    { "role": "user", "content": "No, that's overkill. It's a single-user desktop app, I don't want people to install Docker. I'll use SQLite with one file next to the app. Write the schema for that: habits table and a check-ins table." },
+    { "role": "assistant", "content": "Fair point, SQLite fits a single-user desktop app much better. Here's the schema:\n\n```sql\nCREATE TABLE habits (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  archived INTEGER NOT NULL DEFAULT 0\n);\n\nCREATE TABLE checkins (\n  id INTEGER PRIMARY KEY,\n  habit_id INTEGER NOT NULL REFERENCES habits(id),\n  day TEXT NOT NULL,\n  UNIQUE(habit_id, day)\n);\n```\n\nThe UNIQUE constraint stops double check-ins on the same day." },
+    { "role": "user", "content": "Good. Use that." },
+    { "role": "assistant", "content": "Great. Next you can open it with Python's built-in sqlite3 module, no extra dependencies needed." }
+  ],
+  "expected": {
+    "ideas": [55, 100],
+    "direction": [55, 100],
+    "final_call": [70, 100],
+    "building": [0, 30],
+    "checking": [50, 100]
+  },
+  "key_moments": [
+    { "turn": 3, "dimension": "final_call", "actor": "user" },
+    { "turn": 3, "dimension": "ideas", "actor": "user" },
+    { "turn": 4, "dimension": "building", "actor": "ai" },
+    { "turn": 3, "reaction": "correct" }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "id": "23-short-social",
+  "title": "Greeting only",
+  "source": "claude_ai",
+  "spec": "A greeting with no task. No kind of work happens. Tests that nothing is invented.",
+  "messages": [
+    { "role": "user", "content": "hi" },
+    { "role": "assistant", "content": "Hi! How can I help you today?" },
+    { "role": "user", "content": "nvm, wrong window, thanks" },
+    { "role": "assistant", "content": "No problem! I'm here if you need anything." }
+  ],
+  "expected": {
+    "ideas": false,
+    "research": false,
+    "building": false,
+    "problems": false,
+    "final_call": false,
+    "checking": false,
+    "understanding": false
+  },
+  "key_moments": []
+}

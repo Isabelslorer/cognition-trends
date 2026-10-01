@@ -1,0 +1,62 @@
+{
+  "id": "20-pushback-sources",
+  "title": "Energy safety, user challenges",
+  "source": "claude_ai",
+  "spec": "User asks a factual question, then repeatedly questions AI's answer, asks for sources and spots a flaw in AI's comparison.",
+  "messages": [
+    {
+      "role": "user",
+      "content": "Is nuclear power safer than wind power per TWh produced?"
+    },
+    {
+      "role": "assistant",
+      "content": "By deaths per TWh, they're very close and both are among the safest sources. Commonly cited figures: nuclear about 0.03 deaths per TWh and wind about 0.04. So nuclear is slightly safer."
+    },
+    {
+      "role": "user",
+      "content": "That doesn't match what I read, I saw wind lower than nuclear. What's your source?"
+    },
+    {
+      "role": "assistant",
+      "content": "You're right to check. The figures I gave come from Our World in Data (based on Markandya & Wilkinson, 2007, and Sovacool et al., 2016). Different studies disagree: some put wind at about 0.035 and nuclear at 0.03, and others put wind lower. The honest answer is that the difference is within the uncertainty of the studies."
+    },
+    {
+      "role": "user",
+      "content": "But the wind number includes deaths during construction and maintenance, like falls, while the nuclear number mostly counts accidents and radiation, right? Then they're not measuring the same thing."
+    },
+    {
+      "role": "assistant",
+      "content": "Good point, and that's a real weakness in my comparison. Wind's figure is dominated by occupational accidents during construction and maintenance, while nuclear's mixes estimates of accident and radiation deaths with modelled long-term effects. A fair statement is: both are very safe, and the ranking between them depends on what each study counts."
+    },
+    {
+      "role": "user",
+      "content": "OK that's a much better answer."
+    }
+  ],
+  "expected": {
+    "checking": [
+      60,
+      100
+    ],
+    "problems": [
+      60,
+      100
+    ],
+    "building": false
+  },
+  "key_moments": [
+    {
+      "turn": 3,
+      "reaction": "question"
+    },
+    {
+      "turn": 5,
+      "reaction": "question"
+    },
+    {
+      "turn": 5,
+      "dimension": "problems",
+      "actor": "user"
+    }
+  ]
+}

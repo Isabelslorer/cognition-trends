@@ -1,0 +1,27 @@
+{
+  "id": "21-ai-decides-plan",
+  "title": "Python CLI scaffold, AI decides",
+  "source": "claude_ai",
+  "spec": "AI picks the tools and structure and builds them. The user accepts AI's single recommendation without weighing it.",
+  "messages": [
+    { "role": "user", "content": "set up a project structure for a python CLI tool that converts csv to json" },
+    { "role": "assistant", "content": "I'll use Poetry for packaging, Typer for the CLI and pytest for tests. Structure:\n\n```\ncsv2json/\n  pyproject.toml\n  src/csv2json/__init__.py\n  src/csv2json/cli.py\n  src/csv2json/convert.py\n  tests/test_convert.py\n  README.md\n```\n\n`convert.py` holds the pure conversion logic so it's easy to test, and `cli.py` only handles arguments. Shall I write the files?" },
+    { "role": "user", "content": "sounds good, go ahead" },
+    { "role": "assistant", "content": "Here are the files:\n\n```python\n# src/csv2json/convert.py\nimport csv, json\n\ndef convert(csv_path, indent=2):\n    with open(csv_path, newline='') as f:\n        rows = list(csv.DictReader(f))\n    return json.dumps(rows, indent=indent)\n```\n\n```python\n# src/csv2json/cli.py\nimport typer\nfrom .convert import convert\n\napp = typer.Typer()\n\n@app.command()\ndef main(path: str, indent: int = 2):\n    print(convert(path, indent))\n```\n\nPlus a pyproject.toml with a `csv2json` script entry and a basic test." },
+    { "role": "user", "content": "thanks" },
+    { "role": "assistant", "content": "You're welcome! Run `poetry install` and then `csv2json data.csv`." }
+  ],
+  "expected": {
+    "final_call": [0, 30],
+    "ideas": [0, 25],
+    "building": [0, 15],
+    "checking": [0, 20],
+    "problems": false
+  },
+  "key_moments": [
+    { "turn": 2, "dimension": "final_call", "actor": "ai" },
+    { "turn": 2, "dimension": "ideas", "actor": "ai" },
+    { "turn": 4, "dimension": "building", "actor": "ai" },
+    { "turn": 3, "reaction": "accept" }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "id": "12-brainstorm-mixed",
+  "title": "Workshop ideas, mixed origin",
+  "source": "claude_ai",
+  "spec": "User brings two of their own ideas and asks for more. AI adds options. The final plan uses one user idea and one AI idea, and the user decides.",
+  "messages": [
+    { "role": "user", "content": "I'm running a 2-hour workshop on giving feedback for new team leads. My ideas so far: (a) a fishbowl role-play where two people give feedback and the rest observe, (b) everyone rewrites a real vague feedback message they once received. Give me a few more activity ideas." },
+    { "role": "assistant", "content": "Nice start, both are concrete. A few more:\n\n1. Feedback speed-dating: pairs rotate every 5 minutes, each giving one piece of feedback on a short case.\n2. The SBI ladder: participants turn a judgement ('you're sloppy') into Situation-Behaviour-Impact in three steps.\n3. Receiving round: practise only receiving feedback, with a script for asking clarifying questions.\n4. Silent gallery: post anonymous feedback examples on the wall and vote on which are useful." },
+    { "role": "user", "content": "I'll do my fishbowl role-play first, then your SBI ladder as the second half. Drop the rest, 2 hours isn't enough." },
+    { "role": "assistant", "content": "Good combination: the fishbowl shows the problem live, and the SBI ladder gives them a tool to fix it. Suggested timing: 10 min intro, 45 min fishbowl with debrief, 50 min SBI ladder, 15 min wrap-up." }
+  ],
+  "expected": {
+    "ideas": [25, 75],
+    "final_call": [70, 100],
+    "building": false
+  },
+  "key_moments": [
+    { "turn": 1, "dimension": "ideas", "actor": "user" },
+    { "turn": 2, "dimension": "ideas", "actor": "ai" },
+    { "turn": 3, "dimension": "final_call", "actor": "user" }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "id": "16-accept-everything",
+  "title": "Trip itinerary, accepted as is",
+  "source": "claude_ai",
+  "spec": "User asks for a trip plan and keeps saying 'next' and 'perfect'. AI decides and builds everything; the user never questions anything.",
+  "messages": [
+    { "role": "user", "content": "plan a 3 day trip to Rome for me" },
+    { "role": "assistant", "content": "Day 1: Ancient Rome. Colosseum at opening time (book tickets online), Roman Forum and Palatine Hill, lunch in Monti, evening walk to Piazza Venezia. I picked the Colosseum for the morning because queues are shortest then. Shall I do day 2?" },
+    { "role": "user", "content": "ok next" },
+    { "role": "assistant", "content": "Day 2: Vatican. Vatican Museums at 8:00 with a pre-booked ticket, Sistine Chapel, St Peter's Basilica, lunch in Prati, sunset at Castel Sant'Angelo. I put the Vatican on day 2 so you're rested for the long walk. Next is day 3." },
+    { "role": "user", "content": "next" },
+    { "role": "assistant", "content": "Day 3: Centro Storico and Trastevere. Pantheon, Piazza Navona, Campo de' Fiori market, then cross to Trastevere for dinner. I chose Trastevere for the last evening because it's the liveliest area." },
+    { "role": "user", "content": "perfect" },
+    { "role": "assistant", "content": "Enjoy Rome!" }
+  ],
+  "expected": {
+    "building": [0, 15],
+    "ideas": [0, 20],
+    "final_call": [0, 35],
+    "checking": [0, 10],
+    "understanding": [0, 15]
+  },
+  "key_moments": [
+    { "turn": 2, "dimension": "building", "actor": "ai" },
+    { "turn": 3, "reaction": "accept" },
+    { "turn": 7, "reaction": "accept" }
+  ]
+}
