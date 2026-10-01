@@ -10,10 +10,11 @@ It reads three sources:
 | Claude Design chats | `design_chats/` in the claude.ai data export |
 | Claude Code sessions | local transcripts in `~/.claude/projects` on the machine you run this on (not in the export) |
 
-The dashboard has two views, chosen from the top menu, plus a source switch (All sources / Claude chats / Claude Code / Claude Design) that applies to both:
+The dashboard has three views, chosen from the top menu, plus a source switch (All sources / Claude chats / Claude Code / Claude Design) that applies to both:
 
 - **Overview**: where AI shows up (topic bubbles), how the work splits (six sliders), and a written profile.
 - **Over time**: one line per kind of work across months or quarters, with You at the top and AI at the bottom, filterable by topic, how the chat opened and how it unfolded.
+- **How it's scored**: a visual walk-through for the curious. A made-up chat is coded moment by moment and counted into positions, then your own chats are shown combining into a slider and a trend line, with how reliable each kind of work is.
 
 It started from the Miro ChatGPT extension (upstream repo `sylee15/capstone-mock`; the extension files are in this repo's git history before the move to the root) and keeps its approach: the same topic taxonomy, the same six work dimensions (0 = AI carried it, 100 = you did), the same collaboration markers and interaction patterns, the same per-chat record shape as its `buildDashboardSessionRecord()`, and its dashboard design.
 

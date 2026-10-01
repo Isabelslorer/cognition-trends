@@ -9,6 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="dashboard.css"/>
 <link rel="stylesheet" href="trends.css"/>
+<link rel="stylesheet" href="method.css"/>
 </head>
 <body>
 
@@ -25,6 +26,7 @@
     <a href="#splits">How the work splits</a>
     <a href="#profile">Your profile</a>
     <a href="#trends" id="trendsNavLink">Over time</a>
+    <a href="#how" id="howNavLink">How it's scored</a>
   </nav>
 </header>
 
@@ -98,11 +100,23 @@
     </div>
   </div>
 
+  <div id="viewMethod" class="tr-root md-root" hidden>
+    <div class="section" id="how">
+      <div class="sec-head">
+        <div class="kicker">How it's scored</div>
+        <div class="sec-title">From one conversation to a trend line</div>
+        <div class="sec-sub">The analysis never asks a model "who did more?". It records what happened, message by message, and the numbers are counted from that. Here is the whole path, step by step.</div>
+      </div>
+      <div id="mdContent"></div>
+    </div>
+  </div>
+
 </div>
 
 <script src="data.js"></script>
 <script src="sources.js"></script>
 <script src="dashboard.js"></script>
 <script src="trends.js"></script>
+<script src="method.js"></script>
 </body>
 </html>

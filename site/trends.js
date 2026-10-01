@@ -52,6 +52,8 @@
   const chartEl = document.getElementById('trChart');
   const tableEl = document.getElementById('trTable');
   const navLink = document.getElementById('trendsNavLink');
+  const methodView = document.getElementById('viewMethod');
+  const methodLink = document.getElementById('howNavLink');
   let rendered = false;
 
   window.addEventListener('hashchange', applyRoute);
@@ -67,9 +69,13 @@
 
   function applyRoute() {
     const showTrends = location.hash === '#trends';
-    overview.hidden = showTrends;
+    const showMethod = location.hash === '#how';
+    overview.hidden = showTrends || showMethod;
     view.hidden = !showTrends;
-    document.querySelectorAll('.tb-nav a').forEach((link) => link.classList.toggle('active', showTrends ? link === navLink : false));
+    if (methodView) methodView.hidden = !showMethod;
+    document.querySelectorAll('.tb-nav a').forEach((link) => link.classList.toggle('active', showTrends ? link === navLink : showMethod ? link === methodLink : false));
+    window.dispatchEvent(new CustomEvent('miro:route', { detail: showTrends ? 'trends' : showMethod ? 'how' : 'overview' }));
+    if (showMethod) window.scrollTo({ top: 0 });
     if (showTrends) {
       if (!rendered) {
         renderFilters();
