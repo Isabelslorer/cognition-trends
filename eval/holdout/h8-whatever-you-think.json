@@ -1,0 +1,25 @@
+{
+  "id": "h8-whatever-you-think",
+  "title": "Laptop pick, left to AI",
+  "source": "claude_ai",
+  "spec": "User hands the decision to AI ('whatever you think'). AI asks the questions, steers and makes the choice. User goes along.",
+  "messages": [
+    { "role": "user", "content": "i need a new laptop for uni" },
+    { "role": "assistant", "content": "Let's narrow it down. First: what's your budget, and will you do anything heavy like video editing or gaming?" },
+    { "role": "user", "content": "max 12k nok, no gaming, just writing and zoom" },
+    { "role": "assistant", "content": "Then battery life and weight matter most. Next question: do you prefer Windows or Mac?" },
+    { "role": "user", "content": "whatever you think is best" },
+    { "role": "assistant", "content": "I'd go with a MacBook Air M2 refurbished, around 10-11k NOK: excellent battery (15+ hours), light, silent, and plenty fast for writing and video calls. Buy it from Apple's refurbished store for the full warranty." },
+    { "role": "user", "content": "ok ill get that" }
+  ],
+  "expected": {
+    "direction": [0, 40],
+    "final_call": [0, 30],
+    "checking": [0, 20]
+  },
+  "key_moments": [
+    { "turn": 6, "dimension": "final_call", "actor": "ai" },
+    { "turn": 3, "dimension": "research", "actor": "user" },
+    { "turn": 7, "reaction": "accept" }
+  ]
+}

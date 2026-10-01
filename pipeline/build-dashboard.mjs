@@ -49,6 +49,12 @@ if (sessions.length === 0) {
   console.error('No analyzed sessions found. Run: npm run analyze');
   process.exit(1);
 }
+// v1 positions are holistic model guesses, v2 positions are computed from coded moments: not comparable.
+const versions = {};
+for (const session of sessions) versions[session.prompt_version || 'v1'] = (versions[session.prompt_version || 'v1'] || 0) + 1;
+if (Object.keys(versions).length > 1) {
+  console.warn(`Warning: mixing prompt versions (${Object.entries(versions).map(([version, n]) => `${version}: ${n}`).join(', ')}). Their scores are not comparable; re-analyze with one version.`);
+}
 
 // One complete dashboard (bubbles, sliders, written profile) per source, plus all sources together.
 const variants = {};
@@ -104,12 +110,15 @@ function computeStats(list) {
     }))
     .sort((a, b) => b.share - a.share);
 
-  const dimensions = DIMENSIONS.map(({ key, label }) => {
+  const dimensions = DIMENSIONS.map(({ key, label, question }) => {
     const values = list.map((session) => dimensionValue(session, key)).filter(Number.isFinite);
+    const counted = list.map((session) => (session.weight_rows || []).find((row) => row.key === key && row.involved !== false)?.n).filter(Number.isFinite);
     return {
       key,
       label,
+      question,
       chats: values.length,
+      moments: counted.reduce((sum, n) => sum + n, 0),
       mean: mean(values),
       p25: percentile(values, 0.25),
       p75: percentile(values, 0.75),
@@ -174,6 +183,8 @@ async function getSynthesis(stats, list, source) {
     user_did: session.user_role_summary,
     ai_did: session.ai_role_summary,
     evidence: session.evidence_note,
+    moments: (session.moments || []).filter((moment) => moment.weight === 'major').slice(0, 6)
+      .map((moment) => `${moment.dimension}, ${moment.actor === 'user' ? 'you' : 'AI'}: ${moment.note}`),
     work_split: Object.fromEntries(DIMENSIONS.map(({ key }) => [key, dimensionValue(session, key)]).filter(([, value]) => value !== null)),
     opening: session.interaction_pattern?.opening_mode,
     arc: session.interaction_pattern?.arc
@@ -194,7 +205,7 @@ async function getSynthesis(stats, list, source) {
     '- you/ai/together titles are short names like "The Redirector", "The Eager Builder", or "Draft. Redirect. Rebuild."',
     '- whats_working: a strength visible in the data. prompt_better: one concrete prompting habit to try, with a short example phrase. watch_for: a pattern that could quietly erode the person\'s own skills or judgment.',
     '- areas: one entry for each area key provided, no others. patterns = how the collaboration usually goes there; helps = what AI adds; risk = what can get in the way; try = one small concrete move for next time.',
-    '- dimensions: one entry for each of the six dimension keys. detail = what the split usually looks like for that kind of work, one sentence.',
+    '- dimensions: one entry for each dimension key provided. detail = what the split usually looks like for that kind of work, one sentence.',
     '',
     'Style reference (from a different person, do not copy the content):',
     '- patterns: "You use AI to get momentum. The first draft is usually something you push against."',
@@ -216,6 +227,7 @@ async function getSynthesis(stats, list, source) {
     dimensions: stats.dimensions.map((dimension) => ({
       key: dimension.key,
       label: dimension.label,
+      question: dimension.question,
       mean_position: Math.round(dimension.mean),
       middle_half: [Math.round(dimension.p25), Math.round(dimension.p75)],
       chats_where_this_work_happened: dimension.chats,
@@ -269,19 +281,22 @@ function assembleDashboard(stats, synthesis) {
     };
   });
 
-  const aspects = stats.dimensions.map((dimension) => {
+  // Dimensions with no data (for example checking/understanding on v1 records) are left out.
+  const aspects = stats.dimensions.filter((dimension) => dimension.chats > 0).map((dimension) => {
     const position = Math.round(dimension.mean);
     const { verdict, tone } = verdictFor(position);
     return {
       key: dimension.key,
       label: dimension.label,
+      question: dimension.question,
       position,
       lo: Math.round(Math.min(dimension.p25, position)),
       hi: Math.round(Math.max(dimension.p75, position)),
       verdict,
       tone,
       trendLine: trendLine(dimension.trend),
-      detail: cleanText(dimensionCopy[dimension.key], `This came up in ${dimension.chats} of ${stats.count} chats. You carried more of it in ${dimension.you_led}; AI carried more in ${dimension.ai_led}.`)
+      detail: cleanText(dimensionCopy[dimension.key], `This came up in ${dimension.chats} of ${stats.count} chats. You carried more of it in ${dimension.you_led}; AI carried more in ${dimension.ai_led}.`),
+      basis: `Based on ${dimension.chats} chat${dimension.chats === 1 ? '' : 's'} where this happened${dimension.moments ? ` (${dimension.moments} coded moments)` : ''}.`
     };
   });
 

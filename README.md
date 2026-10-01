@@ -88,9 +88,9 @@ export + ~/.claude/projects
   │  npm run parse     pipeline/parse-export.mjs (+ lib/parse-design-chats.mjs, lib/parse-claude-code.mjs)
   ▼
 data/conversations.json     one normalized list: id, source, title, dates, messages (role + text)
-  │  npm run analyze   pipeline/analyze.mjs: one Claude Haiku 4.5 call per chat with 4+ messages, cached
+  │  npm run analyze   pipeline/analyze.mjs: one Claude call per chat with 4+ messages (codes moments; lib/score.mjs computes positions), cached
   ▼
-data/sessions/<id>.json     one record per chat: topics, six work scores, markers, pattern, summaries
+data/sessions/<id>.json     one record per chat: coded moments and turns, eight positions, text features, topics, summaries
   │  npm run build     pipeline/build-dashboard.mjs: aggregates + one Claude Sonnet 5.5 call per source
   ▼
 site/data.js                window.MIRO_DASHBOARD_DATA = { meta, areas, aspects, profile, variants, timeline }
@@ -100,14 +100,23 @@ site/index.html             dashboard.js (overview), trends.js (over time), sour
 
 **Parse.** Keeps what the user typed and what Claude said. Tool calls become short notes (`[used tool: WebSearch]`, `[used tools: Read ×3, Edit]`); raw tool output, Claude's internal reasoning and system-generated lines are dropped. Attachments become `[attached name: first 400 chars]`. Claude Code slash commands and interruptions become `[ran /command]` and `[user interrupted AI]`; Claude Design direct edits become `[user edited the design directly]`.
 
-**Analyze.** Long chats are trimmed to their first 6 and last 24 messages, 1,500 characters each. The model returns fixed JSON (structured outputs): one or two topics, and for each of six kinds of work (ideas, direction, research, building, catching problems, final call) whether it happened, a one-sentence reason, then a 0–100 position. It also returns five yes/no markers, how the chat opened, how it unfolded, and short summaries. The instructions are in `systemPrompt()` in `analyze.mjs`; per-source context is in `SOURCE_CONTEXT`.
+**Analyze (prompt v2, the default).** The model codes evidence and does not pick scores. The whole conversation is kept: your messages up to 4,000 characters each, and AI messages shortened to their first 800 and last 300 characters. Chats over about 60,000 characters are coded in overlapping parts. For each chat the model returns:
+- **Moments** for six kinds of work: ideas, direction, research, building, problems and final call. Each one names the message, who did it (you or AI), whether it was major or minor, and a short note.
+- **Two codes for every one of your messages**: how you reacted to the AI message before it (accepted, questioned, corrected, tested, edited and so on), and what you asked for (do it, give options, explain, critique mine and so on).
+- One or two topics, how the chat opened, how it unfolded, and short summaries.
 
-**Caching.** A chat is re-analyzed only if its message text, the model or the prompt/schema changed (the fingerprint is stored in each record as `source_hash`). `--force` re-analyzes everything. Profile copy is cached per source in `data/synthesis-<source>.json` and rewritten only when that source's set of analyzed chats changes.
+`pipeline/lib/score.mjs` then computes each position as 100 × your weight / (your weight + AI weight), with major moments counting twice. The two dependency dimensions come from your message codes:
+- **Checking the answers**: how often you questioned, corrected, tested or edited AI's output, rather than accepting it as is.
+- **Working to understand**: how often you asked to understand or for critique of your own work, rather than for the answer.
+
+Definitions, what counts and examples are in [`docs/codebook.md`](docs/codebook.md), which is generated from `pipeline/lib/codebook.mjs`, the same source the prompt is built from. Model-free text features, such as your share of the words, questions per message and pastes, are stored on each record as a sanity check. The original holistic prompt is kept as `--prompt v1` for comparison. How the analysis is validated is in [`eval/README.md`](eval/README.md).
+
+**Caching.** A chat is re-analyzed only if its message text, the model or the prompt version changed (the fingerprint is stored in each record as `source_hash`). `--force` re-analyzes everything. The build warns if records from different prompt versions are mixed, because their scores aren't comparable. Profile copy is cached per source in `data/synthesis-<source>.json` and rewritten only when that source's set of analyzed chats changes.
 
 | Dashboard element | Computed from |
 |---|---|
 | Bubbles (% of use, chats) | Each chat's main topic counts 1, its second topic 0.5; share of the total |
-| Sliders (dot, band) | Mean position per work type, using only chats where that work happened; band = middle half (25th–75th percentile) |
+| Sliders (dot, band) | Mean position per dimension, using only chats where it happened; band = middle half (25th–75th percentile). Expanding a slider shows its question and how many chats and coded moments it rests on |
 | Verdict | ≥80 Clearly you, 58–79 Leaned to you, 43–57 Shared, 21–42 Leaned to AI, ≤20 Clearly AI |
 | Slider trend line | Older half of chats vs newer half; needs 6+ chats over 60+ days and a 6-point shift |
 | Profile, area copy, slider details | One synthesis call per source over the stats plus digests of the 60 most recent chats |
@@ -116,13 +125,15 @@ site/index.html             dashboard.js (overview), trends.js (over time), sour
 ## Options
 
 - `parse`: the first argument is the `export/` folder, one `conversations-NNN/` part (its sibling parts are included), or a single `conversations.json`. `--design <folder>` (default: `design_chats/` inside or next to the export), `--claude-code`, `--claude-code-dir <dir>`.
-- `analyze`: `--model <claude model id>` (default `claude-haiku-4-5`), `--limit N` (newest first), `--since 2026-01-01`, `--min-messages 4`, `--concurrency 4`, `--force`, `--dry-run`.
+- `analyze`: `--prompt v2|v1` (default `v2`), `--model <claude model id>` (default `claude-haiku-4-5`; see eval/README.md for why `claude-sonnet-5-5` is more accurate), `--limit N` (newest first), `--since 2026-01-01`, `--min-messages 4`, `--concurrency 4`, `--force`, `--dry-run`.
+- `eval`: benchmark a prompt and model on the known-answer scenarios, or check reliability on your own chats. See [`eval/README.md`](eval/README.md).
+- `test`: unit tests for the scoring formula and statistics (`npm test`). `codebook`: regenerate `docs/codebook.md`.
 - `build`: `--synth-model <id>` (default `claude-sonnet-5-5`), `--no-synthesis` (stats-only copy, no API call), `--force` (rewrite cached profile copy).
 - `.env`: `ANTHROPIC_API_KEY` (required), `CLAUDE_MODEL`, `CLAUDE_SYNTH_MODEL`.
 
 ## Cost
 
-About $0.007 per analyzed chat with Haiku 4.5, plus a few cents per source for the profile copy. A history of roughly 650 analyzed chats costs about $5 end to end. `analyze` prints an estimate from token usage when it finishes, and re-runs only pay for new or changed chats.
+With prompt v2, about $0.012 per analyzed chat with Haiku 4.5 or about $0.03 with Sonnet 5.5 (v2 reads the whole conversation, and Sonnet's thinking is billed as output). A history of roughly 650 chats costs about $8 with Haiku or about $20 with Sonnet, plus a few cents per source for the profile copy. `analyze --dry-run` estimates the input tokens before you spend anything, `analyze` prints an estimate from actual usage when it finishes, and re-runs only pay for new or changed chats.
 
 ## Troubleshooting
 

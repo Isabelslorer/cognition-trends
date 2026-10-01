@@ -21,7 +21,8 @@
   // Short names for the lines; color follows the dimension, never its rank.
   const SHORT_LABELS = {
     ideas: 'Ideas', direction: 'Direction', research: 'Research',
-    building: 'Building', problems: 'Catching problems', final_call: 'Final call'
+    building: 'Building', problems: 'Catching problems', final_call: 'Final call',
+    checking: 'Checking', understanding: 'Understanding'
   };
 
   if (!D || !Array.isArray(D.timeline)) {

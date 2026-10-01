@@ -1,0 +1,24 @@
+{
+  "id": "01-delegation-one-shot",
+  "title": "Cover letter, handed over",
+  "source": "claude_ai",
+  "spec": "User hands over a cover letter with almost no context. AI writes all of it and picks the angle. User accepts it as is.",
+  "messages": [
+    { "role": "user", "content": "write me a cover letter for a junior data analyst job at a bank" },
+    { "role": "assistant", "content": "Here's a cover letter you can adapt:\n\nDear Hiring Manager,\n\nI am excited to apply for the Junior Data Analyst position at your bank. With a strong foundation in statistics, hands-on experience with SQL and Python, and a genuine interest in how data can improve financial decision-making, I believe I can contribute from day one.\n\nIn my studies I built dashboards that tracked customer churn and automated weekly reporting, which taught me to turn messy data into clear recommendations. I am particularly drawn to the banking sector because small improvements in risk models and customer insight have a large real-world impact.\n\nI would welcome the chance to discuss how my analytical skills and attention to detail can support your team.\n\nKind regards,\n[Your name]\n\nI focused the letter on impact and reliability, since banks value both. Replace the bracketed parts and add one concrete project if you have one." },
+    { "role": "user", "content": "thanks, looks great!" },
+    { "role": "assistant", "content": "Glad it helps! Good luck with the application." }
+  ],
+  "expected": {
+    "ideas": [0, 30],
+    "direction": [50, 100],
+    "building": [0, 15],
+    "problems": false,
+    "checking": [0, 20],
+    "understanding": [0, 15]
+  },
+  "key_moments": [
+    { "turn": 2, "dimension": "building", "actor": "ai" },
+    { "turn": 3, "reaction": "accept" }
+  ]
+}

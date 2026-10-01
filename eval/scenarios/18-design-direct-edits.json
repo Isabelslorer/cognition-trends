@@ -1,0 +1,24 @@
+{
+  "id": "18-design-direct-edits",
+  "title": "Yoga landing page, edited directly",
+  "source": "claude_design",
+  "spec": "Claude Design. AI builds the page twice. The user edits the design directly twice and sets the direction. Building is shared.",
+  "messages": [
+    { "role": "user", "content": "Make a landing page for a small yoga studio in Tromsø. Calm colours, lots of white space, one clear booking button." },
+    { "role": "assistant", "content": "I built a one-page layout: hero with a soft sage background and the headline 'Breathe in the north', a class schedule grid, three instructor cards, and a single 'Book a class' button in the hero. [used tool: create_design - Yoga studio landing page]" },
+    { "role": "user", "content": "[user edited the design directly] changed the headline to 'Stillness under the northern lights' and moved the booking button below the schedule" },
+    { "role": "user", "content": "Now make the pricing section match the style of my edits: same font size for headings, and put the button at the bottom like I did." },
+    { "role": "assistant", "content": "I added a pricing section with three cards (drop-in, 10-class card, monthly) using your heading size, and placed the booking button at the bottom, matching your layout. [used tool: update_design]" },
+    { "role": "user", "content": "[user edited the design directly] changed the monthly price to 890 NOK and removed the 10-class card" }
+  ],
+  "expected": {
+    "building": [25, 80],
+    "direction": [60, 100]
+  },
+  "key_moments": [
+    { "turn": 2, "dimension": "building", "actor": "ai" },
+    { "turn": 3, "dimension": "building", "actor": "user" },
+    { "turn": 6, "dimension": "building", "actor": "user" },
+    { "turn": 3, "reaction": "edit" }
+  ]
+}

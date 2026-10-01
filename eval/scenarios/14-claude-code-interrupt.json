@@ -1,0 +1,29 @@
+{
+  "id": "14-claude-code-interrupt",
+  "title": "Dark mode toggle in Claude Code",
+  "source": "claude_code",
+  "spec": "Claude Code session. AI writes all the code. The user interrupts to redirect scope, tests the result and finds a persistence bug, then commits.",
+  "messages": [
+    { "role": "user", "content": "add a dark mode toggle to the settings page" },
+    { "role": "assistant", "content": "I'll look at how theming works first. The app uses a ThemeProvider in src/theme/provider.tsx that reads from a static config. I'll add a `mode` state to the provider and a toggle on the settings page. [used tools: Read ×3, Grep, Edit ×2]" },
+    { "role": "user", "content": "[user interrupted AI] no, don't touch the theme provider, other teams depend on it. Put the toggle and the state in the settings component only and set a data-theme attribute on <html>." },
+    { "role": "assistant", "content": "Understood, I've reverted the provider change. The toggle now lives in src/pages/Settings.tsx: it keeps `isDark` in component state and sets `document.documentElement.dataset.theme`. I added the dark colour variables under `[data-theme=dark]` in global.css. [used tools: Edit ×3, Bash]" },
+    { "role": "user", "content": "ran it, the toggle works but it resets to light when I reload the page" },
+    { "role": "assistant", "content": "The state was only in memory. I now save the choice to localStorage and read it on load, falling back to the system preference. [used tools: Edit]" },
+    { "role": "user", "content": "works after reload now. [ran /commit]" },
+    { "role": "assistant", "content": "Committed: 'Add dark mode toggle to settings (persisted in localStorage)'. [used tools: Bash ×2]" }
+  ],
+  "expected": {
+    "building": [0, 25],
+    "problems": [70, 100],
+    "direction": [60, 100],
+    "checking": [70, 100],
+    "understanding": [0, 20]
+  },
+  "key_moments": [
+    { "turn": 3, "dimension": "direction", "actor": "user" },
+    { "turn": 5, "dimension": "problems", "actor": "user" },
+    { "turn": 4, "dimension": "building", "actor": "ai" },
+    { "turn": 5, "reaction": "test" }
+  ]
+}

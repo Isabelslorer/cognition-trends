@@ -1,0 +1,25 @@
+{
+  "id": "03-options-pick",
+  "title": "Bakery name, picks from options",
+  "source": "claude_ai",
+  "spec": "User asks for name options. AI proposes all the names. User picks among them and makes the final decision.",
+  "messages": [
+    { "role": "user", "content": "I'm opening a small bakery in Bergen focused on sourdough. Give me 5 name options." },
+    { "role": "assistant", "content": "Here are five options:\n\n1. Rise & Rye: playful, hints at sourdough and rye.\n2. The Slow Loaf: emphasises long fermentation.\n3. Crumb & Co: short, friendly and easy to remember.\n4. Bryggen Bread: ties the bakery to Bergen's famous wharf.\n5. Wild Yeast Bakery: direct and descriptive.\n\nIf you want something local, 4 is strongest; if you want something brandable, 3 is easiest to build a logo around." },
+    { "role": "user", "content": "I like Crumb & Co the most. Can you give me 3 variations of it?" },
+    { "role": "assistant", "content": "Sure:\n\n1. Crumb & Co. Bakehouse\n2. Crumb & Company\n3. Crumb & Co Sourdough\n\nThe first sounds the most established; the third tells people immediately what you sell." },
+    { "role": "user", "content": "Going with plain Crumb & Co, without additions. Decided!" },
+    { "role": "assistant", "content": "Great choice, it's clean and memorable. Congratulations on the bakery!" }
+  ],
+  "expected": {
+    "ideas": [0, 30],
+    "final_call": [70, 100],
+    "problems": false,
+    "understanding": [0, 15]
+  },
+  "key_moments": [
+    { "turn": 2, "dimension": "ideas", "actor": "ai" },
+    { "turn": 5, "dimension": "final_call", "actor": "user" },
+    { "turn": 1, "request": "options" }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "id": "h7-paper-compare",
+  "title": "Comparing two papers",
+  "source": "claude_ai",
+  "spec": "User pastes two abstracts. AI compares them and misreads a number. User catches it from the abstract, then asks AI what to conclude and accepts the conclusion.",
+  "messages": [
+    { "role": "user", "content": "Compare these two studies for my thesis.\n\nA: 'In a randomised trial (n=120), students who used retrieval practice scored 14% higher on a delayed test than students who re-read.'\nB: 'In a field study across 9 schools (n=400), retrieval practice homework improved end-of-term grades by 4%, with larger effects for lower-performing students.'" },
+    { "role": "assistant", "content": "Both studies support retrieval practice, but they differ in design and effect size. Study A is a controlled trial with a large effect (14%) on a delayed test, so its internal validity is high. Study B (n=40) is a smaller field study with a modest effect (4%), but it's closer to real classrooms. The difference in effect size is typical: lab effects shrink in the field." },
+    { "role": "user", "content": "Study B is n=400 not 40, it's in the abstract I pasted. Does that change anything?" },
+    { "role": "assistant", "content": "You're right, n=400, my mistake. That makes B the larger study, which strengthens it: it's both bigger and more ecologically valid. The contrast is now a small, precise real-world effect against a large effect under controlled conditions." },
+    { "role": "user", "content": "what would you conclude for my thesis then?" },
+    { "role": "assistant", "content": "I'd conclude that retrieval practice reliably helps, that the size of the benefit depends heavily on context, and that it may matter most for lower-performing students. That last point is worth highlighting as motivation for your own study." },
+    { "role": "user", "content": "ok I'll use that" }
+  ],
+  "expected": {
+    "problems": [60, 100],
+    "understanding": [0, 25],
+    "final_call": [0, 45]
+  },
+  "key_moments": [
+    { "turn": 1, "dimension": "research", "actor": "user" },
+    { "turn": 3, "dimension": "problems", "actor": "user" },
+    { "turn": 3, "reaction": "correct" },
+    { "turn": 7, "reaction": "accept" }
+  ]
+}

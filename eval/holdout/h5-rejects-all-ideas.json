@@ -1,0 +1,23 @@
+{
+  "id": "h5-rejects-all-ideas",
+  "title": "Team name, user's own idea",
+  "source": "claude_ai",
+  "spec": "User asks for ideas, rejects all of AI's suggestions with reasons, comes up with their own and decides on it.",
+  "messages": [
+    { "role": "user", "content": "we need a name for our hackathon team, we're building a tool that helps people sort their recycling. ideas?" },
+    { "role": "assistant", "content": "Some options:\n1. BinThere\n2. Sort It Out\n3. The Recyclers\n4. Green Machine\n5. Waste Not" },
+    { "role": "user", "content": "hmm these are all a bit generic and BinThere is already a company. we're 4 people from Bodø. what about 'Søppelsorterne'? or is that too long" },
+    { "role": "assistant", "content": "Søppelsorterne is memorable and local, and the length is fine for a team name, though non-Norwegian judges may struggle to pronounce it. A shorter English subtitle, like 'Søppelsorterne: recycling made obvious', could help." },
+    { "role": "user", "content": "no subtitle, the judges are all Norwegian. Søppelsorterne it is." }
+  ],
+  "expected": {
+    "ideas": [70, 100],
+    "final_call": [70, 100],
+    "checking": [60, 100]
+  },
+  "key_moments": [
+    { "turn": 3, "dimension": "ideas", "actor": "user" },
+    { "turn": 3, "reaction": "correct" },
+    { "turn": 5, "dimension": "final_call", "actor": "user" }
+  ]
+}

@@ -153,8 +153,10 @@ function renderSliders(){
         <div class="slider-dot" style="left:${a.position}%"></div>
       </div>
       <div class="slider-expanded">
+        ${a.question?`<div class="slider-exp-line question">${esc(a.question)}</div>`:''}
         <div class="slider-exp-line trend">${esc(a.trendLine)}</div>
         <div class="slider-exp-line">${esc(a.detail)}</div>
+        ${a.basis?`<div class="slider-exp-line basis">${esc(a.basis)}</div>`:''}
       </div>
     </button>
   `).join('');

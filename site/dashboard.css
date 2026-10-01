@@ -168,6 +168,8 @@ body::before{
 .slider-row.open .slider-expanded{display:flex;flex-direction:column;gap:6px}
 .slider-exp-line{font-size:12px;line-height:1.55;color:var(--ink-2)}
 .slider-exp-line.trend{color:var(--ink);font-weight:500}
+.slider-exp-line.question{font-style:italic}
+.slider-exp-line.basis{font-size:11px;color:var(--ink-3, var(--ink-2));opacity:0.85}
 
 .profile-grid{display:grid;grid-template-columns:1fr;gap:14px}
 .profile-hero{padding:24px;border-radius:var(--radius);border:1px solid var(--paper-edge);background:linear-gradient(180deg,rgba(255,252,247,0.98),rgba(251,245,231,0.92));box-shadow:var(--shadow-card)}
