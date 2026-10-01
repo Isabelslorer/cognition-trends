@@ -81,6 +81,33 @@ Then open http://localhost:8765. Opening `site/index.html` directly also works. 
 
 To try the pipeline without an export: `npm run sample` parses 8 made-up chats in `sample/conversations.json`. Analyzing them costs about $0.06.
 
+## Choosing the analysis model (your decision)
+
+You decide which model analyzes your chats. It's a trade-off between cost and accuracy that this repo can't make for you. Set it with `--model` or `CLAUDE_MODEL` in `.env`. The default is Haiku 4.5.
+
+| | Haiku 4.5 (default) | Sonnet 5.5 |
+|---|---|---|
+| Cost for about 650 chats | about $8 | about $20 |
+| Held-out scenarios (in band / did it happen / key moments found) | 79% / 100% / 92% | 88% / 100% / 96% |
+| Same model, same chats, run twice (Krippendorff's alpha) | 0.94 | 0.94 |
+
+**How these numbers were tested.** Two tests, each answering a different question:
+
+1. **Is the model consistent? (reliability)**
+   - The same 30 real chats were analyzed four times: Haiku twice and Sonnet twice.
+   - Three comparisons were made from those four runs: Haiku against itself, Sonnet against itself, and Haiku against Sonnet. These are not the same test run three times.
+   - Agreement is measured with Krippendorff's alpha: 1 means perfect agreement, 0 means no better than chance. 0.80 or above is the usual threshold for reliable data.
+   - Both models agree with themselves at 0.94, so a change you see over time isn't just the model reading a chat differently on another day.
+   - Haiku and Sonnet agree with each other at only 0.72 overall, and much less on some dimensions (ideas 0.31, direction 0.47).
+   - Being consistent doesn't make a model correct. A model can be consistently wrong.
+2. **Is the model correct? (validity)**
+   - The models analyzed scenario conversations whose correct answers are known in advance. There are 24 used while developing the prompt, plus 8 written afterwards and run once (held out).
+   - Three things are scored: whether each score lands in the expected range ("in band"), whether the model correctly says if each kind of work happened at all, and whether it finds specific key moments (for example "the user caught the bug at message 3").
+   - Sonnet passes the pre-registered gates on the held-out set. Haiku misses the in-band gate (79% against a target of 85%).
+   - Each of Haiku's misses broke a rule the codebook states explicitly. For example, it credited a plain "ok, I'll use that" as the user's own decision.
+
+**Important limitation: the "gold set" in this version is generated, not hand-labelled.** Claude wrote the scenario conversations and their expected answers, and Claude also does the analysis. The scenarios therefore show whether the model applies the codebook as written. They do not show that its codes match how a human researcher would read your chats, and they may flatter the results. A gold set labelled independently by two people is the next step; the harness already accepts that format (see [`eval/README.md`](eval/README.md)). Until then, treat the dashboard as an indication of patterns, not a validated measurement.
+
 ## How it works
 
 ```
@@ -116,7 +143,7 @@ Definitions, what counts and examples are in [`docs/codebook.md`](docs/codebook.
 | Dashboard element | Computed from |
 |---|---|
 | Bubbles (% of use, chats) | Each chat's main topic counts 1, its second topic 0.5; share of the total |
-| Sliders (dot, band) | Mean position per dimension, using only chats where it happened; band = middle half (25th–75th percentile). Expanding a slider shows its question and how many chats and coded moments it rests on |
+| Sliders (dot, band) | Mean position per dimension, using only chats where it came up at least twice (`MIN_MOMENTS` in `pipeline/lib/common.mjs`); band = middle half (25th–75th percentile). The footnote under each slider says how many chats it rests on, how many were left out, and how repeatable the coding was (from `npm run eval -- --real`, if you ran it). Expanding a slider shows its question |
 | Verdict | ≥80 Clearly you, 58–79 Leaned to you, 43–57 Shared, 21–42 Leaned to AI, ≤20 Clearly AI |
 | Slider trend line | Older half of chats vs newer half; needs 6+ chats over 60+ days and a 6-point shift |
 | Profile, area copy, slider details | One synthesis call per source over the stats plus digests of the 60 most recent chats |

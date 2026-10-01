@@ -112,3 +112,11 @@ test('Spearman: monotonic is 1, reversed is -1', async () => {
   assert.equal(spearman([[1, 10], [2, 20], [3, 35]]), 1);
   assert.equal(spearman([[1, 3], [2, 2], [3, 1]]), -1);
 });
+
+test('v2 transcript shortening never leaves half an emoji', async () => {
+  const { requests } = await import('../pipeline/lib/prompts/v2.mjs');
+  const long = 'a'.repeat(799) + '😀' + 'b'.repeat(2000) + '😀' + 'c'.repeat(299);
+  const [request] = requests({ title: 't', created_at: null, messages: [{ role: 'user', content: 'hi' }, { role: 'assistant', content: long }] });
+  assert.doesNotThrow(() => JSON.parse(JSON.stringify(request.user)));
+  assert.equal(/[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?<![\uD800-\uDBFF])[\uDC00-\uDFFF]/.test(request.user), false);
+});

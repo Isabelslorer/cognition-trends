@@ -76,6 +76,9 @@
 .tr-table td .tr-n{color:var(--ink-3);margin-left:4px}
 .tr-table td.tr-thin{color:var(--ink-4)}
 
+.tr-notes{list-style:none;margin:12px 0 0;padding:0;display:flex;flex-direction:column;gap:4px}
+.tr-notes li{display:flex;gap:8px;align-items:baseline;font-size:11px;line-height:1.45;color:var(--ink-2)}
+.tr-notes .tr-key{flex:none;transform:translateY(1px)}
 .tr-footnote{margin-top:10px;font-size:11px;line-height:1.45;color:var(--ink-3)}
 
 @media(max-width:700px){

@@ -32,6 +32,15 @@ export const DIMENSIONS = [
   { key: 'understanding', label: 'Working to understand', question: 'Did you ask to understand, or just for the answer?' }
 ];
 
+// A dimension counts as having happened in a chat only with at least this many coded moments (or
+// counted turns). One borderline moment flips too easily between runs to be read as a 0 or 100 split.
+export const MIN_MOMENTS = 2;
+
+// Counts as "happened" for the dashboard: v2 rows need MIN_MOMENTS; v1 rows have no counts.
+export function countsAsInvolved(row) {
+  return Boolean(row) && row.involved !== false && (!Number.isFinite(row.n) || row.n >= MIN_MOMENTS);
+}
+
 export const MARKER_KEYS = [
   'user_provided_material',
   'user_redirected_after_output',

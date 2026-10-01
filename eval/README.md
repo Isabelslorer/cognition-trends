@@ -97,6 +97,8 @@ Haiku's held-out misses all break rules the codebook states explicitly. It credi
 
 Reliability on 30 real chats, prompt v2. These are aggregates only and contain nothing from the chats themselves.
 
+Since 2026-10-01 a dimension counts in a chat only with 2 or more moments (`MIN_MOMENTS`), on the dashboard and in this check. The table below was measured before that rule. With the rule, the pooled values are Haiku run-to-run 0.96, Sonnet run-to-run 0.95 and Haiku vs Sonnet 0.81. The per-dimension values rest on only 7–19 test chats each (final call has too few to measure) and are shown in the dashboard footnotes. `run-eval --real` writes them to `data/eval/reliability.json`, which the build reads.
+
 | | Pooled alpha | Weakest dimension |
 |---|---|---|
 | Haiku run-to-run | 0.94 | problems 0.74 |

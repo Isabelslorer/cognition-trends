@@ -282,10 +282,30 @@
     document.getElementById('trFootnote').textContent =
       `Each point is the average for that ${state.grain} across chats where that kind of work happened (0 = AI carried it all, 100 = you did). ` +
       `Points need at least ${MIN_CHATS} such chats; thinner ${state.grain}s are left as gaps${state.grain === 'month' ? ', and grouping by quarter fills many of them' : ''}. ` +
-      'Months follow the date each chat started. Chats with fewer than 4 messages were not analyzed.';
+      `A chat counts for a line only when that kind of work came up at least ${D.reliability?.min_moments || 2} times in it. ` +
+      'Months follow the date each chat started. Chats with fewer than 4 messages were not analyzed.' +
+      (D.reliability ? ` Agreement (Krippendorff's α; 0.8+ high) was measured by coding ${D.reliability.sample} sample chats twice with the same model and once with each of two models.` : '');
+    renderNotes(rows);
     chartEl.hidden = state.table;
     tableEl.hidden = !state.table;
     if (state.table) renderTable(); else renderChart();
+  }
+
+  // One line of context per visible series: how many chats in the current view it rests on,
+  // and how repeatable the coding was in the eval (D.reliability, from npm run eval -- --real).
+  function renderNotes(rows) {
+    const reliability = D.reliability;
+    const word = (alpha) => (alpha >= 0.8 ? 'high' : alpha >= 0.667 ? 'moderate' : 'low');
+    document.getElementById('trNotes').innerHTML = SERIES.filter((series) => !state.hidden.has(series.key)).map((series) => {
+      const chats = rows.filter((row) => Number.isFinite(row.split[series.key])).length;
+      const measured = reliability?.dimensions?.[series.key];
+      const parts = [`${chats} chat${chats === 1 ? '' : 's'} in this view`];
+      if (chats < 30) parts.push('few chats, read with care');
+      if (measured?.repeat) parts.push(`re-run agreement ${word(measured.repeat.alpha)} (α ${measured.repeat.alpha.toFixed(2)})`);
+      else if (reliability) parts.push('repeatability not measured (too few test chats)');
+      if (measured?.cross) parts.push(`model-to-model agreement ${word(measured.cross.alpha)} (α ${measured.cross.alpha.toFixed(2)})`);
+      return `<li><span class="tr-key" style="background:${series.color}"></span><span><strong>${esc(series.short)}:</strong> ${esc(parts.join(' · '))}</span></li>`;
+    }).join('');
   }
 
   function renderChart() {

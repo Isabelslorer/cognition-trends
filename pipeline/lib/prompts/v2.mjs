@@ -245,5 +245,7 @@ function splitParts(numbered) {
 function clip(text, max, tail) {
   const value = String(text || '');
   if (value.length <= max) return value;
-  return `${value.slice(0, max - tail)} [... ${value.length - max} characters shortened ...] ${value.slice(-tail)}`;
+  // A cut can split an emoji's surrogate pair, which the API rejects as invalid JSON; drop the half.
+  return `${value.slice(0, max - tail)} [... ${value.length - max} characters shortened ...] ${value.slice(-tail)}`
+    .replace(/[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?<![\uD800-\uDBFF])[\uDC00-\uDFFF]/g, '');
 }

@@ -14,7 +14,7 @@ import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { DIMENSIONS, PATHS, clamp, loadEnv, parseArgs, readJson, requireApiKey, simpleHash, writeJson } from '../pipeline/lib/common.mjs';
+import { DIMENSIONS, PATHS, clamp, countsAsInvolved, MIN_MOMENTS, loadEnv, parseArgs, readJson, requireApiKey, simpleHash, writeJson } from '../pipeline/lib/common.mjs';
 import { describeError } from '../pipeline/lib/claude.mjs';
 import { analyzeConversation, buildRequests, contentHash, getPrompt, runPool } from '../pipeline/lib/analyzer.mjs';
 import { textFeatures } from '../pipeline/lib/features.mjs';
@@ -213,7 +213,9 @@ function describeKey(key) {
 // Real-chat reliability report (aggregates only in the console; details stay in data/eval/)
 
 async function reportReal(list) {
-  const lines = ['# Reliability on real chats', '', `Generated ${new Date().toISOString()}. ${conversations.length} chats (stratified by source and length).`, ''];
+  const lines = ['# Reliability on real chats', '', `Generated ${new Date().toISOString()}. ${conversations.length} chats (stratified by source and length). A dimension counts as happened with ${MIN_MOMENTS}+ moments, as on the dashboard.`, ''];
+  // Aggregate reliability per dimension, read by build-dashboard.mjs for the dashboard footnotes.
+  const summary = { generated: new Date().toISOString(), chats: conversations.length, min_moments: MIN_MOMENTS, prompts: {} };
   for (const prompt of prompts) {
     const subset = list.filter((item) => item.prompt === prompt && item.reflection);
     const byRun = models.map((model) => ({ model, alpha: alphaAcrossConfigs(subset.filter((item) => item.model === model), (item) => item.run) }));
@@ -231,6 +233,11 @@ async function reportReal(list) {
       lines.push(`- ${models.join(' vs ')}: ${formatAlpha(cross)}`);
       console.log(`${prompt.id} ${models.join(' vs ')}: ${gate('alpha', cross.overall, GATES.crossModelAlpha)}; lowest dimension ${lowest(cross)}`);
     }
+    summary.prompts[prompt.id] = {
+      run_to_run: Object.fromEntries(byRun.filter((item) => item.alpha).map(({ model, alpha }) => [model, { per_dim: alpha.perDim, chats: alpha.perDimN }])),
+      cross_model: cross ? { models, per_dim: cross.perDim, chats: cross.perDimN } : null,
+      happened_agreement: involvement
+    };
     lines.push(`- Did/didn't happen agreement across all codings: ${Object.entries(involvement).map(([key, value]) => `${key} ${pct(value)}`).join(', ')}`);
 
     // Sanity check against a model-free feature: who wrote more of the words vs who built it.
@@ -246,6 +253,7 @@ async function reportReal(list) {
     }
     lines.push('');
   }
+  await writeJson(path.join(PATHS.evalDir, 'reliability.json'), summary);
   const reportPath = path.join(PATHS.evalDir, 'real-report.md');
   await writeFile(reportPath, lines.join('\n'));
   console.log(`Report (private, gitignored): ${path.relative(PATHS.root, reportPath)}`);
@@ -259,8 +267,9 @@ function involvementAgreement(list) {
     for (const conversation of conversations) {
       const values = list
         .filter((item) => item.conversation.id === conversation.id)
-        .map((item) => item.reflection.weight_rows.find((row) => row.key === key)?.involved)
-        .filter((value) => value !== undefined);
+        .map((item) => item.reflection.weight_rows.find((row) => row.key === key))
+        .filter(Boolean)
+        .map(countsAsInvolved);
       if (values.length < 2) continue;
       total += 1;
       if (values.every((value) => value === values[0])) agree += 1;
@@ -277,19 +286,23 @@ function involvementAgreement(list) {
 // conversation as a unit. "Did not happen" counts as a missing value.
 function alphaAcrossConfigs(list, coderOf) {
   const perDim = {};
+  const perDimN = {};
   const pooledUnits = [];
   for (const { key } of DIMENSIONS) {
     const units = conversations.map((conversation) => list
       .filter((item) => item.conversation.id === conversation.id)
       .map((item) => item.reflection.weight_rows.find((row) => row.key === key))
-      .filter((row) => row?.involved)
+      .filter(countsAsInvolved)
       .map((row) => row.position));
     const value = krippendorffInterval(units);
-    if (value !== null) perDim[key] = value;
+    if (value !== null) {
+      perDim[key] = value;
+      perDimN[key] = units.filter((values) => values.length >= 2).length;
+    }
     pooledUnits.push(...units);
   }
   if (new Set(list.map(coderOf)).size < 2 || !Object.keys(perDim).length) return null;
-  return { overall: krippendorffInterval(pooledUnits), perDim };
+  return { overall: krippendorffInterval(pooledUnits), perDim, perDimN };
 }
 
 // Pooling all dimensions inflates alpha (between-dimension differences count as agreement), so the

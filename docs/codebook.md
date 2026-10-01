@@ -10,7 +10,7 @@ What each dashboard dimension measures and how one conversation is coded. The mo
 - **Turn codes** (checking, understanding): every one of your messages gets a `reaction` to the AI message before it and a `request` code.
 - **Position** = 100 × your weight / (your weight + AI weight). 0 = AI side, 100 = your side. When nothing was counted, the dimension did not happen in that chat and is left out of the averages.
 - **Band** in a chat: the split in the first half versus the second half of the conversation.
-- **Dashboard**: the dot is the mean over chats where the dimension happened, and the band is the middle half (25th–75th percentile).
+- **Dashboard**: a dimension counts in a chat only when it came up at least 2 times there (moments, or counted turns); a single borderline moment flips too easily between runs. The dot is the mean over those chats, and the band is the middle half (25th–75th percentile). Each slider and trend line has a footnote with how many chats it rests on and how repeatable the coding was in the eval.
 
 ## Coming up with ideas (`ideas`)
 

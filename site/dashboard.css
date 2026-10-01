@@ -169,6 +169,7 @@ body::before{
 .slider-exp-line{font-size:12px;line-height:1.55;color:var(--ink-2)}
 .slider-exp-line.trend{color:var(--ink);font-weight:500}
 .slider-exp-line.question{font-style:italic}
+.slider-footnote{margin-top:8px;font-size:11px;line-height:1.5;color:var(--ink-2);opacity:0.8;text-align:left}
 .slider-exp-line.basis{font-size:11px;color:var(--ink-3, var(--ink-2));opacity:0.85}
 
 .profile-grid{display:grid;grid-template-columns:1fr;gap:14px}
