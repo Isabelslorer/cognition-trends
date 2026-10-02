@@ -20,7 +20,9 @@ It started from the Miro ChatGPT extension (upstream repo `sylee15/capstone-mock
 
 ## Setup
 
-Requires Node 18+ and an Anthropic API key.
+Requires Node 18+ and [Claude Code](https://code.claude.com) logged in to your Claude account (run `claude`, then `/login`). The pipeline calls Claude through the [Claude Agent SDK](https://code.claude.com/docs/en/agent-sdk), which uses that login, so you don't need an API key. Analysis then counts against your Claude plan's usage limits instead of being billed per token.
+
+Prefer to pay per token with your own API key? Set `CLAUDE_BACKEND=api` and `ANTHROPIC_API_KEY` in `.env`. See [Claude login vs API key](#claude-login-vs-api-key-things-to-know) for how the two differ.
 
 ### 1. Install
 
@@ -28,7 +30,7 @@ Requires Node 18+ and an Anthropic API key.
 git clone git@github.com:Isabelslorer/cognition-trends.git
 cd cognition-trends
 npm install
-cp .env.example .env    # then set ANTHROPIC_API_KEY in .env
+cp .env.example .env    # optional: model overrides, or CLAUDE_BACKEND=api with a key
 ```
 
 ### 2. Get the claude.ai export
@@ -81,6 +83,28 @@ python -m http.server 8765 --directory site
 Then open http://localhost:8765. Opening `site/index.html` directly also works. After a rebuild, hard-refresh (Ctrl+Shift+R), because browsers cache `data.js`.
 
 To try the pipeline without an export: `npm run sample` parses 8 made-up chats in `sample/conversations.json`. Analyzing them costs about $0.06.
+
+## Claude login vs API key: things to know
+
+Both paths send the same prompt, chat text and JSON schema to the same model. They differ in how they run and what they can control:
+
+| | Claude Agent SDK (default) | Anthropic API (`CLAUDE_BACKEND=api`) |
+|---|---|---|
+| Sign-in | Your Claude Code login (`claude`, then `/login`) | `ANTHROPIC_API_KEY` in `.env` |
+| What you pay | Counts against your Claude plan's usage limits | Billed per token to your API account |
+| Temperature | Can't be set; the model's default is used | v2 codes at temperature 0 (most repeatable) |
+| Benchmarked | Only spot-checked so far | The reliability numbers in [eval/README.md](eval/README.md) were measured here |
+| Tokens per chat | More: each request carries Claude Code's structured-output overhead (one test scenario estimated about 3× the API price) | Only the prompt and the chat |
+| Speed | A few seconds slower per request (starts a small Claude Code process) | Direct HTTP call |
+| Retries and limits | If you hit plan limits, lower `--concurrency` and re-run | The SDK retries rate limits and server errors automatically |
+
+Other things to know:
+
+- **Records note the path.** Each analyzed chat records `backend` (`agent` or `api`), so you can tell which ones ran without temperature 0. Chats analyzed before this change have no `backend` field; they ran on the API.
+- **Switching paths doesn't re-analyze anything.** Cached analyses are keyed on the chat, model and prompt, not the path. If you want the whole history coded one way, run `npm run analyze -- --force` on that path.
+- **Eval results are kept apart.** `npm run eval` caches Agent SDK codings separately, so run it on the path you actually use if you want reliability numbers for that path.
+- **Isolation.** Agent SDK calls run with no tools, MCP servers, settings, hooks, skills or CLAUDE.md, and aren't saved as Claude Code sessions under `~/.claude/projects`.
+- **No accidental API charges.** On the default path an `ANTHROPIC_API_KEY` in `.env` is not passed on, so it can't quietly switch Claude Code to billing your API account.
 
 ## Choosing the analysis model (your decision)
 
@@ -157,17 +181,20 @@ Definitions, what counts and examples are in [`docs/codebook.md`](docs/codebook.
 - `eval`: benchmark a prompt and model on the known-answer scenarios, or check reliability on your own chats. See [`eval/README.md`](eval/README.md).
 - `test`: unit tests for the scoring formula and statistics (`npm test`). `codebook`: regenerate `docs/codebook.md`.
 - `build`: `--synth-model <id>` (default `claude-sonnet-5-5`), `--no-synthesis` (stats-only copy, no API call), `--force` (rewrite cached profile copy).
-- `.env`: `ANTHROPIC_API_KEY` (required), `CLAUDE_MODEL`, `CLAUDE_SYNTH_MODEL`.
+- `.env`: `CLAUDE_MODEL`, `CLAUDE_SYNTH_MODEL`, and `CLAUDE_BACKEND=api` + `ANTHROPIC_API_KEY` to use the API instead of your Claude login. On the default path an `ANTHROPIC_API_KEY` in `.env` is ignored, so it can't silently bill your API account.
 
 ## Cost
 
 With prompt v2, about $0.012 per analyzed chat with Haiku 4.5 or about $0.03 with Sonnet 5.5 (v2 reads the whole conversation, and Sonnet's thinking is billed as output). A history of roughly 650 chats costs about $8 with Haiku or about $20 with Sonnet, plus a few cents per source for the profile copy. `analyze --dry-run` estimates the input tokens before you spend anything, `analyze` prints an estimate from actual usage when it finishes, and re-runs only pay for new or changed chats.
 
+These dollar figures are API prices. On the default Agent SDK path the same work counts against your Claude plan's usage limits instead, and the printed figure is an API-price estimate for comparison. Each request starts a small Claude Code process, so it is a few seconds slower per chat. If you hit your plan's limits, lower `--concurrency` and re-run: finished chats are cached.
+
 ## Troubleshooting
 
 | Symptom | Fix |
 |---|---|
-| `Missing ANTHROPIC_API_KEY` | Set it in `.env` at the repo root |
+| `Not logged in` / `/login` errors | Run `claude` in a terminal and log in with `/login`, or use `CLAUDE_BACKEND=api` with a key |
+| `CLAUDE_BACKEND=api needs ANTHROPIC_API_KEY` | Set the key in `.env` at the repo root, or remove `CLAUDE_BACKEND` |
 | `No parsed conversations yet` | Run `npm run parse -- export` first |
 | `No conversations.json found` | Check the `export/conversations-000/conversations.json` layout |
 | `No analyzed sessions found` | Run `npm run analyze` before `npm run build` |
@@ -178,4 +205,4 @@ With prompt v2, about $0.012 per analyzed chat with Haiku 4.5 or about $0.03 wit
 
 ## Privacy
 
-Conversation text (including Claude Code sessions, when included) is sent to the Anthropic API during `analyze`, and short per-chat summaries during `build`. Everything else stays local. `data/`, `export/`, `site/data.js`, `.env`, `node_modules/` and export manifests are gitignored. Never commit them.
+Conversation text (including Claude Code sessions, when included) is sent to Anthropic (through your Claude login, or the API with `CLAUDE_BACKEND=api`) during `analyze`, and short per-chat summaries during `build`. Everything else stays local. The Agent SDK calls run with no tools, settings, hooks or MCP servers, and are not saved as Claude Code sessions under `~/.claude/projects`. `data/`, `export/`, `site/data.js`, `.env`, `node_modules/` and export manifests are gitignored. Never commit them.

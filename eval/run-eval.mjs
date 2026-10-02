@@ -14,8 +14,8 @@ import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { DIMENSIONS, PATHS, clamp, countsAsInvolved, MIN_MOMENTS, loadEnv, parseArgs, readJson, requireApiKey, simpleHash, writeJson } from '../pipeline/lib/common.mjs';
-import { describeError } from '../pipeline/lib/claude.mjs';
+import { DIMENSIONS, PATHS, clamp, countsAsInvolved, MIN_MOMENTS, loadEnv, parseArgs, readJson, simpleHash, writeJson } from '../pipeline/lib/common.mjs';
+import { backend, describeError, requireClaude } from '../pipeline/lib/claude.mjs';
 import { analyzeConversation, buildRequests, contentHash, getPrompt, runPool } from '../pipeline/lib/analyzer.mjs';
 import { textFeatures } from '../pipeline/lib/features.mjs';
 import { krippendorffInterval, spearman } from './stats.mjs';
@@ -48,7 +48,7 @@ if (args['dry-run']) {
   process.exit(0);
 }
 
-if (pending.length) requireApiKey();
+if (pending.length) requireClaude();
 let cost = 0;
 let failed = 0;
 await runPool(pending, concurrency, async (job) => {
@@ -72,8 +72,10 @@ if (failed) process.exitCode = 1;
 
 // ---------------------------------------------------------------------------
 
+// The agent backend can't set temperature, so its codings are cached (and measured) separately.
 function cachePath({ conversation, model, prompt, run }) {
-  return path.join(CACHE_DIR, `${simpleHash(conversation.id)}-${contentHash(conversation, model, prompt)}-r${run}.json`);
+  const tag = backend() === 'api' ? '' : `-${backend()}`;
+  return path.join(CACHE_DIR, `${simpleHash(conversation.id)}-${contentHash(conversation, model, prompt)}-r${run}${tag}.json`);
 }
 
 function loadScenarios() {

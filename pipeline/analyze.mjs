@@ -7,8 +7,8 @@
 
 import path from 'node:path';
 import { existsSync } from 'node:fs';
-import { PATHS, clamp, loadEnv, parseArgs, readJson, requireApiKey, writeJson } from './lib/common.mjs';
-import { describeError } from './lib/claude.mjs';
+import { PATHS, clamp, loadEnv, parseArgs, readJson, writeJson } from './lib/common.mjs';
+import { backendLabel, describeError, requireClaude } from './lib/claude.mjs';
 import { analyzeConversation, buildRequests, buildSessionRecord, contentHash, getPrompt, runPool } from './lib/analyzer.mjs';
 
 loadEnv();
@@ -42,7 +42,7 @@ for (const conversation of eligible) {
   todo.push({ conversation, sourceHash, cachePath });
 }
 
-console.log(`${conversations.length} conversations, ${eligible.length} eligible (>= ${minMessages} messages), ${todo.length} need analysis with ${model}, prompt ${prompt.id}.`);
+console.log(`${conversations.length} conversations, ${eligible.length} eligible (>= ${minMessages} messages), ${todo.length} need analysis with ${model}, prompt ${prompt.id}, via ${backendLabel()}.`);
 
 if (args['dry-run']) {
   const requests = todo.map((item) => buildRequests(item.conversation, prompt));
@@ -58,7 +58,7 @@ if (args['dry-run']) {
 
 if (todo.length === 0) process.exit(0);
 
-requireApiKey();
+requireClaude();
 let done = 0;
 let totalCost = 0;
 const failures = [];
@@ -76,7 +76,7 @@ await runPool(todo, concurrency, async ({ conversation, sourceHash, cachePath })
   }
 });
 
-console.log(`\nAnalyzed ${done} conversations${totalCost ? `, estimated cost ~$${totalCost.toFixed(4)}` : ''}.`);
+console.log(`\nAnalyzed ${done} conversations${totalCost ? `, API-price estimate ~$${totalCost.toFixed(4)}` : ''}.`);
 if (failures.length) {
   console.log(`${failures.length} failed; re-run the same command to retry just those.`);
   process.exitCode = 1;

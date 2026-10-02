@@ -109,11 +109,3 @@ export function simpleHash(value) {
   return Math.abs(hash).toString(36);
 }
 
-export function requireApiKey() {
-  const key = cleanText(process.env.ANTHROPIC_API_KEY);
-  if (!key) {
-    console.error('Missing ANTHROPIC_API_KEY. Put it in .env at the repo root (see .env.example) or export it in your shell.');
-    process.exit(1);
-  }
-  return key;
-}
