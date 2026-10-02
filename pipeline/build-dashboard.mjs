@@ -11,7 +11,7 @@ import {
   AREA_KEYS, ARCS, DIMENSIONS, MARKER_KEYS, MIN_MOMENTS, OPENING_MODES, PATHS,
   cleanText, countsAsInvolved, loadEnv, parseArgs, readJson, simpleHash, writeJson
 } from './lib/common.mjs';
-import { describeError, structuredJson } from './lib/claude.mjs';
+import { canCallClaude, describeError, structuredJson } from './lib/claude.mjs';
 
 // Visual layout and static copy per area, kept from the extension's mock dashboard.
 const AREA_STYLE = {
@@ -166,8 +166,8 @@ function computeTrend(list, key) {
 
 async function getSynthesis(stats, list, source) {
   const cachePath = path.join(path.dirname(PATHS.synthesis), `synthesis-${source.key}.json`);
-  if (!cleanText(process.env.ANTHROPIC_API_KEY)) {
-    console.warn('No ANTHROPIC_API_KEY; building with stats-only copy. Add a key to get the written profile.');
+  if (!canCallClaude()) {
+    console.warn('CLAUDE_BACKEND=api but no ANTHROPIC_API_KEY; building with stats-only copy.');
     return null;
   }
 
@@ -387,7 +387,7 @@ function fallbackProfile(stats) {
       tags: [`${stats.count} chats`, rangeLabel(stats.first, stats.last), 'Claude export']
     },
     helps: `You redirected AI after its output in ${Math.round(rate('user_redirected_after_output') * 100)}% of chats.`,
-    risk: 'Run the build with an ANTHROPIC_API_KEY to get written, personalized guidance here.',
+    risk: 'Run the build with Claude available (your Claude login, or CLAUDE_BACKEND=api with a key) to get written, personalized guidance here.',
     next: `AI carried the most of "${ais.label.toLowerCase()}". Worth noticing whether that is a choice.`
   };
 }

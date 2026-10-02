@@ -1,7 +1,7 @@
 // Analyzes one conversation with a given prompt version and model. Shared by analyze.mjs
 // (the real history) and eval/run-eval.mjs (benchmark scenarios), so both measure the same thing.
 
-import { structuredJson } from './claude.mjs';
+import { backend, structuredJson } from './claude.mjs';
 import { simpleHash } from './common.mjs';
 import { textFeatures } from './features.mjs';
 import * as v1 from './prompts/v1.mjs';
@@ -67,6 +67,8 @@ export function buildSessionRecord(conversation, reflection, { model, prompt, so
     message_count: conversation.message_count,
     model,
     prompt_version: prompt.id,
+    // 'api' runs at the prompt's temperature (0 for v2); 'agent' at the model's default.
+    backend: backend(),
     source_hash: sourceHash,
     features: textFeatures(conversation.messages),
     ...reflection
