@@ -22,7 +22,7 @@ It started from the Miro ChatGPT extension (upstream repo `sylee15/capstone-mock
 
 Requires Node 18+ and [Claude Code](https://code.claude.com) logged in to your Claude account (run `claude`, then `/login`). The pipeline calls Claude through the [Claude Agent SDK](https://code.claude.com/docs/en/agent-sdk), which uses that login, so you don't need an API key. Analysis then counts against your Claude plan's usage limits instead of being billed per token.
 
-Prefer to pay per token with your own API key? Set `CLAUDE_BACKEND=api` and `ANTHROPIC_API_KEY` in `.env`. That path calls the Anthropic API directly. It is also the only one that can set temperature: v2 codes at temperature 0 there, while the Agent SDK uses the model's default. The reliability numbers in [eval/README.md](eval/README.md) were measured on the API path, so re-run `npm run eval` if you want them for the Agent SDK path (its results are cached separately).
+Prefer to pay per token with your own API key? Set `CLAUDE_BACKEND=api` and `ANTHROPIC_API_KEY` in `.env`. See [Claude login vs API key](#claude-login-vs-api-key-things-to-know) for how the two differ.
 
 ### 1. Install
 
@@ -83,6 +83,28 @@ python -m http.server 8765 --directory site
 Then open http://localhost:8765. Opening `site/index.html` directly also works. After a rebuild, hard-refresh (Ctrl+Shift+R), because browsers cache `data.js`.
 
 To try the pipeline without an export: `npm run sample` parses 8 made-up chats in `sample/conversations.json`. Analyzing them costs about $0.06.
+
+## Claude login vs API key: things to know
+
+Both paths send the same prompt, chat text and JSON schema to the same model. They differ in how they run and what they can control:
+
+| | Claude Agent SDK (default) | Anthropic API (`CLAUDE_BACKEND=api`) |
+|---|---|---|
+| Sign-in | Your Claude Code login (`claude`, then `/login`) | `ANTHROPIC_API_KEY` in `.env` |
+| What you pay | Counts against your Claude plan's usage limits | Billed per token to your API account |
+| Temperature | Can't be set; the model's default is used | v2 codes at temperature 0 (most repeatable) |
+| Benchmarked | Only spot-checked so far | The reliability numbers in [eval/README.md](eval/README.md) were measured here |
+| Tokens per chat | More: each request carries Claude Code's structured-output overhead (one test scenario estimated about 3× the API price) | Only the prompt and the chat |
+| Speed | A few seconds slower per request (starts a small Claude Code process) | Direct HTTP call |
+| Retries and limits | If you hit plan limits, lower `--concurrency` and re-run | The SDK retries rate limits and server errors automatically |
+
+Other things to know:
+
+- **Records note the path.** Each analyzed chat records `backend` (`agent` or `api`), so you can tell which ones ran without temperature 0. Chats analyzed before this change have no `backend` field; they ran on the API.
+- **Switching paths doesn't re-analyze anything.** Cached analyses are keyed on the chat, model and prompt, not the path. If you want the whole history coded one way, run `npm run analyze -- --force` on that path.
+- **Eval results are kept apart.** `npm run eval` caches Agent SDK codings separately, so run it on the path you actually use if you want reliability numbers for that path.
+- **Isolation.** Agent SDK calls run with no tools, MCP servers, settings, hooks, skills or CLAUDE.md, and aren't saved as Claude Code sessions under `~/.claude/projects`.
+- **No accidental API charges.** On the default path an `ANTHROPIC_API_KEY` in `.env` is not passed on, so it can't quietly switch Claude Code to billing your API account.
 
 ## Choosing the analysis model (your decision)
 
