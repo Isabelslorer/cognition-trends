@@ -1,5 +1,5 @@
 // "Over time" view: how each kind of work split between you and AI, month by month
-// (or quarter by quarter), as one small chart per kind of work. Everything is computed in the
+// (or quarter by quarter), with all kinds of work on one shared graph. Everything is computed in the
 // browser from D.timeline, one row per analyzed chat, so the filters re-slice it without re-running anything.
 (() => {
   const D = window.MIRO_DASHBOARD_DATA;
@@ -108,7 +108,7 @@
     toggle.addEventListener('click', () => {
       state.table = !state.table;
       toggle.setAttribute('aria-pressed', String(state.table));
-      toggle.textContent = state.table ? 'Show as charts' : 'Show as table';
+      toggle.textContent = state.table ? 'Show graph' : 'Show as table';
       render();
     });
   }
@@ -207,7 +207,7 @@
       ? `Showing all ${total}${source} chats.`
       : `Showing ${rows.length} of ${total}${source} chats.`;
     document.getElementById('trFootnote').textContent =
-      `Each point is the average for that ${state.grain} across chats where that kind of work happened (0 = AI carried it all, 100 = you did). ` +
+      `Each line tracks one kind of work. Each point is the average for that ${state.grain} across chats where that kind of work happened (0 = AI carried it all, 100 = you did). Bars show total chats per ${state.grain}. ` +
       `Points need at least ${MIN_CHATS} such chats; thinner ${state.grain}s are left as gaps${state.grain === 'month' ? ', and grouping by quarter fills many of them' : ''}. ` +
       `A chat counts for a line only when that kind of work came up at least ${D.reliability?.min_moments || 2} times in it. ` +
       'Months follow the date each chat started. Chats with fewer than 4 messages were not analyzed.' +
@@ -217,8 +217,8 @@
     if (state.table) renderTable(); else renderChart();
   }
 
-  // One small chart per kind of work, all on the same scale: You at the top, AI at the bottom.
-  // Points need MIN_CHATS chats; thinner periods are left as gaps. The latest point is blue.
+  // One shared graph: all series use the same time and 0–100 axes. A line breaks where
+  // a period has fewer than MIN_CHATS relevant chats, rather than joining across a gap.
   function renderChart() {
     const rows = filteredRows();
     chartEl.innerHTML = '';
@@ -227,49 +227,48 @@
       return;
     }
     const buckets = buildBuckets(rows);
-    const gridWidth = Math.max(280, chartEl.clientWidth);
-    const columns = gridWidth >= 900 ? 3 : gridWidth >= 560 ? 2 : 1;
-    const width = Math.floor((gridWidth - 40 * (columns - 1)) / columns);
-    const height = 150;
-    const inset = 6;
-    const step = (width - inset * 2) / Math.max(1, buckets.length - 1);
-    const xAt = (index) => inset + step * index;
-    const yAt = (value) => 10 + ((100 - value) / 100) * (height - 20);
+    const chartStyle = getComputedStyle(chartEl);
+    const availableWidth = chartEl.clientWidth - parseFloat(chartStyle.paddingLeft) - parseFloat(chartStyle.paddingRight);
+    const width = Math.max(600, availableWidth);
+    const compact = width < 650;
+    const left = compact ? 32 : 42;
+    const right = 12;
+    const top = 14;
+    const bottom = compact ? 210 : 240;
+    const axisY = bottom + 24;
+    const countTop = axisY + 18;
+    const countBottom = countTop + 38;
+    const height = countBottom + 8;
+    const step = (width - left - right) / Math.max(1, buckets.length - 1);
+    const xAt = (index) => left + step * index;
+    const yAt = (value) => top + ((100 - value) / 100) * (bottom - top);
+    const colors = SERIES.map((_, index) => `var(--tr-series-${index + 1})`);
 
-    for (const series of SERIES) {
+    const legend = document.createElement('div');
+    legend.className = 'tr-legend';
+    legend.innerHTML = SERIES.map((series, index) => {
       const chats = rows.filter((row) => Number.isFinite(row.split[series.key])).length;
+      return `<span class="tr-legend-item" style="--series-color:${colors[index]}"><i aria-hidden="true"></i>${esc(series.label)}<span class="tr-legend-count">${chats}</span></span>`;
+    }).join('');
+    chartEl.append(legend);
+
+    const svg = el('svg', { viewBox: `0 0 ${width} ${height}`, role: 'img', 'aria-label': `How ${SERIES.length} kinds of work split between you and AI over time, grouped by ${state.grain}. Use the table view for exact values.` });
+    for (const value of [100, 75, 50, 25, 0]) {
+      svg.append(el('line', { x1: left, x2: width - right, y1: yAt(value), y2: yAt(value), class: value === 50 ? 'tr-even-line' : 'tr-grid-line' }));
+    }
+    svg.append(text(0, yAt(100) + 4, 'You', { class: 'tr-axis' }));
+    svg.append(text(0, yAt(50) + 4, 'Even', { class: 'tr-axis' }));
+    svg.append(text(0, yAt(0) + 4, 'AI', { class: 'tr-axis' }));
+
+    SERIES.forEach((series, seriesIndex) => {
+      const color = colors[seriesIndex];
       const lastIndex = findLastIndex(buckets, (bucket) => bucket.points[series.key].ok);
-      const latest = lastIndex >= 0 ? buckets[lastIndex].points[series.key].value : null;
-      const verdict = verdictFor(latest);
-
-      const panel = document.createElement('div');
-      panel.className = 'tr-panel';
-      panel.innerHTML = `
-        <div class="tr-panel-head">
-          <div class="tr-panel-title">${esc(series.label)}</div>
-          ${verdict ? `<div class="tr-panel-verdict ${verdict.tone}" title="Latest ${state.grain} with enough chats">${verdict.label}</div>` : ''}
-        </div>
-        <div class="tr-panel-sub">${chats} chat${chats === 1 ? '' : 's'}${chats && chats < 30 ? ' · few chats, read with care' : ''}</div>`;
-
-      const svg = el('svg', { viewBox: `0 0 ${width} ${height}`, width, height, role: 'img', 'aria-label': `${series.label}, ${state.grain} by ${state.grain}. Use the table view for exact values.` });
-      svg.append(el('line', { x1: 0, x2: width, y1: yAt(50), y2: yAt(50), stroke: 'var(--line-strong)', 'stroke-width': 1, 'stroke-dasharray': '3 4' }));
-      svg.append(el('line', { x1: 0, x2: width, y1: height - 0.5, y2: height - 0.5, stroke: 'var(--line)', 'stroke-width': 1 }));
-      svg.append(text(0, 10, 'You', { class: 'tr-axis' }));
-      svg.append(text(0, height - 6, 'AI', { class: 'tr-axis' }));
-
-      if (lastIndex < 0) {
-        svg.append(text(width / 2, height / 2 - 6, `No ${state.grain} has ${MIN_CHATS}+ chats here`, { 'text-anchor': 'middle', class: 'tr-axis' }));
-      }
-
-      // Lines break where a period has too few chats instead of bridging the gap.
       let segment = [];
       const flush = () => {
-        if (segment.length > 1) {
-          svg.append(el('path', {
-            d: segment.map(([x, y], i) => `${i ? 'L' : 'M'}${x.toFixed(1)},${y.toFixed(1)}`).join(''),
-            fill: 'none', stroke: 'var(--ink)', 'stroke-width': 1.75, 'stroke-linejoin': 'round', 'stroke-linecap': 'round'
-          }));
-        }
+        if (segment.length > 1) svg.append(el('path', {
+          d: segment.map(([x, y], index) => `${index ? 'L' : 'M'}${x.toFixed(1)},${y.toFixed(1)}`).join(''),
+          fill: 'none', stroke: color, 'stroke-width': 2, 'stroke-linejoin': 'round', 'stroke-linecap': 'round'
+        }));
         segment = [];
       };
       buckets.forEach((bucket, index) => {
@@ -281,31 +280,40 @@
       buckets.forEach((bucket, index) => {
         const point = bucket.points[series.key];
         if (!point.ok) return;
-        const last = index === lastIndex;
-        const dot = el('circle', { cx: xAt(index), cy: yAt(point.value), r: last ? 5 : 2.5, fill: last ? 'var(--blue)' : 'var(--ink)' });
+        const dot = el('circle', { cx: xAt(index), cy: yAt(point.value), r: index === lastIndex ? 4 : 3, fill: color, stroke: 'var(--surface)', 'stroke-width': 1 });
         const tip = el('title', {});
-        tip.textContent = `${bucket.label.long}: ${Math.round(point.value)} (${point.n} chats)`;
+        tip.textContent = `${series.label} · ${bucket.label.long}: ${Math.round(point.value)} of 100 (${point.n} chats)`;
         dot.append(tip);
         svg.append(dot);
       });
+    });
 
-      panel.append(svg);
-      const axis = document.createElement('div');
-      axis.className = 'tr-panel-axis';
-      axis.innerHTML = `<span>${esc(buckets[0].label.long)}</span><span>${esc(buckets[buckets.length - 1].label.long)}</span>`;
-      panel.append(axis);
-      chartEl.append(panel);
+    buckets.forEach((bucket, index) => {
+      if (compact && index !== 0 && index !== buckets.length - 1 && !bucket.label.isYearStart) return;
+      if (!compact && state.grain === 'month' && index !== 0 && index !== buckets.length - 1 && !bucket.label.isYearStart && index % 3 !== 0) return;
+      svg.append(text(xAt(index), axisY, bucket.label.isYearStart || index === 0 || index === buckets.length - 1 ? bucket.label.long : bucket.label.short, {
+        class: 'tr-date', 'text-anchor': index === 0 ? 'start' : index === buckets.length - 1 ? 'end' : 'middle'
+      }));
+    });
+    const maxCount = Math.max(1, ...buckets.map((bucket) => bucket.rows.length));
+    svg.append(text(0, countBottom - 3, 'Chats', { class: 'tr-axis' }));
+    buckets.forEach((bucket, index) => {
+      const barHeight = bucket.rows.length / maxCount * 36;
+      const bar = el('rect', { x: xAt(index) - Math.min(step * 0.36, 13), y: countBottom - barHeight, width: Math.min(step * 0.72, 26), height: barHeight, rx: 2, class: 'tr-count-bar' });
+      const tip = el('title', {});
+      tip.textContent = `${bucket.label.long}: ${bucket.rows.length} chats`;
+      bar.append(tip);
+      svg.append(bar);
+    });
+    const plot = document.createElement('div');
+    plot.className = 'tr-plot-scroll';
+    if (width > availableWidth) {
+      plot.tabIndex = 0;
+      plot.setAttribute('role', 'region');
+      plot.setAttribute('aria-label', 'Timeline graph; scroll horizontally for more dates');
     }
-  }
-
-  // Same bands as the sliders on the Work split page (pipeline/build-dashboard.mjs), on the latest point.
-  function verdictFor(value) {
-    if (!Number.isFinite(value)) return null;
-    if (value >= 80) return { label: 'Clearly you', tone: 'you' };
-    if (value >= 58) return { label: 'Leaned to you', tone: 'you' };
-    if (value > 42) return { label: 'Shared', tone: 'shared' };
-    if (value > 20) return { label: 'Leaned to AI', tone: 'ai' };
-    return { label: 'Clearly AI', tone: 'ai' };
+    plot.append(svg);
+    chartEl.append(plot);
   }
 
   function renderTable() {

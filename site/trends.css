@@ -1,12 +1,11 @@
-/* "Over time" view: six small charts in ink, the latest point in blue (see dashboard.css for the tokens).
-   The series colors below are only used by the "How it's scored" view to tell the kinds of work apart. */
+/* "Over time" view: six colored lines on one shared graph (see dashboard.css for the neutrals). */
 .tr-root{
   --tr-surface:var(--surface);
   --tr-grid:var(--line);
   --tr-axis:var(--line-strong);
-  --tr-series-1:#2a78d6;--tr-series-2:#eb6834;--tr-series-3:#1baf7a;
-  --tr-series-4:#eda100;--tr-series-5:#e87ba4;--tr-series-6:#008300;
-  --tr-series-7:#7a52c7;--tr-series-8:#9a5a2c;
+  --tr-series-1:var(--blue-ink);--tr-series-2:#57768f;--tr-series-3:#4e8085;
+  --tr-series-4:#9a7547;--tr-series-5:#8a6b80;--tr-series-6:#526b56;
+  --tr-series-7:#716d91;--tr-series-8:#8f6658;
 }
 
 /* Source switch in the header (see sources.js). */
@@ -36,20 +35,24 @@
 .tr-count{margin-left:5px;opacity:0.65}
 .tr-toggle{font:inherit;font-size:14px;line-height:18px;color:var(--ink);background:none;border:0;padding:6px 0;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
 
-/* Small multiples: one panel per kind of work, separated by an ink rule like the Work split table. */
-.tr-chart{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0 40px}
+/* A shared timeline, with the six kinds of work identified in the legend. */
+.tr-chart{display:flex;flex-direction:column;gap:18px;padding:28px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius)}
 .tr-chart[hidden]{display:none}
-.tr-panel{display:flex;flex-direction:column;gap:6px;padding:22px 0 30px;border-top:1px solid var(--ink)}
-.tr-panel-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
-.tr-panel-title{font-family:var(--serif);font-size:22px;line-height:28px}
-.tr-panel-verdict{flex:none;font-size:13px;font-weight:500;line-height:16px;color:var(--ink)}
-.tr-panel-verdict.ai{color:var(--blue)}
-.tr-panel-sub{margin-bottom:8px;font-size:13px;line-height:18px;color:var(--muted)}
-.tr-panel svg{display:block;width:100%;height:auto;overflow:visible}
-.tr-panel svg circle{cursor:default}
+.tr-legend{display:flex;flex-wrap:wrap;gap:10px 24px}
+.tr-legend-item{display:inline-flex;align-items:center;gap:7px;white-space:nowrap;font-size:13px;line-height:18px;color:var(--ink-2)}
+.tr-legend-item i{display:inline-block;flex:none;width:18px;height:3px;border-radius:999px;background:var(--series-color)}
+.tr-legend-count{font-size:12px;color:var(--muted)}
+.tr-plot-scroll{overflow-x:auto}
+.tr-plot-scroll:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.tr-chart svg{display:block;width:100%;height:auto;overflow:visible}
+@media(max-width:680px){.tr-chart svg{min-width:600px}}
+.tr-chart svg circle{cursor:default}
+.tr-grid-line{stroke:var(--line);stroke-width:1}
+.tr-even-line{stroke:var(--line-strong);stroke-width:1;stroke-dasharray:3 4}
 .tr-axis{font-family:var(--sans);font-size:10px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;fill:var(--muted)}
-.tr-panel-axis{display:flex;justify-content:space-between;margin-top:6px;font-size:12px;line-height:14px;color:var(--muted)}
-.tr-empty{grid-column:1 / -1;padding:60px 0;text-align:center;font-size:15px;color:var(--muted)}
+.tr-date{font-family:var(--sans);font-size:11px;fill:var(--muted)}
+.tr-count-bar{fill:var(--blue-band)}
+.tr-empty{padding:60px 0;text-align:center;font-size:15px;color:var(--muted)}
 
 .tr-table-wrap{overflow-x:auto;border-top:1px solid var(--ink)}
 .tr-table{width:100%;border-collapse:collapse;font-size:14px;font-variant-numeric:tabular-nums}
@@ -61,5 +64,4 @@
 
 .tr-footnote{max-width:860px;margin-top:20px;font-size:13px;line-height:19px;color:var(--muted)}
 
-@media(max-width:900px){.tr-chart{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:560px){.tr-chart{grid-template-columns:1fr}.tr-select{max-width:100%}}
+@media(max-width:560px){.tr-chart{padding:16px;gap:14px}.tr-legend{gap:8px 14px}.tr-select{max-width:100%}}

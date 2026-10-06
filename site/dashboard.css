@@ -137,19 +137,20 @@ body[data-page="cover"] .tb-nav{display:none}
 .split-key-dot{width:10px;height:10px;border-radius:999px;background:var(--ink)}
 .split-key-band{width:28px;height:8px;border-radius:999px;background:linear-gradient(to right,var(--blue-band) 50%,var(--sand-band) 50%)}
 
-/* --- Profile: a short lead, the three roles as cards, the tips on one soft panel. --- */
-.profile-lead{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:32px}
-.profile-lead-title{text-wrap:balance;font-family:var(--serif);font-style:italic;font-size:30px;line-height:36px;letter-spacing:-0.01em}
-.profile-lead-body{grid-column:2 / 4;max-width:620px;padding-top:4px;font-size:17px;line-height:27px;color:var(--ink-2)}
-.profile-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:20px}
-.profile-card{display:flex;flex-direction:column;gap:12px;padding:28px 28px 32px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius)}
-.profile-card.ai .label{color:var(--blue)}
-.pc-title{text-wrap:balance;font-family:var(--serif);font-size:30px;line-height:35px;letter-spacing:-0.01em}
-.pc-body{font-size:16px;line-height:25px;color:var(--ink-2)}
+/* --- Profile D1: one frame containing three role cards and three advice cards. --- */
+.profile-grid{display:flex;flex-direction:column;gap:20px;padding:28px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius)}
+.profile-lead{display:flex;align-items:flex-start;gap:40px;padding:0 4px 4px}
+.profile-lead-title{width:340px;flex-shrink:0;text-wrap:balance;font-family:var(--serif);font-style:italic;font-size:24px;line-height:30px;letter-spacing:-0.01em}
+.profile-lead-body{max-width:640px;padding-top:2px;font-size:15px;line-height:23px;color:var(--ink-2)}
+.profile-cards,.profile-tips{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.profile-card{display:flex;flex-direction:column;gap:8px;padding:20px 22px 22px;background:var(--bg);border:1px solid var(--line);border-radius:14px}
+.profile-card.ai .label,.profile-tip.prompt .label{color:var(--blue-ink)}
+.pc-title{text-wrap:balance;font-family:var(--serif);font-size:24px;line-height:30px;letter-spacing:-0.01em}
+.pc-body{font-size:14px;line-height:21px;color:var(--ink-2)}
 .pc-body strong,.profile-lead-body strong{font-weight:600;color:var(--ink)}
-.profile-tips{display:grid;grid-template-columns:repeat(3,1fr);gap:40px;padding:24px 28px 26px;background:var(--tint);border-radius:var(--radius)}
-.profile-tips .label{color:var(--muted);margin-bottom:10px}
-.profile-tips p{margin:0;font-size:15px;line-height:23px;color:var(--ink-2)}
+.profile-tip{display:flex;flex-direction:column;gap:6px;padding:18px 22px 20px;background:var(--tint);border-radius:14px}
+.profile-tip .label{color:var(--muted)}
+.profile-tip p{margin:0;font-size:14px;line-height:21px;color:var(--ink-2)}
 
 @media(max-width:1100px){
   .split-row{grid-template-columns:180px 18px minmax(0,1fr) 28px 130px}
@@ -167,9 +168,9 @@ body[data-page="cover"] .tb-nav{display:none}
   .tb-nav a.active{color:var(--bg);background:var(--ink)}
   body.pill-hidden .tb-nav{transform:translate(-50%,160%);opacity:0}
   body.pill-hidden .tb-nav:focus-within{transform:translateX(-50%);opacity:1}
-  .profile-lead,.profile-cards,.profile-tips{grid-template-columns:1fr}
-  .profile-lead-body{grid-column:auto}
-  .profile-tips{gap:20px}
+  .profile-lead{flex-direction:column;gap:10px}
+  .profile-lead-title{width:auto}
+  .profile-cards,.profile-tips{grid-template-columns:1fr}
 }
 @media(max-width:700px){
   .main{padding:0 16px 60px}
@@ -181,4 +182,8 @@ body[data-page="cover"] .tb-nav{display:none}
   .split-label{padding-right:140px}
   .split-verdict{grid-area:label;justify-self:end}
   .page-foot{flex-wrap:wrap}
+  .profile-grid{padding:16px;gap:12px}
+  .profile-lead{padding:4px 4px 8px}
+  .profile-card{padding:18px}
+  .profile-tip{padding:16px 18px}
 }

@@ -39,7 +39,6 @@ function renderEmptyState(){
 function renderMeta(){
   const chats=`${D.meta.chatCount} chat${D.meta.chatCount===1?'':'s'}`;
   document.querySelectorAll('.page-foot-meta').forEach(el=>{el.textContent=`Based on ${chats}`;});
-  document.getElementById('splitsCount').textContent=`Averaged across ${chats}.`;
 }
 
 function renderBubbles(){
@@ -175,9 +174,9 @@ function renderProfile(){
       ${card('together','Together, the pattern is',p.together)}
     </div>
     <div class="profile-tips">
-      <div><div class="label">What's working</div><p>${esc(p.helps)}</p></div>
-      <div><div class="label">Prompt better</div><p>${esc(p.risk)}</p></div>
-      <div><div class="label">Watch for</div><p>${esc(p.next)}</p></div>
+      <div class="profile-tip"><div class="label">What's working</div><p>${esc(p.helps)}</p></div>
+      <div class="profile-tip prompt"><div class="label">Prompt better</div><p>${esc(p.risk)}</p></div>
+      <div class="profile-tip"><div class="label">Watch for</div><p>${esc(p.next)}</p></div>
     </div>
   `;
 }
