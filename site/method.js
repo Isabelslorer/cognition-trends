@@ -46,7 +46,7 @@
     { role: 'ai', text: 'Great, glad everything passes.', moments: [] }
   ];
 
-  const state = { dim: 'checking', rendered: false };
+  const state = { dim: DIMS[0]?.key || null, rendered: false };
 
   window.addEventListener('miro:route', (event) => { if (event.detail === 'how') render(); });
   window.addEventListener('miro:source', () => { if (state.rendered && !document.getElementById('how').hidden) renderLive(); });
@@ -54,28 +54,47 @@
   function render() {
     if (!state.rendered) {
       root.innerHTML = `
-        ${stepHead(1, 'Code the conversation', 'A model (Claude) reads the whole chat and records <strong>moments</strong>: who came up with an idea, steered, brought information, built something, spotted a problem or settled a decision, at which message. It also gives every one of your messages two codes: how you reacted to the AI\'s previous answer, and what you asked for. It does not give scores.')}
-        <div class="card md-card">
-          <div class="md-example-head">
-            <div class="md-example-title">Example: fixing a median function</div>
-            <div class="md-example-note">A made-up chat, coded the way your chats are coded.</div>
-          </div>
-          <div class="md-legend">${MOMENT_DIMS.map((key) => `<span><i style="background:${dimOf[key]?.color}"></i>${esc(dimOf[key]?.label || key)}</span>`).join('')}</div>
-          <ol class="md-chat">${EXAMPLE.map(renderMessage).join('')}</ol>
+        <div class="md-intro">
+          <div class="md-intro-label">THE METHOD</div>
+          <p>No model is asked “who did more?” Each message is coded, and the numbers are counted from those codes.</p>
+          <div class="md-flow" aria-label="From conversation to trend"><span>Conversation</span><b aria-hidden="true">→</b><span>Moments</span><b aria-hidden="true">→</b><span>Position</span><b aria-hidden="true">→</b><span>Trend</span></div>
         </div>
 
-        ${stepHead(2, 'Count the moments into a position', `Each moment adds weight to your side or AI's side: <strong>major counts 2, minor counts 1</strong>. Your two message codes are counted the same way, one per message. The position is <strong>100 × your weight ÷ (your weight + AI weight)</strong>, so 0 means AI did all of it and 100 means you did. A kind of work only counts in a chat if it came up at least ${MIN_MOMENTS} times; a single moment is too easy to read differently.`)}
-        <div class="card md-card"><div class="md-count">${renderCounts()}</div></div>
+        <section class="md-section" aria-labelledby="md-heading-1">
+          ${stepHead(1, 'Code the conversation', 'A model (Claude) reads the whole chat and records <strong>moments</strong>: who came up with an idea, steered, brought information, built something, spotted a problem or settled a decision, at which message. It also gives every one of your messages two codes: how you reacted to the AI\'s previous answer, and what you asked for. It does not give scores.')}
+          <div class="md-section-content"><div class="md-card">
+            <div class="md-example-head">
+              <div class="md-example-title">Example: fixing a median function</div>
+              <div class="md-example-note">A made-up chat, coded the way your chats are coded.</div>
+            </div>
+            <div class="md-legend">${MOMENT_DIMS.map((key) => `<span><i style="background:${dimOf[key]?.color}"></i>${esc(dimOf[key]?.label || key)}</span>`).join('')}</div>
+            <ol class="md-chat">${EXAMPLE.map(renderMessage).join('')}</ol>
+          </div>
+          </div>
+        </section>
 
-        ${stepHead(3, 'Combine your chats into a slider', 'Each chat gives one position per kind of work. The slider\'s dot is the <strong>average</strong> over all chats where that work counted, and the shaded band covers the <strong>middle half</strong> of them (25th to 75th percentile). This uses your own chats and follows the source switch at the top.')}
-        <div class="md-picker tr-chips" id="mdPicker" role="group" aria-label="Kind of work">${DIMS.map((dimension) => `<button type="button" class="tr-chip" data-key="${dimension.key}" aria-pressed="${dimension.key === state.dim}">${esc(dimension.label)}</button>`).join('')}</div>
-        <div class="card md-card" id="mdSlider"></div>
+        <section class="md-section" aria-labelledby="md-heading-2">
+          ${stepHead(2, 'Count the moments into a position', `Each moment adds weight to your side or AI's side: <strong>major counts 2, minor counts 1</strong>. Your two message codes are counted the same way, one per message. The position is <strong>100 × your weight ÷ (your weight + AI weight)</strong>, so 0 means AI did all of it and 100 means you did. A kind of work only counts in a chat if it came up at least ${MIN_MOMENTS} times; a single moment is too easy to read differently.`)}
+          <div class="md-section-content"><div class="md-card"><div class="md-count">${renderCounts()}</div></div></div>
+        </section>
 
-        ${stepHead(4, 'Follow it over time', `For the Over time view, chats are grouped by the month they started. Each point is the average of that month's chats, drawn only when at least <strong>${MIN_CHATS} chats</strong> count; thinner months are left as gaps.`)}
-        <div class="card md-card" id="mdTrend"></div>
+        <section class="md-section" aria-labelledby="md-heading-3">
+          ${stepHead(3, 'Combine your chats into a slider', 'Each chat gives one position per kind of work. The slider\'s dot is the <strong>average</strong> over all chats where that work counted, and the shaded band covers the <strong>middle half</strong> of them (25th to 75th percentile). This uses your own chats and follows the source switch at the top.')}
+          <div class="md-section-content">
+            <div class="md-picker tr-chips" id="mdPicker" role="group" aria-label="Kind of work">${DIMS.map((dimension) => `<button type="button" class="tr-chip" data-key="${dimension.key}" aria-pressed="${dimension.key === state.dim}">${esc(dimension.label)}</button>`).join('')}</div>
+            <div class="md-card" id="mdSlider"></div>
+          </div>
+        </section>
 
-        ${stepHead(5, 'How much to trust it', 'The coding was checked in two ways. Correctness: made-up conversations with known answers. Consistency: some of your real chats coded twice by the same model, and once each by two different models. Details are in eval/README.md in the repo.')}
-        <div class="card md-card" id="mdTrust"></div>`;
+        <section class="md-section" aria-labelledby="md-heading-4">
+          ${stepHead(4, 'Follow it over time', `For the Over time view, chats are grouped by the month they started. Each point is the average of that month's chats, drawn only when at least <strong>${MIN_CHATS} chats</strong> count; thinner months are left as gaps.`)}
+          <div class="md-section-content"><div class="md-card" id="mdTrend"></div></div>
+        </section>
+
+        <section class="md-section" aria-labelledby="md-heading-5">
+          ${stepHead(5, 'How much to trust it', 'The coding was checked in two ways. Correctness: made-up conversations with known answers. Consistency: some of your real chats coded twice by the same model, and once each by two different models. Details are in eval/README.md in the repo.')}
+          <div class="md-section-content"><div class="md-card" id="mdTrust"></div></div>
+        </section>`;
       root.querySelector('#mdPicker').addEventListener('click', (event) => {
         const button = event.target.closest('button');
         if (!button) return;
@@ -179,6 +198,10 @@
   function renderSlider() {
     const el = document.getElementById('mdSlider');
     const dimension = dimOf[state.dim];
+    if (!dimension) {
+      el.innerHTML = '<div class="md-muted">No kinds of work are available for this data yet.</div>';
+      return;
+    }
     const values = valuesFor(state.dim);
     if (!values.length) {
       el.innerHTML = `<div class="md-muted">No chats from this source where "${esc(dimension.label)}" came up ${MIN_MOMENTS}+ times.</div>`;
@@ -206,7 +229,7 @@
     // Verdict zones behind the histogram.
     const zones = [[0, 20, 'Clearly AI'], [20, 42, 'Leaned to AI'], [42, 58, 'Shared'], [58, 80, 'Leaned to you'], [80, 100, 'Clearly you']];
     zones.forEach(([from, to, label], index) => {
-      svg.append(el2('rect', { x: x(from), y: margin.top, width: x(to) - x(from), height: histHeight, fill: index % 2 ? 'rgba(52,44,37,0.035)' : 'rgba(52,44,37,0.0)' }));
+      svg.append(el2('rect', { x: x(from), y: margin.top, width: x(to) - x(from), height: histHeight, fill: index % 2 ? 'var(--panel)' : 'var(--surface)' }));
       svg.append(text((x(from) + x(to)) / 2, margin.top + histHeight + 16, label, { class: 'md-zone', 'text-anchor': 'middle' }));
     });
     bins.forEach((count, index) => {
@@ -220,11 +243,11 @@
 
     // The slider itself.
     const trackY = margin.top + histHeight + 52;
-    svg.append(el2('rect', { x: x(0), y: trackY - 7, width: plot / 2, height: 14, rx: 7, fill: 'rgba(74,178,212,0.4)' }));
-    svg.append(el2('rect', { x: x(50), y: trackY - 7, width: plot / 2, height: 14, rx: 7, fill: 'rgba(201,161,100,0.4)' }));
-    svg.append(el2('rect', { x: x(lo), y: trackY - 10, width: Math.max(2, x(hi) - x(lo)), height: 20, rx: 6, fill: 'rgba(28,25,23,0.10)' }));
-    for (const tick of [lo, hi]) svg.append(el2('line', { x1: x(tick), x2: x(tick), y1: trackY - 12, y2: trackY + 12, stroke: 'rgba(28,25,23,0.35)', 'stroke-width': 2 }));
-    svg.append(el2('circle', { cx: x(position), cy: trackY, r: 9, fill: '#1c1917' }));
+    svg.append(el2('rect', { x: x(0), y: trackY - 7, width: plot / 2, height: 14, rx: 7, fill: 'var(--blue-pale)' }));
+    svg.append(el2('rect', { x: x(50), y: trackY - 7, width: plot / 2, height: 14, rx: 7, fill: 'var(--sand)' }));
+    svg.append(el2('rect', { x: x(lo), y: trackY - 10, width: Math.max(2, x(hi) - x(lo)), height: 20, rx: 6, fill: 'rgba(22,22,22,0.08)' }));
+    for (const tick of [lo, hi]) svg.append(el2('line', { x1: x(tick), x2: x(tick), y1: trackY - 12, y2: trackY + 12, stroke: 'var(--tick)', 'stroke-width': 2 }));
+    svg.append(el2('circle', { cx: x(position), cy: trackY, r: 9, fill: 'var(--ink)' }));
     svg.append(text(x(0), trackY + 30, 'AI', { class: 'md-axis' }));
     svg.append(text(x(100), trackY + 30, 'You', { class: 'md-axis', 'text-anchor': 'end' }));
     svg.append(text(x(position), trackY - 16, `average ${position}`, { class: 'md-callout', 'text-anchor': 'middle' }));
@@ -246,6 +269,10 @@
   function renderTrend() {
     const el = document.getElementById('mdTrend');
     const dimension = dimOf[state.dim];
+    if (!dimension) {
+      el.innerHTML = '<div class="md-muted">No kinds of work are available for this data yet.</div>';
+      return;
+    }
     const rows = rowsForSource().filter((row) => row.date && Number.isFinite(row.split?.[state.dim]));
     const allDates = (DATA.timeline || []).map((row) => row.date).filter(Boolean).sort();
     if (!rows.length || !allDates.length) {
@@ -299,7 +326,7 @@
       if (!month.n) return;
       svg.append(el2('circle', month.ok
         ? { cx: xAt(index), cy: yAt(month.mean), r: 5, fill: dimension.color, stroke: 'var(--tr-surface)', 'stroke-width': 2 }
-        : { cx: xAt(index), cy: yAt(month.mean), r: 4, fill: 'var(--tr-surface)', stroke: 'rgba(52,44,37,0.35)', 'stroke-width': 1.5, 'stroke-dasharray': '2 2' }));
+        : { cx: xAt(index), cy: yAt(month.mean), r: 4, fill: 'var(--tr-surface)', stroke: 'var(--tick)', 'stroke-width': 1.5, 'stroke-dasharray': '2 2' }));
     });
     months.forEach((month, index) => {
       const date = month.key;
@@ -353,7 +380,7 @@
   // --- helpers -------------------------------------------------------------
 
   function stepHead(number, title, body) {
-    return `<div class="md-step"><div class="md-step-num">${number}</div><div><div class="md-step-title">${esc(title)}</div><div class="md-step-body">${body}</div></div></div>`;
+    return `<div class="md-step"><div class="md-step-num">${number}</div><div><h2 class="md-step-title" id="md-heading-${number}">${esc(title)}</h2><p class="md-step-body">${body}</p></div></div>`;
   }
 
   function percentile(values, fraction) {

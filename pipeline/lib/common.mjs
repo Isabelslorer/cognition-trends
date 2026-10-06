@@ -108,4 +108,3 @@ export function simpleHash(value) {
   }
   return Math.abs(hash).toString(36);
 }
-
