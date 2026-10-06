@@ -16,10 +16,10 @@ The dashboard ("Me, myself, and AI") is a cover followed by one page per section
 - **Areas**: where AI shows up (topic bubbles); clicking one shows what happens there.
 - **Work split**: how the work splits between you and AI, as six sliders.
 - **Profile**: a written profile of how you and AI tend to work together.
-- **Over time**: one small chart per kind of work across months or quarters, with You at the top and AI at the bottom, filterable by topic, how the chat opened and how it unfolded.
+- **Over time**: one chart with all six kinds of work across months or quarters, with You at the top and AI at the bottom, filterable by topic, how the chat opened and how it unfolded.
 - **How it's scored**: a visual walk-through for the curious. A made-up chat is coded moment by moment and counted into positions, then your own chats are shown combining into a slider and a trend line, with how reliable each kind of work is.
 
-It started from the Miro ChatGPT extension (upstream repo `sylee15/capstone-mock`; the extension files are in this repo's git history before the move to the root) and keeps its approach: the same topic taxonomy, the same six work dimensions (0 = AI carried it, 100 = you did), the same collaboration markers and interaction patterns, the same per-chat record shape as its `buildDashboardSessionRecord()`, and its dashboard design.
+It started from the Miro ChatGPT extension (upstream repo `sylee15/capstone-mock`; the extension files are in this repo's git history before the move to the root) and keeps its approach: the same topic taxonomy, the same six work dimensions (0 = AI carried it, 100 = you did), the same collaboration markers and interaction patterns, and the same per-chat record shape as its `buildDashboardSessionRecord()`. The dashboard now has its own visual design.
 
 ## Setup
 
