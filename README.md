@@ -10,10 +10,13 @@ It reads three sources:
 | Claude Design chats | `design_chats/` in the claude.ai data export |
 | Claude Code sessions | local transcripts in `~/.claude/projects` on the machine you run this on (not in the export) |
 
-The dashboard has three views, chosen from the top menu, plus a source switch (All sources / Claude chats / Claude Code / Claude Design) that applies to all of them:
+The dashboard ("Me, myself, and AI") is a cover followed by one page per section, stepped through with the tabs, the ‹ › arrows or the arrow keys. A source switch (All sources / Claude chats / Claude Code / Claude Design) in the header applies to every page:
 
-- **Overview**: where AI shows up (topic bubbles), how the work splits (six sliders), and a written profile.
-- **Over time**: one line per kind of work across months or quarters, with You at the top and AI at the bottom, filterable by topic, how the chat opened and how it unfolded.
+- **Cover**: the title over a slowly turning dithered sphere (Paper's dithering shader, bundled in `site/vendor/`).
+- **Areas**: where AI shows up (topic bubbles); clicking one shows what happens there.
+- **Work split**: how the work splits between you and AI, as six sliders.
+- **Profile**: a written profile of how you and AI tend to work together.
+- **Over time**: one small chart per kind of work across months or quarters, with You at the top and AI at the bottom, filterable by topic, how the chat opened and how it unfolded.
 - **How it's scored**: a visual walk-through for the curious. A made-up chat is coded moment by moment and counted into positions, then your own chats are shown combining into a slider and a trend line, with how reliable each kind of work is.
 
 It started from the Miro ChatGPT extension (upstream repo `sylee15/capstone-mock`; the extension files are in this repo's git history before the move to the root) and keeps its approach: the same topic taxonomy, the same six work dimensions (0 = AI carried it, 100 = you did), the same collaboration markers and interaction patterns, the same per-chat record shape as its `buildDashboardSessionRecord()`, and its dashboard design.
@@ -147,7 +150,7 @@ data/sessions/<id>.json     one record per chat: coded moments and turns, eight 
   ▼
 site/data.js                window.MIRO_DASHBOARD_DATA = { meta, areas, aspects, profile, variants, timeline }
   ▼
-site/index.html             dashboard.js (overview), trends.js (over time), sources.js (source switch)
+site/index.html             pages.js (paging), cover.js (cover), dashboard.js (areas, work split, profile), trends.js (over time), method.js (how it's scored), sources.js (source switch)
 ```
 
 **Parse.** Keeps what the user typed and what Claude said. Tool calls become short notes (`[used tool: WebSearch]`, `[used tools: Read ×3, Edit]`); raw tool output, Claude's internal reasoning and system-generated lines are dropped. Attachments become `[attached name: first 400 chars]`. Claude Code slash commands and interruptions become `[ran /command]` and `[user interrupted AI]`; Claude Design direct edits become `[user edited the design directly]`.

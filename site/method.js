@@ -49,8 +49,7 @@
   const state = { dim: 'checking', rendered: false };
 
   window.addEventListener('miro:route', (event) => { if (event.detail === 'how') render(); });
-  window.addEventListener('miro:source', () => { if (state.rendered && !document.getElementById('viewMethod').hidden) renderLive(); });
-  if (location.hash === '#how') render();
+  window.addEventListener('miro:source', () => { if (state.rendered && !document.getElementById('how').hidden) renderLive(); });
 
   function render() {
     if (!state.rendered) {

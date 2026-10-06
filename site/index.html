@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Claude Looking Back</title>
+<title>Me, myself, and AI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Vollkorn:ital,wght@0,400..600;1,400..600&family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="dashboard.css"/>
 <link rel="stylesheet" href="trends.css"/>
 <link rel="stylesheet" href="method.css"/>
@@ -14,109 +14,93 @@
 <body>
 
 <header class="topbar">
-  <div class="tb-brand">
-    <div class="tb-avatar"><img src="sprites/cute.png" alt="Miro"/></div>
-    <div>
-      <div class="tb-name">Looking back</div>
-      <div class="tb-meta" id="tbMeta"></div>
-    </div>
-  </div>
-  <nav class="tb-nav" id="topNav">
-    <a href="#areas" class="active">Where AI shows up</a>
-    <a href="#splits">How the work splits</a>
-    <a href="#profile">Your profile</a>
+  <a class="tb-name" href="#cover">Me, myself, and AI</a>
+  <nav class="tb-nav" id="topNav" aria-label="Pages">
+    <a href="#areas">Areas</a>
+    <a href="#splits">Work split</a>
+    <a href="#profile">Profile</a>
     <a href="#trends" id="trendsNavLink">Over time</a>
-    <a href="#how" id="howNavLink">How it's scored</a>
   </nav>
+  <div class="tb-right">
+    <div class="source-switch" id="sourceBar" role="group" aria-label="Which conversations to include"></div>
+    <div class="tb-meta" id="tbMeta"></div>
+    <a class="tb-how" href="#how">How it's scored</a>
+  </div>
 </header>
 
-<div class="main">
+<main class="main">
 
-  <div class="source-switch" id="sourceBar" role="group" aria-label="Which conversations to include"></div>
+  <section class="page cover" id="cover">
+    <div class="cover-sphere" id="coverSphere" aria-hidden="true"></div>
+    <div class="cover-inner">
+      <h1 class="cover-title">Me, myself, and&nbsp;AI</h1>
+      <p class="cover-why">AI now sits in on how you think, write and decide. Seeing which parts of the work you hand over, and which you keep, lets you choose that split on purpose.</p>
+      <a class="cover-start" id="coverStart" href="#areas">Start <span aria-hidden="true">→</span></a>
+      <p class="cover-status" id="coverStatus" hidden></p>
+    </div>
+  </section>
 
-  <div class="dashboard-note" id="dashboardNote" role="status" aria-live="polite">
-    <div class="dashboard-note-copy" id="dashboardNoteCopy">Built from your exported Claude conversations. This page and its data file stay on your computer.</div>
-    <button class="dashboard-note-button" id="dashboardNoteDismiss" type="button">Got it</button>
-  </div>
-
-  <div id="viewOverview">
-
-  <div class="section" id="areas">
+  <section class="page" id="areas" hidden>
     <div class="sec-head">
-      <div class="kicker">Where AI shows up in your work</div>
       <div class="sec-title">The areas you bring AI into</div>
-      <div class="sec-sub">Each bubble is a part of your work where AI tends to appear. Bigger means more activity. Click any bubble to see what's happening there.</div>
+      <div class="sec-sub">Bigger means more activity. Click a bubble to look inside.</div>
     </div>
     <div class="bubbles-layout" id="bubblesLayout">
-      <div class="card bubble-stage bubble-stage-cardless" id="bubbleStage"></div>
+      <div class="bubble-stage" id="bubbleStage"></div>
       <div class="bubble-panel" id="bubblePanel">
-        <div class="bp-placeholder" id="bpPlaceholder">
-          <div class="bp-placeholder-icon">←</div>
-          <div class="bp-placeholder-text">Click a bubble to see what's going on in that area</div>
-        </div>
+        <div class="bp-placeholder" id="bpPlaceholder">Pick an area to see what happens there.</div>
         <div class="bp-content" id="bpContent"></div>
       </div>
     </div>
-  </div>
+  </section>
 
-  <div class="section" id="splits">
+  <section class="page" id="splits" hidden>
     <div class="sec-head">
-      <div class="kicker">How the work splits</div>
       <div class="sec-title">Who tends to carry what</div>
-      <div class="sec-sub"><span id="splitsCount"></span> The band shows how much it varied. Click any row to see more.</div>
+      <div class="sec-sub"><span id="splitsCount"></span> Click a row to see more.</div>
     </div>
-    <div class="card sliders-card" id="slidersCard"></div>
-  </div>
+    <div class="split-table" id="slidersCard"></div>
+    <div class="split-key">
+      <span><i class="split-key-dot"></i>Your average</span>
+      <span><i class="split-key-band"></i>Where the middle half of your chats landed</span>
+    </div>
+  </section>
 
-  <div class="section" id="profile">
+  <section class="page" id="profile" hidden>
     <div class="sec-head">
-      <div class="kicker">Your profile</div>
-      <div class="sec-title">The collaborator you're becoming</div>
-      <div class="sec-sub">How you tend to show up, how AI tends to show up for you, and what that creates together.</div>
+      <div class="sec-title">Your collaborator profile</div>
     </div>
     <div class="profile-grid" id="profileGrid"></div>
-  </div>
+  </section>
 
-  </div>
-
-  <div id="viewTrends" class="tr-root" hidden>
-    <div class="section" id="trends">
-      <div class="sec-head">
-        <div class="kicker">How it's changing</div>
-        <div class="sec-title">Who carries what, over time</div>
-        <div class="sec-sub">Each line is one kind of work. Higher means you carried more of it, lower means AI did. Filter to compare topics or ways of working.</div>
-      </div>
-      <div class="tr-filters" id="trFilters"></div>
-      <div class="card tr-card">
-        <div class="tr-card-top">
-          <div class="tr-legend" id="trLegend" role="group" aria-label="Show or hide lines"></div>
-          <button class="tr-toggle" id="trTableToggle" type="button" aria-pressed="false">Show as table</button>
-        </div>
-        <div class="tr-chart" id="trChart"></div>
-        <div class="tr-table-wrap" id="trTable" hidden></div>
-        <ul class="tr-notes" id="trNotes" aria-label="How reliable each line is"></ul>
-        <div class="tr-footnote" id="trFootnote"></div>
-      </div>
+  <section class="page tr-root" id="trends" hidden>
+    <div class="sec-head">
+      <div class="sec-title">Who carries what, over time</div>
+      <div class="sec-sub">Higher means you carried more of it, lower means AI did.</div>
     </div>
-  </div>
+    <div class="tr-filters" id="trFilters"></div>
+    <div class="tr-chart" id="trChart"></div>
+    <div class="tr-table-wrap" id="trTable" hidden></div>
+    <div class="tr-footnote" id="trFootnote"></div>
+  </section>
 
-  <div id="viewMethod" class="tr-root md-root" hidden>
-    <div class="section" id="how">
-      <div class="sec-head">
-        <div class="kicker">How it's scored</div>
-        <div class="sec-title">From one conversation to a trend line</div>
-        <div class="sec-sub">The analysis never asks a model "who did more?". It records what happened, message by message, and the numbers are counted from that. Here is the whole path, step by step.</div>
-      </div>
-      <div id="mdContent"></div>
+  <section class="page tr-root md-root" id="how" hidden>
+    <div class="sec-head">
+      <div class="sec-title">From one conversation to a trend line</div>
+      <div class="sec-sub">No model is asked "who did more?". Each message is coded, and the numbers are counted from that.</div>
     </div>
-  </div>
+    <div id="mdContent"></div>
+  </section>
 
-</div>
+</main>
 
 <script src="data.js"></script>
 <script src="sources.js"></script>
 <script src="dashboard.js"></script>
 <script src="trends.js"></script>
 <script src="method.js"></script>
+<script src="vendor/paper-shaders.js"></script>
+<script src="cover.js"></script>
+<script src="pages.js"></script>
 </body>
 </html>
