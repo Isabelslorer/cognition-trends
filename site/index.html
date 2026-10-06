@@ -15,16 +15,14 @@
 
 <header class="topbar">
   <a class="tb-name" href="#cover">Me, myself, and AI</a>
-  <nav class="tb-nav" id="topNav" aria-label="Pages">
-    <a href="#areas">Areas</a>
-    <a href="#splits">Work split</a>
-    <a href="#profile">Profile</a>
-    <a href="#trends" id="trendsNavLink">Over time</a>
-  </nav>
   <div class="tb-right">
     <div class="source-switch" id="sourceBar" role="group" aria-label="Which conversations to include"></div>
-    <div class="tb-meta" id="tbMeta"></div>
-    <a class="tb-how" href="#how">How it's scored</a>
+    <nav class="tb-nav" id="topNav" aria-label="Pages">
+      <a href="#areas">Areas</a>
+      <a href="#splits">Work split</a>
+      <a href="#profile">Profile</a>
+      <a href="#trends" id="trendsNavLink">Over time</a>
+    </nav>
   </div>
 </header>
 
@@ -43,12 +41,11 @@
   <section class="page" id="areas" hidden>
     <div class="sec-head">
       <div class="sec-title">The areas you bring AI into</div>
-      <div class="sec-sub">Bigger means more activity. Click a bubble to look inside.</div>
     </div>
     <div class="bubbles-layout" id="bubblesLayout">
       <div class="bubble-stage" id="bubbleStage"></div>
       <div class="bubble-panel" id="bubblePanel">
-        <div class="bp-placeholder" id="bpPlaceholder">Pick an area to see what happens there.</div>
+        <div class="bp-placeholder" id="bpPlaceholder">Bigger means more activity. Click a bubble to look inside.</div>
         <div class="bp-content" id="bpContent"></div>
       </div>
     </div>
@@ -60,7 +57,7 @@
       <div class="sec-sub"><span id="splitsCount"></span> Click a row to see more.</div>
     </div>
     <div class="split-table" id="slidersCard"></div>
-    <div class="split-key">
+    <div class="split-key" data-foot>
       <span><i class="split-key-dot"></i>Your average</span>
       <span><i class="split-key-band"></i>Where the middle half of your chats landed</span>
     </div>

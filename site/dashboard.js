@@ -38,14 +38,14 @@ function renderEmptyState(){
 
 function renderMeta(){
   const chats=`${D.meta.chatCount} chat${D.meta.chatCount===1?'':'s'}`;
-  document.getElementById('tbMeta').textContent=chats;
+  document.querySelectorAll('.page-foot-meta').forEach(el=>{el.textContent=`Based on ${chats}`;});
   document.getElementById('splitsCount').textContent=`Averaged across ${chats}.`;
 }
 
 function renderBubbles(){
   const stage=document.getElementById('bubbleStage');
   stage.innerHTML = '';
-  D.areas.forEach((a,i)=>{
+  D.areas.forEach((a)=>{
     const el=document.createElement('button');
     el.type='button';
     el.className=`bubble ${a.size}`;
@@ -55,18 +55,20 @@ function renderBubbles(){
     el.innerHTML=`<span class="bubble-label">${esc(a.label)}</span><span class="bubble-pct">${a.pct}%</span>`;
     el.addEventListener('click',()=>openBubble(a,el));
     stage.appendChild(el);
-    // The largest area opens first so the panel is never empty on arrival.
-    if(i===0) openBubble(a,el);
   });
 }
 
-// Bubble sizes are set for an 820px-wide stage; narrower stages shrink the bubbles and the stage height with it.
+// Bubble sizes are set for an 820×560 stage. A narrower stage gets a matching shorter height; a stage that is
+// shorter (CSS shrinks it on short windows) or narrower shrinks the bubbles with it.
 function fitBubbles(){
   const stage=document.getElementById('bubbleStage');
   if(!stage||!stage.clientWidth) return;
-  const scale=Math.min(1,stage.clientWidth/820);
+  const widthScale=Math.min(1,stage.clientWidth/820);
+  stage.style.height='';
+  const height=Math.round(560*Math.max(widthScale,0.6));
+  if(height<stage.clientHeight) stage.style.height=`${height}px`;
+  const scale=Math.min(widthScale,stage.clientHeight/560);
   stage.style.setProperty('--bubble-scale',scale.toFixed(3));
-  stage.style.height=scale<1?`${Math.round(560*Math.max(scale,0.6))}px`:'';
 }
 
 function openBubble(area,el){
@@ -113,28 +115,23 @@ function closeBubble(){
 
 function renderSliders(){
   const table=document.getElementById('slidersCard');
-  table.innerHTML=`
-    <div class="split-head label">
-      <div>Kind of work</div>
-      <div class="split-scale"><span class="ai">← AI did it</span><span>Even</span><span class="you">You did it →</span></div>
-      <div class="split-verdict-h">Verdict</div>
-    </div>
-    ${D.aspects.map(a=>`
+  table.innerHTML=D.aspects.map(a=>`
     <button class="split-row" type="button" aria-expanded="false">
       <span class="split-label">${esc(a.label)}</span>
+      <span class="split-end ai" aria-hidden="true">AI</span>
       <span class="split-track" aria-hidden="true">
         <span class="split-base"></span>
-        <span class="split-mid"></span>
-        <span class="split-band" style="left:${a.lo}%;width:${a.hi-a.lo}%"></span>
+        <span class="split-band" style="left:${a.lo}%;width:${a.hi-a.lo}%;--mid:${bandMid(a)}%"></span>
         <span class="split-dot" style="left:${a.position}%"></span>
       </span>
+      <span class="split-end you" aria-hidden="true">You</span>
       <span class="split-verdict ${esc(a.tone)}">${esc(a.verdict)}<span class="split-toggle" aria-hidden="true">+</span></span>
       <span class="split-detail">
         ${a.question?`<span class="split-question">${esc(a.question)}</span>`:''}
         <span class="split-line">${esc(a.trendLine)} ${esc(a.detail)}</span>
         ${a.footnote||a.basis?`<span class="split-line basis">${esc(a.footnote||a.basis)}</span>`:''}
       </span>
-    </button>`).join('')}`;
+    </button>`).join('');
   table.querySelectorAll('.split-row').forEach(row=>{
     row.addEventListener('click',()=>{
       const was=row.classList.contains('open');
@@ -150,6 +147,12 @@ function renderSliders(){
       }
     });
   });
+}
+
+// Where the band crosses the middle of the bar, as a share of the band's own width: blue before, sand after.
+function bandMid(a){
+  if(a.hi<=a.lo) return a.lo<50?100:0;
+  return Math.max(0,Math.min(100,(50-a.lo)/(a.hi-a.lo)*100)).toFixed(1);
 }
 
 function renderProfile(){

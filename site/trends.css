@@ -12,7 +12,6 @@
 /* Source switch in the header (see sources.js). */
 .source-switch{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px}
 .source-switch-label{display:none}
-.source-switch + .tb-meta{display:none}
 
 /* Controls: pill-shaped selects, a Month/Quarter switch, and a plain text toggle for the table. */
 .tr-filters{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 20px;margin-bottom:28px}

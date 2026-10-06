@@ -34,8 +34,8 @@
     window.dispatchEvent(new CustomEvent('miro:route', { detail: id }));
   }
 
-  // Scrolling down hides the tab pill so the content gets the whole screen. It comes back on scroll up,
-  // near the top, on a page change, or on keyboard focus.
+  // On narrow screens the tabs float as a pill. Scrolling down hides it so the content gets the whole
+  // screen; it comes back on scroll up, near the top, on a page change, or on keyboard focus.
   function bindHeader() {
     let lastY = window.scrollY;
     window.addEventListener('scroll', () => {
@@ -55,7 +55,8 @@
     if (index >= 0 && next) location.hash = next;
   }
 
-  // ‹ title › on every page in the order. The cover has its own Start link.
+  // Title on the left, ‹ › on the right, and the chat count with "How it's scored" under the page,
+  // on every page in the order. The cover has its own Start link. dashboard.js fills in the count.
   function addArrows() {
     pages.forEach((page) => {
       const head = page.querySelector('.sec-head');
@@ -63,8 +64,18 @@
       const text = document.createElement('div');
       text.className = 'sec-head-text';
       text.append(...head.childNodes);
-      head.append(arrow(-1, 'Previous page', '‹'), text, arrow(1, 'Next page', '›'));
+      const arrows = document.createElement('div');
+      arrows.className = 'pg-arrows';
+      arrows.append(arrow(-1, 'Previous page', '‹'), arrow(1, 'Next page', '›'));
+      head.append(text, arrows);
       head.classList.add('sec-head-paged');
+      const foot = document.createElement('div');
+      foot.className = 'page-foot';
+      foot.innerHTML = '<span class="page-foot-meta"></span><a href="#how">How it\'s scored →</a>';
+      // A page can put a small key in the middle of its foot line by marking it data-foot.
+      const extra = page.querySelector('[data-foot]');
+      if (extra) foot.lastChild.before(extra);
+      page.append(foot);
     });
     updateArrows();
     window.addEventListener('miro:route', updateArrows);
