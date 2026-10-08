@@ -3,6 +3,7 @@
 const DATA = window.MIRO_DASHBOARD_DATA;
 // The overview shows one source variant at a time (see sources.js); all sources by default.
 let D = DATA;
+const REPO_URL = 'https://github.com/Isabelslorer/cognition-trends';
 
 window.addEventListener('miro:route',(event)=>{if(event.detail==='areas')fitBubbles();});
 window.addEventListener('resize',()=>fitBubbles());
@@ -16,6 +17,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   renderBubbles();
   renderSliders();
   renderProfile();
+  if(D.meta.demo) renderDemoNote();
 });
 
 window.addEventListener('miro:source',(event)=>{
@@ -38,7 +40,15 @@ function renderEmptyState(){
 
 function renderMeta(){
   const chats=`${D.meta.chatCount} chat${D.meta.chatCount===1?'':'s'}`;
-  document.querySelectorAll('.page-foot-meta').forEach(el=>{el.textContent=`Based on ${chats}`;});
+  const whose=D.meta.demo?`${D.meta.demo} · `:'';
+  document.querySelectorAll('.page-foot-meta').forEach(el=>{el.textContent=`${whose}Based on ${chats}`;});
+}
+
+// The made-up example (demo-data.js): say so on the cover and point to running it on your own chats.
+function renderDemoNote(){
+  const status=document.getElementById('coverStatus');
+  status.innerHTML=`Showing an example: ${esc(D.meta.demo.toLowerCase())}. <a href="${REPO_URL}#try-it-with-your-own-chats" target="_blank" rel="noopener">Try it with your own chats</a>`;
+  status.hidden=false;
 }
 
 function renderBubbles(){

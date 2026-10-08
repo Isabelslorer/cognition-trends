@@ -126,7 +126,7 @@
 
   // --- data ----------------------------------------------------------------
 
-  // Rows from the source chosen in the switch at the top (sources.js).
+  // Rows from the source chosen in the source dropdown (sources.js).
   function sourceRows() {
     const source = window.MIRO_SOURCE || 'all';
     return source === 'all' ? D.timeline : D.timeline.filter((row) => (row.source || 'claude_ai') === source);

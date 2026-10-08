@@ -16,7 +16,6 @@
 <header class="topbar">
   <a class="tb-name" href="#cover">Me, myself, and AI</a>
   <div class="tb-right">
-    <div class="source-switch" id="sourceBar" role="group" aria-label="Which conversations to include"></div>
     <nav class="tb-nav" id="topNav" aria-label="Pages">
       <a href="#areas">Areas</a>
       <a href="#splits">Work split</a>
@@ -89,6 +88,10 @@
 </main>
 
 <script src="data.js"></script>
+<script>
+  // No data.js (the public site, or before running the pipeline): show the made-up example instead.
+  if (!window.MIRO_DASHBOARD_DATA) document.write('<script src="demo-data.js"><\/script>');
+</script>
 <script src="sources.js"></script>
 <script src="dashboard.js"></script>
 <script src="trends.js"></script>

@@ -1,0 +1,4 @@
+# Deploy only the static site; never upload personal data from a local checkout.
+/*
+!/site
+/site/data.js

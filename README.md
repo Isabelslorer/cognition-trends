@@ -21,6 +21,26 @@ The dashboard ("Me, myself, and AI") is a cover followed by one page per section
 
 It started from the Miro ChatGPT extension (upstream repo `sylee15/capstone-mock`; the extension files are in this repo's git history before the move to the root) and keeps its approach: the same topic taxonomy, the same six work dimensions (0 = AI carried it, 100 = you did), the same collaboration markers and interaction patterns, and the same per-chat record shape as its `buildDashboardSessionRecord()`. The dashboard now has its own visual design.
 
+Until you run it on your own chats, the site shows an example: a made-up product designer (see [The example](#the-example)).
+
+## Try it with your own chats
+
+You need Node 18+ and [Claude Code](https://code.claude.com), logged in to your Claude account. The analysis runs on your computer and counts against your Claude plan's usage; your chats go only to Anthropic.
+
+**The easy way: let Claude Code set it up.** Clone the repo and start Claude Code inside it, so it picks up the project's rules (it estimates the cost and asks before analyzing anything):
+
+```bash
+git clone https://github.com/Isabelslorer/cognition-trends.git
+cd cognition-trends
+claude
+```
+
+Then paste:
+
+> Build my dashboard from my Claude history. Walk me through exporting my claude.ai chats, set up the project, and include my Claude Code sessions. Show me the chat count and cost estimate before analyzing anything.
+
+**By hand:** follow [Setup](#setup) below.
+
 ## Setup
 
 Requires Node 18+ and [Claude Code](https://code.claude.com) logged in to your Claude account (run `claude`, then `/login`). The pipeline calls Claude through the [Claude Agent SDK](https://code.claude.com/docs/en/agent-sdk), which uses that login, so you don't need an API key. Analysis then counts against your Claude plan's usage limits instead of being billed per token.
@@ -86,6 +106,16 @@ python -m http.server 8765 --directory site
 Then open http://localhost:8765. Opening `site/index.html` directly also works. After a rebuild, hard-refresh (Ctrl+Shift+R), because browsers cache `data.js`.
 
 To try the pipeline without an export: `npm run sample` parses 8 made-up chats in `sample/conversations.json`. Analyzing them costs about $0.06.
+
+Without a `site/data.js` the page shows the made-up example from `site/demo-data.js` instead.
+
+## The example
+
+The public site shows a made-up person: a product designer at a mid-size company who uses Claude chats for writing and research, Claude Code for side projects and Claude Design for mockups, and who over the year goes from letting Claude draft to writing first and asking for critique.
+
+No chats were written or analyzed for it. `npm run demo` (`demo/build-demo.mjs`) draws about 200 analyzed-chat records from that person's tendencies, with a fixed seed, and runs the real build step on them with the hand-written copy in `demo/copy.json`, so every page is computed the same way as for real data. It makes no Claude calls and writes `site/demo-data.js`, which is safe to commit. Because the trend was planted, the example shows what the dashboard looks like, not evidence that the method works.
+
+To deploy the site (for example on Vercel), serve `site/` as static files with no build step. Deploy from the Git repo so only committed files go out; `site/data.js` is gitignored.
 
 ## Claude login vs API key: things to know
 
@@ -183,7 +213,8 @@ Definitions, what counts and examples are in [`docs/codebook.md`](docs/codebook.
 - `analyze`: `--prompt v2|v1` (default `v2`), `--model <claude model id>` (default `claude-haiku-4-5`; see eval/README.md for why `claude-sonnet-5-5` is more accurate), `--limit N` (newest first), `--since 2026-01-01`, `--min-messages 4`, `--concurrency 4`, `--force`, `--dry-run`.
 - `eval`: benchmark a prompt and model on the known-answer scenarios, or check reliability on your own chats. See [`eval/README.md`](eval/README.md).
 - `test`: unit tests for the scoring formula and statistics (`npm test`). `codebook`: regenerate `docs/codebook.md`.
-- `build`: `--synth-model <id>` (default `claude-sonnet-5-5`), `--no-synthesis` (stats-only copy, no API call), `--force` (rewrite cached profile copy).
+- `build`: `--synth-model <id>` (default `claude-sonnet-5-5`), `--no-synthesis` (stats-only copy, no API call), `--force` (rewrite cached profile copy), `--copy <file>` (hand-written copy instead of the synthesis call), `--out <file>` (default `site/data.js`).
+- `demo`: rebuild the made-up example, `site/demo-data.js`. No API calls.
 - `.env`: `CLAUDE_MODEL`, `CLAUDE_SYNTH_MODEL`, and `CLAUDE_BACKEND=api` + `ANTHROPIC_API_KEY` to use the API instead of your Claude login. On the default path an `ANTHROPIC_API_KEY` in `.env` is ignored, so it can't silently bill your API account.
 
 ## Cost

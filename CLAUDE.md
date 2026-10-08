@@ -10,3 +10,4 @@ Rules for agents working here:
 - After changing the codebook, run `npm run codebook` and `npm test`, then `npm run eval -- --prompt v2` on the scenarios before any real analysis. Don't tune the prompt against `eval/holdout/`. Change a scenario's expected band only when it contradicts the codebook, and log the change in `eval/README.md`.
 - `npm run eval -- --real` codes the user's own chats (paid; same go-ahead rule). Its detailed output stays in `data/eval/`; report only aggregates.
 - After a rebuild, hard-refresh the browser; it caches `site/data.js`.
+- `site/demo-data.js` is the made-up example on the public site, built by `npm run demo` from `demo/` with no Claude calls. It is committed. Never build it from real data.

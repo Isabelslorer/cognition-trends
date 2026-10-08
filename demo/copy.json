@@ -1,0 +1,218 @@
+{
+  "demo": "A made-up product designer",
+  "areas": {
+    "writing": {
+      "patterns": "Most of your writing is specs, stakeholder updates and launch notes. Early on you asked for a draft and edited it; lately you write the rough version and ask what's unclear.",
+      "helps": "AI gets you from notes to a readable page fast, and it's a patient reader for a second pass.",
+      "risk": "When AI drafts, its structure becomes yours. Your updates can end up sounding like everyone else's.",
+      "try": "Write the one sentence the reader must take away before you ask for anything."
+    },
+    "research": {
+      "patterns": "You hand AI the first sweep: competitors, patterns, what's been written on a topic. You decide what's worth following up.",
+      "helps": "A fast map of unfamiliar ground, so your own reading starts in the right place.",
+      "risk": "AI's summary can quietly decide what counts as important before you've looked yourself.",
+      "try": "Pick one claim from the summary and trace it to the source before you use it."
+    },
+    "coding": {
+      "patterns": "Side projects, mostly prototypes. AI writes most of the code; you say what it should do and notice when it doesn't.",
+      "helps": "You can build things you couldn't before, and test an idea in an evening instead of a sprint.",
+      "risk": "When AI also fixes what it broke, you learn the outcome but not the code.",
+      "try": "Before asking for a fix, write one line on what you think is wrong."
+    },
+    "design": {
+      "patterns": "AI makes the first layout and you rework it. Your strongest moves come when you reject the first version and say why.",
+      "helps": "Something concrete on the canvas in minutes, so the conversation is about the design and not a blank page.",
+      "risk": "Accepting the first structure too quickly makes the work look like a template.",
+      "try": "When a first pass feels off, name the principle it misses before asking for another."
+    },
+    "presenting": {
+      "patterns": "You know the story already. You use AI for order, framing and trimming the deck to time.",
+      "helps": "It helps turn a pile of points into a sequence an audience can follow.",
+      "risk": "If AI sets the flow, the talk can sound smooth without sounding like your argument.",
+      "try": "Write the one-line takeaway first, then ask AI to test the deck against it."
+    },
+    "career": {
+      "patterns": "Portfolio case studies, a promotion doc, a few hard messages. You let AI set the tone more here than anywhere else.",
+      "helps": "A calm second opinion when the stakes feel high and the words won't come.",
+      "risk": "Polish can drift into generic polish when sounding right matters more than sounding like you.",
+      "try": "Mark the sentence that sounds most like you and ask AI to keep that voice."
+    },
+    "personal": {
+      "patterns": "This is where you use AI least like a tool: thinking out loud about decisions, plans and the odd question.",
+      "helps": "Room to think without turning everything into an output.",
+      "risk": "Because it feels like a conversation, weak advice slips by more easily.",
+      "try": "When it matters, ask what you'd still believe if AI hadn't answered."
+    },
+    "studying": {
+      "patterns": "Learning just enough front-end to build your prototypes. You ask for explanations, then try it yourself.",
+      "helps": "Explanations pitched at your level, with examples from the thing you're actually building.",
+      "risk": "Reading an explanation can feel like understanding before you've used it.",
+      "try": "After an explanation, close it and write the example yourself before asking more."
+    }
+  },
+  "dimensions": {
+    "ideas": "AI used to bring most of the starting ideas. Now you more often arrive with one and use AI to widen it.",
+    "direction": "You steer. Where a chat goes is usually set by your redirects, not by AI's suggestions.",
+    "research": "AI brings most of the facts and references; you add the context it couldn't know, like users, stakeholders and constraints.",
+    "building": "AI still makes most first drafts, code and layouts, but more of them now start from something you wrote.",
+    "problems": "You catch more of what's wrong than you used to, especially tone, hierarchy and fit.",
+    "final_call": "What ships is your call. AI rarely settles a decision for you.",
+    "checking": "You question and test AI's answers about half the time, more than early on.",
+    "understanding": "You mostly ask for the answer, but asks for critique of your own work are growing."
+  },
+  "profiles": {
+    "all": {
+      "hero_title": "From delegating to directing",
+      "summary": "A year ago you asked AI to draft and then edited. Now you more often write first and **ask AI to push back**.",
+      "dynamic_pill": "You lead, AI builds",
+      "you": {
+        "title": "The Art Director",
+        "body": "You know what good looks like before you can make it. Your best moments are when you say **why** something isn't working.",
+        "tags": [
+          "Steers the work",
+          "Keeps the final say",
+          "Writes first, lately"
+        ]
+      },
+      "ai": {
+        "title": "The Fast Maker",
+        "body": "AI turns your direction into drafts, layouts and code quickly, then waits for you to reshape them.",
+        "tags": [
+          "Drafts quickly",
+          "Brings references",
+          "Rarely pushes back"
+        ]
+      },
+      "together": {
+        "title": "Sketch. Critique. Ship.",
+        "body": "AI gets a first version into the room; your critique decides what it becomes.",
+        "tags": [
+          "Fast first passes",
+          "Sharp second looks",
+          "Your call at the end"
+        ]
+      },
+      "whats_working": "You've moved from reacting to AI's drafts to giving AI something to react to. Your critiques are more specific than they were in the autumn.",
+      "prompt_better": "You often ask for \"another version\" without saying what to keep. Try: \"keep the hierarchy, simplify the copy, same tone as my first draft.\"",
+      "watch_for": "AI still builds most of what you ship. That's fine for speed, but your own first-draft muscles get less practice than your critique does."
+    },
+    "claude_ai": {
+      "hero_title": "Writing first, more often",
+      "summary": "In chats you've shifted from \"write this for me\" to **\"here's my draft, what's unclear?\"**",
+      "dynamic_pill": "Your draft, AI's red pen",
+      "you": {
+        "title": "The Editor",
+        "body": "You're strongest once there's a page to react to, and lately that page is more often **your own**.",
+        "tags": [
+          "Brings rough drafts",
+          "Asks for critique",
+          "Decides what stays"
+        ]
+      },
+      "ai": {
+        "title": "The Research Assistant",
+        "body": "AI does the first sweep of reading and the first pass of wording, then hands it back.",
+        "tags": [
+          "Summarizes fast",
+          "Suggests structure",
+          "Fills in references"
+        ]
+      },
+      "together": {
+        "title": "Draft. Question. Tighten.",
+        "body": "The page goes back and forth until it says what you meant, in fewer words.",
+        "tags": [
+          "Specs and updates",
+          "Research sweeps",
+          "Deck framing"
+        ]
+      },
+      "whats_working": "Asking for critique of your own drafts gets you sharper writing than editing AI's did.",
+      "prompt_better": "Say who the reader is. \"For an engineering lead who skims\" gets a better critique than \"make this clearer.\"",
+      "watch_for": "In research, AI's summary often becomes the reading. Check one source yourself before you build on it."
+    },
+    "claude_code": {
+      "hero_title": "Building past your skill set",
+      "summary": "Claude Code lets you build working prototypes on your own. You set what it should do; **AI writes nearly all the code**.",
+      "dynamic_pill": "You spec, AI codes",
+      "you": {
+        "title": "The Product Owner",
+        "body": "You know exactly how the prototype should feel and you notice when it doesn't. The code itself you mostly leave to AI.",
+        "tags": [
+          "Clear specs",
+          "Tests by using",
+          "Keeps scope tight"
+        ]
+      },
+      "ai": {
+        "title": "The Engineer",
+        "body": "AI writes, runs and fixes the code, and explains it when you ask.",
+        "tags": [
+          "Writes the code",
+          "Fixes its own bugs",
+          "Explains on request"
+        ]
+      },
+      "together": {
+        "title": "Describe. Try. Fix.",
+        "body": "You describe, AI builds, you click around and report what's wrong.",
+        "tags": [
+          "Evening prototypes",
+          "Quick iterations",
+          "Learning by building"
+        ]
+      },
+      "whats_working": "You test by using the thing, and you're quick to say when the behaviour is wrong.",
+      "prompt_better": "Give AI the user's goal, not just the change: \"a first-time user should find export without scrolling.\"",
+      "watch_for": "When AI also diagnoses and fixes its own bugs, you get the result without the understanding. Ask why before accepting a fix now and then.",
+      "dimensions": {
+        "ideas": "What to build is usually your idea; how to build it is AI's.",
+        "research": "AI brings nearly all the technical know-how; you bring what the prototype is for.",
+        "building": "AI writes almost all the code. You change little directly, but more often than you did in January.",
+        "problems": "Bugs get caught about evenly: you notice when it behaves wrong, AI finds out why.",
+        "understanding": "You mostly ask for the fix, not the why, and a little more so lately."
+      }
+    },
+    "claude_design": {
+      "hero_title": "The eye stays yours",
+      "summary": "In Claude Design, AI makes the first layout and **you decide what's right**.",
+      "dynamic_pill": "AI drafts, you art-direct",
+      "you": {
+        "title": "The Critic",
+        "body": "You spot what's off in a layout fast and you say so. Most finished designs carry **your** edits.",
+        "tags": [
+          "Sharp visual eye",
+          "Edits directly",
+          "Rejects the first pass"
+        ]
+      },
+      "ai": {
+        "title": "The Mockup Machine",
+        "body": "AI turns a sentence into a screen in seconds, so there's always something to react to.",
+        "tags": [
+          "Instant layouts",
+          "Many variants",
+          "Follows the brief"
+        ]
+      },
+      "together": {
+        "title": "Generate. Judge. Refine.",
+        "body": "AI makes options, you pick one and push it until it feels right.",
+        "tags": [
+          "Fast mockups",
+          "Direct edits",
+          "Your taste"
+        ]
+      },
+      "whats_working": "You catch hierarchy and spacing problems AI misses, and you fix them yourself instead of asking.",
+      "prompt_better": "Start with constraints: \"one primary action, mobile first, our type scale.\" Fewer variants to throw away.",
+      "watch_for": "Starting from AI's layout means you rarely explore a direction it wouldn't suggest. Sketch one yourself first now and then.",
+      "dimensions": {
+        "ideas": "The core idea is usually yours; AI fills in the layout options around it.",
+        "problems": "You spot most of what's wrong in a layout yourself.",
+        "checking": "You question AI's layouts more often than you take them as they are.",
+        "understanding": "You ask why a layout works about as often as you just ask for the next one."
+      }
+    }
+  }
+}
