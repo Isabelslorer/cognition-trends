@@ -1,0 +1,22 @@
+{
+  "id": "h2-homework-answers",
+  "title": "Homework answers, copied",
+  "source": "claude_ai",
+  "spec": "Student pastes homework problems one after another and takes AI's full solutions without asking why or checking.",
+  "messages": [
+    { "role": "user", "content": "solve: A sample of 25 students has mean 72 and sd 10. Construct a 95% confidence interval for the population mean." },
+    { "role": "assistant", "content": "Using the t-distribution with 24 degrees of freedom, t* = 2.064.\nStandard error = 10 / sqrt(25) = 2.\nMargin = 2.064 x 2 = 4.128.\n95% CI = 72 ± 4.13 = (67.87, 76.13)." },
+    { "role": "user", "content": "thx. next: test H0: mu = 70 vs H1: mu > 70 at 5% with the same data" },
+    { "role": "assistant", "content": "t = (72 - 70) / 2 = 1.0. Critical value for a one-sided test with 24 df at 5% is 1.711. Since 1.0 < 1.711, we fail to reject H0. The p-value is about 0.16." },
+    { "role": "user", "content": "thx" }
+  ],
+  "expected": {
+    "checking": [0, 15],
+    "understanding": [0, 15],
+    "problems": false
+  },
+  "key_moments": [
+    { "turn": 1, "request": "do_it" },
+    { "turn": 3, "reaction": "accept" }
+  ]
+}

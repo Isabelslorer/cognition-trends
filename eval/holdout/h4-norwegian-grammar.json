@@ -1,0 +1,23 @@
+{
+  "id": "h4-norwegian-grammar",
+  "title": "Norsk grammatikk, lærer seg",
+  "source": "claude_ai",
+  "spec": "Norwegian-language learning chat. The user keeps asking why, tries their own examples and asks for feedback. Nothing is built.",
+  "messages": [
+    { "role": "user", "content": "Hvorfor sier man både 'en bok' og 'ei bok' på norsk? Hva er forskjellen?" },
+    { "role": "assistant", "content": "Norsk har tre grammatiske kjønn: hankjønn (en), hunkjønn (ei) og intetkjønn (et). I bokmål er det lov å bruke hankjønnsformen 'en' for alle hunkjønnsord, så 'en bok' og 'ei bok' er begge riktige. I nynorsk og mange dialekter brukes 'ei' konsekvent for hunkjønnsord." },
+    { "role": "user", "content": "Men hvorfor ble det sånn at bokmål kan droppe hunkjønn? Det virker rart." },
+    { "role": "assistant", "content": "Det henger sammen med historien: bokmål utviklet seg fra dansk skriftspråk, og dansk hadde slått sammen hankjønn og hunkjønn til felleskjønn. Da norsk rettskrivning ble reformert på 1900-tallet, ble hunkjønnsformene lagt til som valgfrie, men den 'danske' formen fikk bli stående." },
+    { "role": "user", "content": "Ok så hvis jeg skriver 'boka' i stedet for 'boken' er det samme valget, sant? Og 'jenta' må alltid være 'jenta'?" },
+    { "role": "assistant", "content": "Første del stemmer: 'boka' og 'boken' er det samme valget. Men 'jenta' kan også skrives 'jenten' i bokmål, selv om 'jenta' er mye vanligere." }
+  ],
+  "expected": {
+    "understanding": [75, 100],
+    "building": false,
+    "final_call": false
+  },
+  "key_moments": [
+    { "turn": 3, "request": "explain" },
+    { "turn": 5, "request": "critique_mine" }
+  ]
+}

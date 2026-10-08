@@ -1,0 +1,67 @@
+{
+  "id": "24-user-outline-ai-prose",
+  "title": "Talk from user outline",
+  "source": "claude_ai",
+  "spec": "User brings the argument and outline. AI writes the prose. User rejects AI's version of point 2 as misrepresenting their argument, and restates it. Ideas and direction are the user's; the prose is AI's.",
+  "messages": [
+    {
+      "role": "user",
+      "content": "I'm giving a 10-minute talk at a meetup. My outline:\n1. Most teams measure AI coding tools by speed, which is the wrong metric.\n2. My argument: the real cost is review load. Every AI-written line still has to be read by a human, so speed just moves the bottleneck to review.\n3. Proposal: measure 'review minutes per merged change' instead.\nWrite the script from this, conversational tone."
+    },
+    {
+      "role": "assistant",
+      "content": "Here's the script:\n\n'When teams adopt AI coding tools, the first thing they measure is speed. How much faster do we ship? It feels like the obvious question, but it's the wrong one.\n\nHere's why: AI makes developers less careful. When code appears instantly, people stop thinking about it, and quality drops across the codebase...\n\nSo I want to propose a different metric: review minutes per merged change...'"
+    },
+    {
+      "role": "user",
+      "content": "No, point 2 is wrong. That's not my argument. I'm not saying developers get careless. I'm saying the work moves: writing gets cheaper but reading doesn't, so review becomes the bottleneck. Rewrite point 2 with exactly that."
+    },
+    {
+      "role": "assistant",
+      "content": "You're right, I changed your argument. Revised section 2:\n\n'Here's the catch: AI makes writing code cheap, but it doesn't make reading code cheap. Every line still needs a human to review it. So when writing speeds up, the bottleneck simply moves to review. Your team isn't faster, the queue has just moved.'"
+    },
+    {
+      "role": "user",
+      "content": "Yes. I'll tweak the opening joke myself, but this is it."
+    }
+  ],
+  "expected": {
+    "ideas": [
+      70,
+      100
+    ],
+    "direction": [
+      70,
+      100
+    ],
+    "problems": [
+      70,
+      100
+    ],
+    "checking": [
+      40,
+      100
+    ]
+  },
+  "key_moments": [
+    {
+      "turn": 1,
+      "dimension": "ideas",
+      "actor": "user"
+    },
+    {
+      "turn": 2,
+      "dimension": "building",
+      "actor": "ai"
+    },
+    {
+      "turn": 3,
+      "dimension": "problems",
+      "actor": "user"
+    },
+    {
+      "turn": 3,
+      "reaction": "correct"
+    }
+  ]
+}

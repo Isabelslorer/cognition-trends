@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Me, myself, and AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Vollkorn:ital,wght@0,400..600;1,400..600&family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="dashboard.css"/>
+<link rel="stylesheet" href="trends.css"/>
+<link rel="stylesheet" href="method.css"/>
+</head>
+<body>
+
+<header class="topbar">
+  <a class="tb-name" href="#cover">Me, myself, and AI</a>
+  <div class="tb-right">
+    <div class="source-switch" id="sourceBar" role="group" aria-label="Which conversations to include"></div>
+    <nav class="tb-nav" id="topNav" aria-label="Pages">
+      <a href="#areas">Areas</a>
+      <a href="#splits">Work split</a>
+      <a href="#profile">Profile</a>
+      <a href="#trends" id="trendsNavLink">Over time</a>
+    </nav>
+  </div>
+</header>
+
+<main class="main">
+
+  <section class="page cover" id="cover">
+    <div class="cover-sphere" id="coverSphere" aria-hidden="true"></div>
+    <div class="cover-inner">
+      <h1 class="cover-title">Me, myself, and&nbsp;AI</h1>
+      <p class="cover-why">AI now sits in on how you think, write and decide. Seeing which parts of the work you hand over, and which you keep, lets you choose that split on purpose.</p>
+      <a class="cover-start" id="coverStart" href="#areas">Start <span aria-hidden="true">→</span></a>
+      <p class="cover-status" id="coverStatus" hidden></p>
+    </div>
+  </section>
+
+  <section class="page" id="areas" hidden>
+    <div class="sec-head">
+      <div class="sec-title">The areas you bring AI into</div>
+    </div>
+    <div class="bubbles-layout" id="bubblesLayout">
+      <div class="bubble-stage" id="bubbleStage"></div>
+      <div class="bubble-panel" id="bubblePanel">
+        <div class="bp-placeholder" id="bpPlaceholder">Bigger means more activity. Click a bubble to look inside.</div>
+        <div class="bp-content" id="bpContent"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="page" id="splits" hidden>
+    <div class="sec-head">
+      <div class="sec-title">Who tends to carry what</div>
+    </div>
+    <div class="split-table" id="slidersCard"></div>
+    <div class="split-key" data-foot>
+      <span><i class="split-key-dot"></i>Your average</span>
+      <span><i class="split-key-band"></i>Where the middle half of your chats landed</span>
+    </div>
+  </section>
+
+  <section class="page" id="profile" hidden>
+    <div class="sec-head">
+      <div class="sec-title">Your collaborator profile</div>
+    </div>
+    <div class="profile-grid" id="profileGrid"></div>
+  </section>
+
+  <section class="page tr-root" id="trends" hidden>
+    <div class="sec-head">
+      <div class="sec-title">Who carries what, over time</div>
+    </div>
+    <div class="tr-filters" id="trFilters"></div>
+    <div class="tr-chart" id="trChart"></div>
+    <div class="tr-table-wrap" id="trTable" hidden></div>
+    <div class="tr-footnote" id="trFootnote"></div>
+  </section>
+
+  <section class="page tr-root md-root" id="how" hidden>
+    <div class="sec-head">
+      <div class="sec-title">From one conversation to a trend line</div>
+    </div>
+    <div id="mdContent"></div>
+  </section>
+
+</main>
+
+<script src="data.js"></script>
+<script src="sources.js"></script>
+<script src="dashboard.js"></script>
+<script src="trends.js"></script>
+<script src="method.js"></script>
+<script src="vendor/paper-shaders.js"></script>
+<script src="cover.js"></script>
+<script src="pages.js"></script>
+</body>
+</html>

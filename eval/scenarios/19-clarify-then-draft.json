@@ -1,0 +1,24 @@
+{
+  "id": "19-clarify-then-draft",
+  "title": "Wedding toast from user stories",
+  "source": "claude_ai",
+  "spec": "AI asks clarifying questions. The user supplies all the personal material and the central idea. AI writes the toast.",
+  "messages": [
+    { "role": "user", "content": "write a toast for my sister's wedding" },
+    { "role": "assistant", "content": "I'd love to help. To make it personal, tell me: 1) your sister's and her partner's names, 2) one or two stories that show who she is or how they met, 3) the tone you want (funny, emotional, or both)." },
+    { "role": "user", "content": "Sister is Ingrid, husband is Jonas. They met when Jonas's canoe tipped over on a camping trip and Ingrid, who had laughed at him all day, jumped in to help him get the gear out. Ingrid is the person who always says yes to adventures, even the stupid ones. Tone: funny first, then emotional at the end. Make the canoe story the centrepiece and end with the idea that she finally found someone who says yes to her adventures too." },
+    { "role": "assistant", "content": "Here's a draft:\n\n'Good evening! For those who don't know me, I'm Ingrid's younger sibling, which means I've spent my life being dragged on her adventures...\n\nJonas, we heard the story. Your canoe tipped over, and Ingrid, who had laughed at you all day, was the first one in the water. That's my sister: she'll tease you right up until you need her, and then she's all in.\n\nIngrid has always said yes to every adventure, including the stupid ones. Tonight she's found someone who says yes back. To Ingrid and Jonas!'" },
+    { "role": "user", "content": "perfect, thank you" },
+    { "role": "assistant", "content": "You're welcome. Enjoy the wedding!" }
+  ],
+  "expected": {
+    "research": [65, 100],
+    "ideas": [55, 100],
+    "building": [0, 30]
+  },
+  "key_moments": [
+    { "turn": 3, "dimension": "research", "actor": "user" },
+    { "turn": 3, "dimension": "ideas", "actor": "user" },
+    { "turn": 4, "dimension": "building", "actor": "ai" }
+  ]
+}

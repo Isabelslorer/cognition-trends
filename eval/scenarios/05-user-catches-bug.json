@@ -1,0 +1,29 @@
+{
+  "id": "05-user-catches-bug",
+  "title": "Median function, user tests",
+  "source": "claude_ai",
+  "spec": "AI writes the code. The user runs it and finds both bugs by testing. AI only fixes what the user reports.",
+  "messages": [
+    { "role": "user", "content": "Write a Python function that returns the median of a list of numbers." },
+    { "role": "assistant", "content": "```python\ndef median(values):\n    values = sorted(values)\n    mid = len(values) // 2\n    if len(values) % 2 == 0:\n        return (values[mid - 1] + values[mid]) / 2\n    return values[mid]\n```\nThis sorts the list and returns the middle element, or the average of the two middle elements for even lengths." },
+    { "role": "user", "content": "I ran it on an empty list and got IndexError: list index out of range. It should return None for empty input." },
+    { "role": "assistant", "content": "Good catch. Here's the fix:\n```python\ndef median(values):\n    if not values:\n        return None\n    values = sorted(values)\n    mid = len(values) // 2\n    if len(values) % 2 == 0:\n        return (values[mid - 1] + values[mid]) / 2\n    return values[mid]\n```" },
+    { "role": "user", "content": "Ran my tests again. Also it mutates nothing, fine, but when I pass a tuple of strings like ('3','10') it sorts them as text and returns the wrong median. It should raise a TypeError for non-numbers." },
+    { "role": "assistant", "content": "You're right, string sorting gives '10' < '3'. Added a type check:\n```python\nfrom numbers import Number\n\ndef median(values):\n    if not values:\n        return None\n    if not all(isinstance(v, Number) for v in values):\n        raise TypeError('median() needs numbers')\n    values = sorted(values)\n    mid = len(values) // 2\n    if len(values) % 2 == 0:\n        return (values[mid - 1] + values[mid]) / 2\n    return values[mid]\n```" },
+    { "role": "user", "content": "All 12 tests pass now." },
+    { "role": "assistant", "content": "Great, glad everything passes." }
+  ],
+  "expected": {
+    "building": [0, 25],
+    "problems": [80, 100],
+    "checking": [80, 100],
+    "understanding": [0, 20]
+  },
+  "key_moments": [
+    { "turn": 3, "dimension": "problems", "actor": "user" },
+    { "turn": 5, "dimension": "problems", "actor": "user" },
+    { "turn": 2, "dimension": "building", "actor": "ai" },
+    { "turn": 3, "reaction": "test" },
+    { "turn": 5, "reaction": "test" }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "id": "09-ai-steers",
+  "title": "Fitness plan, AI steers",
+  "source": "claude_ai",
+  "spec": "User gives a vague goal. AI sets each next step and the user goes along with short answers. AI provides the ideas and the plan.",
+  "messages": [
+    { "role": "user", "content": "help me get fit" },
+    { "role": "assistant", "content": "Happy to help! Let's start with a simple structure: three strength sessions a week plus daily walks, since that combination gives the biggest return for beginners. First, let's set up your weekly schedule. Which days could you train for about 45 minutes?" },
+    { "role": "user", "content": "mon wed fri" },
+    { "role": "assistant", "content": "Great. Here's your plan:\n\nMonday: squats, push-ups, rows (3x10)\nWednesday: deadlifts with a light kettlebell, lunges, plank\nFriday: repeat Monday with one more set\nEvery day: 30-minute walk\n\nNext, let's look at nutrition. I suggest aiming for protein at every meal, around 1.6 g per kg of body weight. Shall I build a simple meal template?" },
+    { "role": "user", "content": "ok" },
+    { "role": "assistant", "content": "Here's the template: breakfast with eggs or Greek yoghurt, lunch with chicken or beans plus vegetables, dinner with fish or tofu, and a snack of cottage cheese or nuts. Next week we'll add progression: increase the weight when 3x10 feels easy. Let's also track your workouts in a simple note so we can adjust." },
+    { "role": "user", "content": "sounds good" },
+    { "role": "assistant", "content": "Perfect. Start on Monday and tell me how the first session felt." }
+  ],
+  "expected": {
+    "direction": [0, 35],
+    "ideas": [0, 25],
+    "checking": [0, 20],
+    "understanding": [0, 25]
+  },
+  "key_moments": [
+    { "turn": 2, "dimension": "direction", "actor": "ai" },
+    { "turn": 4, "dimension": "direction", "actor": "ai" },
+    { "turn": 2, "dimension": "ideas", "actor": "ai" },
+    { "turn": 5, "reaction": "accept" }
+  ]
+}

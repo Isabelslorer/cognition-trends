@@ -1,0 +1,189 @@
+/* Style A, "ink on paper": a bright paper ground, ink type, hairline rules instead of boxes, no shadows.
+   Blue is the one color: it marks the selected area and your data. Designs: Paper file "Humble vase". */
+:root {
+  --bg:#faf9f5;--surface:#ffffff;--stone:#eeebe3;--stone-hover:#e5e1d6;--tint:#f1efe8;
+  --ink:#161616;--ink-2:#3d3a34;--muted:#6b6860;--line:#e6e3da;--line-strong:#cfcbc0;
+  --blue:#359ef6;--blue-soft:rgba(53,158,246,0.2);
+  --blue-ink:#1f73c9;--blue-pale:#dcebfa;--blue-pale-hover:#cce2f8;--blue-mute:#3e5a74;--panel:#f6f4ee;
+  --blue-band:#b4d4f3;--sand:#e9e3d5;--sand-band:#d4c9b3;--tick:#8f8a7e;
+  --radius:20px;
+  --serif:"Vollkorn",Georgia,serif;
+  --sans:"Inter Tight","Segoe UI",sans-serif;
+  /* Names the Over time and How it's scored views still use. */
+  --paper-2:var(--tint);--paper-3:var(--surface);--paper-edge:var(--line);
+  --ink-3:var(--muted);--ink-4:#a8a49a;--shadow-card:none;
+}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;min-height:100%}
+body{font-family:var(--sans);color:var(--ink);background:var(--bg);-webkit-font-smoothing:antialiased}
+
+/* Header: the name on the left, the tabs as plain text on the right. Both scroll away with the page;
+   on narrow screens the tabs become a floating pill at the bottom (see the 900px query). */
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;max-width:1240px;margin:0 auto;padding:28px 20px}
+.tb-name{font-family:var(--serif);font-size:20px;line-height:26px;color:var(--ink);text-decoration:none}
+/* The cover stands alone: no name, tabs or source switch, since nothing may be loaded yet. */
+body[data-page="cover"] .tb-name,body[data-page="cover"] .tb-right{visibility:hidden}
+body[data-page="cover"] .tb-nav{display:none}
+.tb-right{display:flex;align-items:center;gap:28px}
+.tb-nav{display:flex;gap:28px}
+.tb-nav a{white-space:nowrap;padding-bottom:4px;border-bottom:1.5px solid transparent;font-size:13px;font-weight:500;line-height:16px;color:var(--muted);text-decoration:none;transition:color 0.15s,border-color 0.15s}
+.tb-nav a:hover{color:var(--ink)}
+.tb-nav a.active{color:var(--ink);border-bottom-color:var(--ink)}
+@media(prefers-reduced-motion:reduce){.tb-nav{transition:none}}
+
+.main{max-width:1240px;margin:0 auto;padding:0 20px 80px}
+.page[hidden]{display:none}
+.page{min-height:calc(100vh - 156px)}
+
+/* Cover: the title over a large, faint dithered sphere that slowly turns (cover.js). */
+.cover{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:4vh 0 0}
+.cover-sphere{position:absolute;left:50%;top:50%;width:min(1180px,125vh);aspect-ratio:1;transform:translate(-50%,-52%);opacity:0.2;pointer-events:none}
+.cover-inner{position:relative;display:flex;flex-direction:column;align-items:center}
+.cover-title{font-family:var(--serif);font-weight:400;font-size:clamp(52px,8.4vw,120px);line-height:0.98;letter-spacing:-0.03em;margin:0 0 32px}
+.cover-why{font-size:clamp(16px,1.3vw,18px);line-height:1.55;color:var(--ink-2);max-width:500px;margin:0 0 32px}
+.cover-start{display:inline-flex;gap:10px;align-items:center;padding:15px 26px;border-radius:999px;background:var(--ink);color:var(--bg);font-size:15px;font-weight:500;text-decoration:none;transition:transform 0.15s}
+.cover-start:hover{transform:translateX(3px)}
+.cover-status{margin:20px 0 0;max-width:420px;font-size:14px;line-height:20px;color:var(--muted)}
+
+/* Page heading: title and helper on the left, ‹ › on the right (arrows added by pages.js). */
+.sec-head{margin-bottom:16px}
+.sec-head-paged{display:flex;align-items:center;justify-content:space-between;gap:24px;margin:0 0 28px}
+.pg-arrows{display:flex;gap:8px;flex-shrink:0}
+.pg-arrow{width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:none;color:var(--ink);font:inherit;font-size:16px;line-height:1;cursor:pointer;transition:background 0.15s,border-color 0.15s,opacity 0.15s}
+.pg-arrow:hover:not(:disabled){background:var(--surface);border-color:var(--line-strong)}
+.pg-arrow:disabled{opacity:0;pointer-events:none}
+.sec-title{text-wrap:balance;font-family:var(--serif);font-size:clamp(32px,3vw,42px);font-weight:400;line-height:1.1;letter-spacing:-0.015em;margin:0 0 8px}
+.sec-sub{font-size:15px;line-height:22px;color:var(--muted)}
+/* Under each page: the chat count and the way into "How it's scored". */
+.page-foot{display:flex;justify-content:space-between;gap:16px;padding-top:16px;font-size:13px;line-height:16px;color:var(--muted)}
+.page-foot a{color:inherit;text-decoration:none}
+.page-foot a:hover{color:var(--ink);text-decoration:underline;text-underline-offset:3px}
+.label{font-size:11px;font-weight:600;line-height:14px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink)}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* --- Areas: one white box, bubbles on the left (the open one in blue), the panel on a tint on the right. --- */
+/* The box shrinks with the window height so the page fits on one screen, down to 420px. */
+.bubbles-layout{--stage-h:clamp(420px,calc(100vh - 230px),560px);display:grid;grid-template-columns:1fr 380px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);overflow:clip}
+/* The pipeline places bubbles in percentage slots; these sizes keep them apart on an 820×560 stage.
+   On smaller stages dashboard.js scales the bubbles down to match (--bubble-scale). */
+.bubble-stage{position:relative;height:var(--stage-h)}
+.bubble{
+  position:absolute;border-radius:50%;cursor:pointer;border:0;font:inherit;padding:8px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;text-align:center;
+  background:var(--blue-pale);color:var(--ink);transform:translate(-50%,-50%);scale:var(--bubble-scale,1);
+  transition:background 0.2s,color 0.2s,transform 0.25s ease;
+}
+.bubble:hover{background:var(--blue-pale-hover);transform:translate(-50%,-50%) scale(1.03)}
+.bubble.active,.bubble.active:hover{background:var(--blue);color:#fff;transform:translate(-50%,-50%)}
+.bubble:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+.bubble-label{font-family:var(--serif);line-height:1.15}
+.bubble-pct{font-size:13px;font-weight:500;line-height:16px;color:var(--blue-mute)}
+.bubble.active .bubble-pct{color:#fff}
+.bubble.xxl{width:204px;height:204px}.bubble.xxl .bubble-label{font-size:28px}
+.bubble.xl{width:172px;height:172px}.bubble.xl .bubble-label{font-size:24px}
+.bubble.lg{width:146px;height:146px}.bubble.lg .bubble-label{font-size:21px}
+.bubble.md{width:110px;height:110px}.bubble.md .bubble-label{font-size:18px}
+.bubble.sm{width:98px;height:98px}.bubble.sm .bubble-label{font-size:17px}
+.bubble.xs{width:84px;height:84px}.bubble.xs .bubble-label{font-size:15px}.bubble.xs .bubble-pct{display:none}
+
+.bubble-panel{background:var(--panel);border-left:1px solid var(--line);padding:40px;overflow-y:auto;max-height:var(--stage-h)}
+.bp-placeholder{height:100%;display:flex;align-items:center;font-family:var(--serif);font-style:italic;font-size:19px;line-height:26px;color:var(--muted)}
+.bp-content{display:none;animation:fadeUp 0.25s ease both}
+.bp-content.open{display:flex;flex-direction:column;gap:24px}
+.bp-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.bp-title{font-family:var(--serif);font-size:32px;line-height:38px;letter-spacing:-0.01em}
+.bp-pct{margin-top:4px;font-size:13px;line-height:18px;color:var(--muted)}
+.bp-close{background:none;border:none;font-size:20px;line-height:1;color:var(--muted);cursor:pointer;padding:6px}
+.bp-close:hover{color:var(--ink)}
+.bp-section{display:flex;flex-direction:column;gap:6px}
+.bp-text{text-wrap:pretty;font-size:14px;line-height:21px;color:var(--ink-2)}
+.bp-try .label{color:var(--blue-ink)}
+
+/* --- Work split: one card per kind of work in a white box. Each bar runs from AI (blue half) to you
+   (sand half); the darker band is the middle half of your chats, the black dot your average. --- */
+.split-table{display:flex;flex-direction:column;gap:8px;padding:24px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius)}
+.split-row{
+  display:grid;grid-template-columns:220px 18px minmax(0,1fr) 28px 150px;align-items:center;gap:0 16px;
+  grid-template-areas:"label ai track you verdict" ". . detail detail detail";
+  width:100%;padding:14px 20px;background:var(--bg);border:1px solid var(--line);border-radius:14px;
+  font:inherit;color:inherit;text-align:left;cursor:pointer;transition:border-color 0.15s;
+}
+.split-row:hover{border-color:var(--line-strong)}
+.split-row:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.split-label{grid-area:label;font-family:var(--serif);font-size:18px;line-height:24px}
+.split-end{font-size:12px;font-weight:600;line-height:14px}
+.split-end.ai{grid-area:ai;color:var(--blue-ink)}
+.split-end.you{grid-area:you;text-align:right;color:var(--ink)}
+.split-track{grid-area:track;position:relative;height:16px}
+.split-base{position:absolute;left:0;right:0;top:3px;height:10px;border-radius:999px;background:linear-gradient(to right,var(--blue-pale) 50%,var(--sand) 50%)}
+/* --mid is where the band crosses the middle, set per row by dashboard.js. */
+.split-band{position:absolute;top:3px;height:10px;background:linear-gradient(to right,var(--blue-band) var(--mid),var(--sand-band) var(--mid))}
+.split-band::before,.split-band::after{content:"";position:absolute;top:-3px;width:1.5px;height:16px;background:var(--tick)}
+.split-band::before{left:0}
+.split-band::after{right:0}
+.split-dot{position:absolute;top:0;width:16px;height:16px;margin-left:-8px;border-radius:999px;background:var(--ink)}
+.split-verdict{grid-area:verdict;display:flex;justify-content:flex-end;align-items:center;gap:12px;font-size:11px;font-weight:600;line-height:14px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink)}
+.split-verdict.ai{color:var(--blue-ink)}
+.split-verdict.shared{color:var(--ink-2)}
+.split-toggle{width:12px;text-align:center;font-size:16px;font-weight:400;letter-spacing:0;color:var(--muted)}
+.split-detail{grid-area:detail;display:none;padding:12px 0 4px;flex-direction:column;gap:6px;max-width:660px}
+.split-row.open .split-detail{display:flex}
+.split-question{font-family:var(--serif);font-style:italic;font-size:17px;line-height:24px;color:var(--ink)}
+.split-line{font-size:14px;line-height:21px;color:var(--ink-2)}
+.split-line.basis{font-size:12px;line-height:18px;color:var(--muted)}
+.split-key{display:flex;flex-wrap:wrap;gap:8px 24px}
+.split-key span{display:flex;align-items:center;gap:8px}
+.split-key-dot{width:10px;height:10px;border-radius:999px;background:var(--ink)}
+.split-key-band{width:28px;height:8px;border-radius:999px;background:linear-gradient(to right,var(--blue-band) 50%,var(--sand-band) 50%)}
+
+/* --- Profile D1: one frame containing three role cards and three advice cards. --- */
+.profile-grid{display:flex;flex-direction:column;gap:20px;padding:28px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius)}
+.profile-lead{display:flex;align-items:flex-start;gap:40px;padding:0 4px 4px}
+.profile-lead-title{width:340px;flex-shrink:0;text-wrap:balance;font-family:var(--serif);font-style:italic;font-size:24px;line-height:30px;letter-spacing:-0.01em}
+.profile-lead-body{max-width:640px;padding-top:2px;font-size:15px;line-height:23px;color:var(--ink-2)}
+.profile-cards,.profile-tips{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.profile-card{display:flex;flex-direction:column;gap:8px;padding:20px 22px 22px;background:var(--bg);border:1px solid var(--line);border-radius:14px}
+.profile-card.ai .label,.profile-tip.prompt .label{color:var(--blue-ink)}
+.pc-title{text-wrap:balance;font-family:var(--serif);font-size:24px;line-height:30px;letter-spacing:-0.01em}
+.pc-body{font-size:14px;line-height:21px;color:var(--ink-2)}
+.pc-body strong,.profile-lead-body strong{font-weight:600;color:var(--ink)}
+.profile-tip{display:flex;flex-direction:column;gap:6px;padding:18px 22px 20px;background:var(--tint);border-radius:14px}
+.profile-tip .label{color:var(--muted)}
+.profile-tip p{margin:0;font-size:14px;line-height:21px;color:var(--ink-2)}
+
+@media(max-width:1100px){
+  .split-row{grid-template-columns:180px 18px minmax(0,1fr) 28px 130px}
+}
+@media(max-width:900px){
+  .bubbles-layout{grid-template-columns:1fr}
+  .bubble-panel{border-left:0;border-top:1px solid var(--line);padding:28px;max-height:none}
+  /* Narrow screens: the tabs float as a pill at the bottom, hidden while scrolling down (pages.js). */
+  .tb-nav{
+    position:fixed;bottom:14px;left:50%;z-index:60;transform:translateX(-50%);
+    gap:2px;padding:4px;border:1px solid var(--line);border-radius:999px;background:var(--surface);
+    transition:transform 0.25s ease,opacity 0.25s ease;
+  }
+  .tb-nav a{padding:8px 16px;border:0;border-radius:999px}
+  .tb-nav a.active{color:var(--bg);background:var(--ink)}
+  body.pill-hidden .tb-nav{transform:translate(-50%,160%);opacity:0}
+  body.pill-hidden .tb-nav:focus-within{transform:translateX(-50%);opacity:1}
+  .profile-lead{flex-direction:column;gap:10px}
+  .profile-lead-title{width:auto}
+  .profile-cards,.profile-tips{grid-template-columns:1fr}
+}
+@media(max-width:700px){
+  .main{padding:0 16px 60px}
+  .topbar{padding:16px}
+  .tb-nav a{padding:6px 10px;font-size:12px}
+  .split-table{padding:12px}
+  /* The verdict shares the label's line so every bar gets the same width. */
+  .split-row{grid-template-columns:18px minmax(0,1fr) 28px;grid-template-areas:"label label label" "ai track you" "detail detail detail";gap:10px 12px;padding:14px 16px}
+  .split-label{padding-right:140px}
+  .split-verdict{grid-area:label;justify-self:end}
+  .page-foot{flex-wrap:wrap}
+  .profile-grid{padding:16px;gap:12px}
+  .profile-lead{padding:4px 4px 8px}
+  .profile-card{padding:18px}
+  .profile-tip{padding:16px 18px}
+}

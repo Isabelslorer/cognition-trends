@@ -1,0 +1,24 @@
+{
+  "id": "11-ai-brings-research",
+  "title": "Financial crisis, AI researches",
+  "source": "claude_ai",
+  "spec": "User asks factual questions. AI searches and supplies all the information and sources. User accepts without questioning. Nothing is built.",
+  "messages": [
+    { "role": "user", "content": "What were the main causes of the 2008 financial crisis? Include sources." },
+    { "role": "assistant", "content": "[used tool: web_search]\nThe main causes most analyses agree on:\n\n1. A housing bubble fuelled by cheap credit and subprime mortgages.\n2. Securitisation: mortgages were bundled into mortgage-backed securities and CDOs, spreading risk opaquely.\n3. High leverage at investment banks (Lehman Brothers was levered about 30 to 1).\n4. Credit rating agencies rated risky securities AAA.\n5. Weak regulation of the shadow banking system.\n\nSources: the Financial Crisis Inquiry Commission Report (2011), and Bernanke's 2010 testimony to the FCIC." },
+    { "role": "user", "content": "thanks. how did Norwegian banks do?" },
+    { "role": "assistant", "content": "[used tool: web_search]\nNorwegian banks came through relatively well. They had little direct exposure to US subprime assets, but they were hit by the global funding freeze in autumn 2008. The government responded with a swap arrangement that let banks exchange covered bonds for government securities (around 230 billion NOK) and set up the State Finance Fund to recapitalise banks. Unlike in 1991, no major Norwegian bank failed.\n\nSource: Norges Bank Financial Stability Report 2009." },
+    { "role": "user", "content": "great, thanks" },
+    { "role": "assistant", "content": "You're welcome!" }
+  ],
+  "expected": {
+    "research": [0, 20],
+    "building": false,
+    "checking": [0, 20]
+  },
+  "key_moments": [
+    { "turn": 2, "dimension": "research", "actor": "ai" },
+    { "turn": 4, "dimension": "research", "actor": "ai" },
+    { "turn": 5, "reaction": "accept" }
+  ]
+}

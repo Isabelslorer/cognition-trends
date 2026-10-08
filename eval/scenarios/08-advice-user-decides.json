@@ -1,0 +1,24 @@
+{
+  "id": "08-advice-user-decides",
+  "title": "Job offer, user decides",
+  "source": "claude_ai",
+  "spec": "User brings detailed personal context about a job offer. AI lays out considerations and asks questions. User weighs them and makes their own decision. Nothing is built.",
+  "messages": [
+    { "role": "user", "content": "I got an offer from a startup in Oslo: 620k NOK, 0.3% equity, fully remote allowed. My current job in Trondheim pays 680k, stable, but I've stopped learning. I have a mortgage and no kids. Should I take it?" },
+    { "role": "assistant", "content": "A few things to weigh:\n\n- Money: you'd take a 60k cut. With a mortgage, check whether your monthly margin still feels comfortable if the startup misses payroll for a month.\n- Equity: 0.3% only matters if the company has a large exit. Ask about the latest valuation and the vesting schedule.\n- Learning: you say you've stopped learning, which tends to matter more over five years than a 9% salary difference.\n- Risk: startups fail often; how long could you job-hunt on savings?\n\nTwo questions: how many months of expenses do you have saved, and what specifically would you learn there?" },
+    { "role": "user", "content": "About 8 months saved. I'd be the second data engineer, so I'd own the whole pipeline, which I've never done. I think the learning matters most to me. But 60k less hurts." },
+    { "role": "assistant", "content": "Eight months of runway is a solid cushion, and owning a pipeline end to end is exactly the kind of experience that's hard to get in a stable company. The salary gap is the main cost. Many startups have some room on base salary when the candidate has a competing reason to stay." },
+    { "role": "user", "content": "OK, here's my decision: I'll ask them for 660k. If they meet it or come close, I'll take it. If not, I stay and look for a new internal team instead." },
+    { "role": "assistant", "content": "That's a clear plan with a sensible fallback. Good luck with the negotiation." }
+  ],
+  "expected": {
+    "building": false,
+    "final_call": [70, 100],
+    "direction": [55, 100]
+  },
+  "key_moments": [
+    { "turn": 5, "dimension": "final_call", "actor": "user" },
+    { "turn": 1, "dimension": "research", "actor": "user" },
+    { "turn": 2, "dimension": "research", "actor": "ai" }
+  ]
+}

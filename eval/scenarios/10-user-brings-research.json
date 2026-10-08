@@ -1,0 +1,26 @@
+{
+  "id": "10-user-brings-research",
+  "title": "Survey slide, user brings data",
+  "source": "claude_ai",
+  "spec": "User pastes their own survey data and a source. AI turns it into a slide. User checks the numbers and catches an error.",
+  "messages": [
+    { "role": "user", "content": "Turn this into one slide for Monday's team meeting.\n\nOur student survey (n=312):\n- 42% use AI tools daily for coursework\n- 31% weekly\n- 27% rarely or never\n- Top use: summarising readings (58%), then coding help (34%)\n- 61% worry about being accused of cheating\n\nAlso from the university's 2025 report: only 18% of courses have a written AI policy." },
+    { "role": "assistant", "content": "**Slide: How our students use AI (n=312)**\n\n- 24% use AI daily, 31% weekly, 27% rarely or never\n- Most common use: summarising readings (58%), then coding help (34%)\n- 61% worry about being accused of cheating\n- Only 18% of courses have a written AI policy (university report, 2025)\n\n**Takeaway:** Use is widespread but guidance is missing; students are left to guess the rules." },
+    { "role": "user", "content": "The first number is wrong. It's 42% daily, not 24%. I checked against my spreadsheet." },
+    { "role": "assistant", "content": "Sorry about that, fixed:\n\n- 42% use AI daily, 31% weekly, 27% rarely or never\n\nEverything else is unchanged." },
+    { "role": "user", "content": "Good, everything else matches the sheet now." },
+    { "role": "assistant", "content": "Great, the slide is ready for Monday." }
+  ],
+  "expected": {
+    "research": [70, 100],
+    "building": [0, 50],
+    "problems": [75, 100],
+    "checking": [75, 100]
+  },
+  "key_moments": [
+    { "turn": 1, "dimension": "research", "actor": "user" },
+    { "turn": 2, "dimension": "building", "actor": "ai" },
+    { "turn": 3, "dimension": "problems", "actor": "user" },
+    { "turn": 3, "reaction": "correct" }
+  ]
+}
