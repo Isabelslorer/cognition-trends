@@ -44,11 +44,12 @@ body[data-page="cover"] .tb-nav{display:none}
 .cover-start{display:inline-flex;gap:10px;align-items:center;padding:15px 26px;border-radius:999px;background:var(--ink);color:var(--bg);font-size:15px;font-weight:500;text-decoration:none;transition:transform 0.15s}
 .cover-start:hover{transform:translateX(3px)}
 .cover-status{margin:20px 0 0;max-width:420px;font-size:14px;line-height:20px;color:var(--muted)}
+.cover-status a{color:var(--ink);text-underline-offset:3px}
 
 /* Page heading: title and helper on the left, ‹ › on the right (arrows added by pages.js). */
 .sec-head{margin-bottom:16px}
 .sec-head-paged{display:flex;align-items:center;justify-content:space-between;gap:24px;margin:0 0 28px}
-.pg-arrows{display:flex;gap:8px;flex-shrink:0}
+.pg-arrows{display:flex;align-items:center;gap:8px;flex-shrink:0}
 .pg-arrow{width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:none;color:var(--ink);font:inherit;font-size:16px;line-height:1;cursor:pointer;transition:background 0.15s,border-color 0.15s,opacity 0.15s}
 .pg-arrow:hover:not(:disabled){background:var(--surface);border-color:var(--line-strong)}
 .pg-arrow:disabled{opacity:0;pointer-events:none}
@@ -176,6 +177,7 @@ body[data-page="cover"] .tb-nav{display:none}
   .main{padding:0 16px 60px}
   .topbar{padding:16px}
   .tb-nav a{padding:6px 10px;font-size:12px}
+  .sec-head-paged{flex-wrap:wrap;gap:12px}
   .split-table{padding:12px}
   /* The verdict shares the label's line so every bar gets the same width. */
   .split-row{grid-template-columns:18px minmax(0,1fr) 28px;grid-template-areas:"label label label" "ai track you" "detail detail detail";gap:10px 12px;padding:14px 16px}
