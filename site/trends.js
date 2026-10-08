@@ -267,7 +267,7 @@
       const flush = () => {
         if (segment.length > 1) svg.append(el('path', {
           d: segment.map(([x, y], index) => `${index ? 'L' : 'M'}${x.toFixed(1)},${y.toFixed(1)}`).join(''),
-          fill: 'none', stroke: color, 'stroke-width': 2, 'stroke-linejoin': 'round', 'stroke-linecap': 'round'
+          fill: 'none', stroke: color, 'stroke-width': 2.5, 'stroke-linejoin': 'round', 'stroke-linecap': 'round'
         }));
         segment = [];
       };

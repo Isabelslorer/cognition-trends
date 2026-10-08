@@ -3,8 +3,8 @@
   --tr-surface:var(--surface);
   --tr-grid:var(--line);
   --tr-axis:var(--line-strong);
-  --tr-series-1:var(--blue-ink);--tr-series-2:#57768f;--tr-series-3:#4e8085;
-  --tr-series-4:#9a7547;--tr-series-5:#8a6b80;--tr-series-6:#526b56;
+  --tr-series-1:#2875ce;--tr-series-2:#d27b27;--tr-series-3:#168e91;
+  --tr-series-4:#8c64bf;--tr-series-5:#c9567e;--tr-series-6:#4d9344;
   --tr-series-7:#716d91;--tr-series-8:#8f6658;
 }
 
@@ -40,7 +40,7 @@
 .tr-chart[hidden]{display:none}
 .tr-legend{display:flex;flex-wrap:wrap;gap:10px 24px}
 .tr-legend-item{display:inline-flex;align-items:center;gap:7px;white-space:nowrap;font-size:13px;line-height:18px;color:var(--ink-2)}
-.tr-legend-item i{display:inline-block;flex:none;width:18px;height:3px;border-radius:999px;background:var(--series-color)}
+.tr-legend-item i{display:inline-block;flex:none;width:20px;height:4px;border-radius:999px;background:var(--series-color)}
 .tr-legend-count{font-size:12px;color:var(--muted)}
 .tr-plot-scroll{overflow-x:auto}
 .tr-plot-scroll:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
